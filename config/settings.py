@@ -143,3 +143,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # Redirecciones de login y logout:
 LOGIN_REDIRECT_URL = 'inicio'
 LOGOUT_REDIRECT_URL = 'login'
+
+
+# Modelo de usuario personalizado
+AUTH_USER_MODEL = 'usuarios.Usuario'
