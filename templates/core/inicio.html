@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block titulo %}SOLGASES — Dashboard{% endblock %}
+{% block titulo_pagina %}Dashboard{% endblock %}
+
+{% block contenido %}
+
+<div class="row g-4 mb-4">
+
+    <!-- Tarjeta — Total productos -->
+    <div class="col-12 col-md-6 col-lg-3">
+        <div class="card-metrica">
+            <div class="card-metrica-icono" style="background-color: rgba(204,0,0,0.1);">
+                <i class="bi bi-box-seam" style="color: #cc0000;"></i>
+            </div>
+            <div>
+                <p class="card-metrica-valor">{{ total_productos }}</p>
+                <p class="card-metrica-label">Productos activos</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tarjeta — Total insumos -->
+    <div class="col-12 col-md-6 col-lg-3">
+        <div class="card-metrica">
+            <div class="card-metrica-icono" style="background-color: rgba(204,0,0,0.1);">
+                <i class="bi bi-droplet" style="color: #cc0000;"></i>
+            </div>
+            <div>
+                <p class="card-metrica-valor">{{ total_insumos }}</p>
+                <p class="card-metrica-label">Insumos activos</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tarjeta — Total clientes -->
+    <div class="col-12 col-md-6 col-lg-3">
+        <div class="card-metrica">
+            <div class="card-metrica-icono" style="background-color: rgba(204,0,0,0.1);">
+                <i class="bi bi-person" style="color: #cc0000;"></i>
+            </div>
+            <div>
+                <p class="card-metrica-valor">{{ total_clientes }}</p>
+                <p class="card-metrica-label">Clientes activos</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tarjeta — Total ventas del mes -->
+    <div class="col-12 col-md-6 col-lg-3">
+        <div class="card-metrica">
+            <div class="card-metrica-icono" style="background-color: rgba(204,0,0,0.1);">
+                <i class="bi bi-receipt" style="color: #cc0000;"></i>
+            </div>
+            <div>
+                <p class="card-metrica-valor">{{ ventas_mes }}</p>
+                <p class="card-metrica-label">Ventas este mes</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Alertas de stock bajo -->
+{% if alertas_stock_bajo %}
+<div class="alerta-stock mb-4">
+    <p class="alerta-stock-titulo">
+        <i class="bi bi-exclamation-triangle"></i>
+        Stock bajo — {{ alertas_stock_bajo|length }} ítem(s) requieren reabastecimiento
+    </p>
+    <ul class="alerta-stock-lista">
+        {% for item in alertas_stock_bajo %}
+        <li>{{ item.nombre }} — Stock actual: {{ item.stock }} / Mínimo: {{ item.stock_minimo }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+
+{% endblock %}

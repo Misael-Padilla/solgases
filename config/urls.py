@@ -15,8 +15,33 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
+
 
 urlpatterns = [
+    # Panel de administración de Django
     path('admin/', admin.site.urls),
-]
+
+    # Módulo core — login, dashboard, manual
+    path('', include('apps.core.urls', namespace='core')),
+
+    # Módulo usuarios
+    path('usuarios/', include('apps.usuarios.urls', namespace='usuarios')),
+
+    # Módulo productos
+    path('productos/', include('apps.productos.urls', namespace='productos')),
+
+    # Módulo insumos
+    path('insumos/', include('apps.insumos.urls', namespace='insumos')),
+
+    # Módulo compras
+    path('compras/', include('apps.compras.urls', namespace='compras')),
+
+    # Módulo ventas
+    path('ventas/', include('apps.ventas.urls', namespace='ventas')),
+
+    # Módulo backup
+    path('backup/', include('apps.backup.urls', namespace='backup')),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

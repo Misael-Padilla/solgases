@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block titulo %}SOLGASES{% endblock %}</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Estilos personalizados del sistema -->
+    {% load static %}
+    <link href="{% static 'css/solgases.css' %}" rel="stylesheet">
+
+    {% block estilos_extra %}{% endblock %}
+</head>
+<body>
+
+<div class="d-flex" style="min-height: 100vh;">
+
+    <!-- ===================== SIDEBAR ===================== -->
+    <nav id="sidebar">
+
+        <!-- Logo y nombre del sistema -->
+        <div class="sidebar-header">
+            <p class="sidebar-title">SOL<span class="sidebar-title-acento">GASES</span></p>
+            <p class="sidebar-subtitle">Gestión empresarial</p>
+        </div>
+
+        <!-- Menú de navegación -->
+        <ul class="sidebar-menu">
+            <li>
+                <a href="{% url 'core:inicio' %}" class="sidebar-link {% if request.resolver_match.namespace == 'core' %}activo{% endif %}">
+                    <i class="bi bi-speedometer2"></i> Dashboard
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'usuarios:lista_usuarios' %}" class="sidebar-link {% if request.resolver_match.url_name == 'lista_usuarios' %}activo{% endif %}">
+                    <i class="bi bi-people"></i> Usuarios
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'usuarios:lista_clientes' %}" class="sidebar-link {% if request.resolver_match.url_name == 'lista_clientes' %}activo{% endif %}">
+                    <i class="bi bi-person"></i> Clientes
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'usuarios:lista_proveedores' %}" class="sidebar-link {% if request.resolver_match.url_name == 'lista_proveedores' %}activo{% endif %}">
+                    <i class="bi bi-truck"></i> Proveedores
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'productos:lista_productos' %}" class="sidebar-link {% if request.resolver_match.namespace == 'productos' %}activo{% endif %}">
+                    <i class="bi bi-box-seam"></i> Productos
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'insumos:lista_insumos' %}" class="sidebar-link {% if request.resolver_match.namespace == 'insumos' %}activo{% endif %}">
+                    <i class="bi bi-droplet"></i> Insumos
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'compras:lista_compras' %}" class="sidebar-link {% if request.resolver_match.namespace == 'compras' %}activo{% endif %}">
+                    <i class="bi bi-cart"></i> Compras
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'ventas:lista_ventas' %}" class="sidebar-link {% if request.resolver_match.namespace == 'ventas' %}activo{% endif %}">
+                    <i class="bi bi-receipt"></i> Ventas
+                </a>
+            </li>
+
+            <!-- Backup — solo visible para ADMIN -->
+            {% if request.user.rol == 'ADMIN' %}
+            <li>
+                <a href="{% url 'backup:lista_backups' %}" class="sidebar-link {% if request.resolver_match.namespace == 'backup' %}activo{% endif %}">
+                    <i class="bi bi-shield-check"></i> Backup
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+
+        <!-- Manual de usuario — siempre al fondo -->
+        <div class="sidebar-footer">
+            <a href="{% url 'core:manual' %}" class="sidebar-link {% if request.resolver_match.url_name == 'manual' %}activo{% endif %}">
+                <i class="bi bi-book"></i> Manual de usuario
+            </a>
+        </div>
+
+    </nav>
+    <!-- =================== FIN SIDEBAR =================== -->
+
+    <!-- ===================== CONTENIDO PRINCIPAL ===================== -->
+    <div class="d-flex flex-column flex-grow-1">
+
+        <!-- HEADER -->
+        <header class="sistema-header d-flex justify-content-between align-items-center">
+
+            <!-- Título de la pantalla actual -->
+            <p class="header-titulo mb-0">{% block titulo_pagina %}Dashboard{% endblock %}</p>
+
+            <!-- Info del usuario logueado -->
+            <div class="d-flex align-items-center gap-3">
+                <div class="text-end">
+                    <p class="mb-0 header-usuario-nombre">{{ request.user.nombres }} {{ request.user.apellidos }}</p>
+                    <p class="mb-0 header-usuario-rol">{{ request.user.rol }}</p>
+                </div>
+
+                <!-- Avatar con iniciales -->
+                <div class="header-avatar">
+                    {{ request.user.nombres|slice:":1" }}{{ request.user.apellidos|slice:":1" }}
+                </div>
+
+                <!-- Botón cerrar sesión -->
+                <a href="{% url 'core:logout' %}" class="btn-cerrar-sesion">
+                    <i class="bi bi-box-arrow-right"></i> Cerrar sesión
+                </a>
+            </div>
+        </header>
+        <!-- FIN HEADER -->
+
+        <!-- ÁREA DE CONTENIDO -->
+        <main class="contenido-principal flex-grow-1">
+            {% block contenido %}{% endblock %}
+        </main>
+        <!-- FIN ÁREA DE CONTENIDO -->
+
+    </div>
+    <!-- =================== FIN CONTENIDO PRINCIPAL =================== -->
+
+</div>
+
+<!-- Bootstrap 5 JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+{% block scripts_extra %}{% endblock %}
+</body>
+</html>

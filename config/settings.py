@@ -147,3 +147,6 @@ LOGOUT_REDIRECT_URL = 'login'
 
 # Modelo de usuario personalizado
 AUTH_USER_MODEL = 'usuarios.Usuario'
+
+# URL de login — redirige aquí cuando se requiere autenticación
+LOGIN_URL = 'core:login'
