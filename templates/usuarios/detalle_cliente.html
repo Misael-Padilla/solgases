@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+
+{% block titulo %}SOLGASES — Detalle de cliente{% endblock %}
+{% block titulo_pagina %}Detalle de cliente{% endblock %}
+
+{% block contenido %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h5 class="fw-bold mb-0">
+        {% if cliente.tipo_identificacion == 'NIT' %}
+            {{ cliente.razon_social }}
+        {% else %}
+            {{ cliente.nombres }} {{ cliente.apellidos }}
+        {% endif %}
+    </h5>
+    <div class="d-flex gap-2">
+        <a href="{% url 'usuarios:lista_clientes' %}" class="btn-secundario">
+            <i class="bi bi-arrow-left"></i> Volver
+        </a>
+        <a href="{% url 'usuarios:editar_cliente' cliente.id %}" class="btn-accion">
+            <i class="bi bi-pencil"></i> Editar
+        </a>
+    </div>
+</div>
+
+<div class="row g-4">
+
+    <!-- Foto y estado -->
+    <div class="col-12 col-md-3">
+        <div class="card-detalle text-center">
+            {% if cliente.imagen %}
+            <img src="{{ cliente.imagen.url }}" class="foto-perfil mb-3" alt="Foto">
+            {% else %}
+            <div class="avatar-grande mb-3">
+                {% if cliente.tipo_identificacion == 'NIT' %}
+                    {{ cliente.razon_social|slice:":1" }}
+                {% else %}
+                    {{ cliente.nombres|slice:":1" }}{{ cliente.apellidos|slice:":1" }}
+                {% endif %}
+            </div>
+            {% endif %}
+            <span class="badge-estado badge-{{ cliente.estado|lower }}">{{ cliente.estado }}</span>
+        </div>
+    </div>
+
+    <!-- Datos del cliente -->
+    <div class="col-12 col-md-9">
+        <div class="card-detalle">
+            <p class="detalle-seccion-titulo">Información</p>
+            <div class="row g-3">
+                <div class="col-6">
+                    <p class="detalle-label">Tipo de identificación</p>
+                    <p class="detalle-valor">{{ cliente.tipo_identificacion }}</p>
+                </div>
+                <div class="col-6">
+                    <p class="detalle-label">Número de identificación</p>
+                    <p class="detalle-valor">{{ cliente.identificacion }}</p>
+                </div>
+                {% if cliente.tipo_identificacion == 'NIT' %}
+                <div class="col-6">
+                    <p class="detalle-label">Razón social</p>
+                    <p class="detalle-valor">{{ cliente.razon_social }}</p>
+                </div>
+                <div class="col-6">
+                    <p class="detalle-label">Nombre comercial</p>
+                    <p class="detalle-valor">{{ cliente.nombre_comercial }}</p>
+                </div>
+                <div class="col-12">
+                    <p class="detalle-label">Representante legal</p>
+                    <p class="detalle-valor">{{ cliente.representante_legal }}</p>
+                </div>
+                {% else %}
+                <div class="col-6">
+                    <p class="detalle-label">Nombres</p>
+                    <p class="detalle-valor">{{ cliente.nombres }}</p>
+                </div>
+                <div class="col-6">
+                    <p class="detalle-label">Apellidos</p>
+                    <p class="detalle-valor">{{ cliente.apellidos }}</p>
+                </div>
+                {% endif %}
+                <div class="col-6">
+                    <p class="detalle-label">Teléfono</p>
+                    <p class="detalle-valor">{{ cliente.telefono }}</p>
+                </div>
+                <div class="col-6">
+                    <p class="detalle-label">Correo electrónico</p>
+                    <p class="detalle-valor">{{ cliente.correo_electronico|default:"—" }}</p>
+                </div>
+                <div class="col-6">
+                    <p class="detalle-label">Ciudad</p>
+                    <p class="detalle-valor">{{ cliente.ciudad }}</p>
+                </div>
+                <div class="col-6">
+                    <p class="detalle-label">Departamento</p>
+                    <p class="detalle-valor">{{ cliente.departamento }}</p>
+                </div>
+                <div class="col-12">
+                    <p class="detalle-label">Dirección</p>
+                    <p class="detalle-valor">{{ cliente.direccion }}</p>
+                </div>
+                {% if cliente.observaciones %}
+                <div class="col-12">
+                    <p class="detalle-label">Observaciones</p>
+                    <p class="detalle-valor">{{ cliente.observaciones }}</p>
+                </div>
+                {% endif %}
+                <div class="col-6">
+                    <p class="detalle-label">Fecha de registro</p>
+                    <p class="detalle-valor">{{ cliente.fecha_creacion|date:"d/m/Y H:i" }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

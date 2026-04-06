@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block titulo %}SOLGASES — Clientes{% endblock %}
+{% block titulo_pagina %}Clientes{% endblock %}
+
+{% block contenido %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h5 class="fw-bold mb-0">Listado de clientes</h5>
+    <a href="{% url 'usuarios:crear_cliente' %}" class="btn-accion">
+        <i class="bi bi-plus-lg"></i> Nuevo cliente
+    </a>
+</div>
+
+<div class="tabla-contenedor">
+    <table class="tabla-sistema">
+        <thead>
+            <tr>
+                <th>Identificación</th>
+                <th>Nombre / Razón social</th>
+                <th>Teléfono</th>
+                <th>Ciudad</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cliente in clientes %}
+            <tr>
+                <td>{{ cliente.tipo_identificacion }} {{ cliente.identificacion }}</td>
+                <td>
+                    {% if cliente.tipo_identificacion == 'NIT' %}
+                        {{ cliente.razon_social }}
+                    {% else %}
+                        {{ cliente.nombres }} {{ cliente.apellidos }}
+                    {% endif %}
+                </td>
+                <td>{{ cliente.telefono }}</td>
+                <td>{{ cliente.ciudad }}</td>
+                <td>
+                    <span class="badge-estado badge-{{ cliente.estado|lower }}">
+                        {{ cliente.estado }}
+                    </span>
+                </td>
+                <td class="acciones">
+                    <a href="{% url 'usuarios:detalle_cliente' cliente.id %}" class="btn-tabla btn-ver">
+                        <i class="bi bi-eye"></i>
+                    </a>
+                    <a href="{% url 'usuarios:editar_cliente' cliente.id %}" class="btn-tabla btn-editar">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+                    {% if request.user.rol == 'ADMIN' %}
+                    <a href="{% url 'usuarios:cambiar_estado_cliente' cliente.id %}" class="btn-tabla {% if cliente.estado == 'ACTIVO' %}btn-desactivar{% else %}btn-activar{% endif %}">
+                        <i class="bi {% if cliente.estado == 'ACTIVO' %}bi-toggle-on{% else %}bi-toggle-off{% endif %}"></i>
+                    </a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="texto-vacio">No hay clientes registrados.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

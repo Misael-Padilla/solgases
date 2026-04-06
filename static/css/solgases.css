@@ -238,3 +238,308 @@ body {
     font-size: 13px;
     color: #555555;
 }
+
+
+/* =====================================================
+   TABLAS DEL SISTEMA
+   ===================================================== */
+.tabla-contenedor {
+    background-color: #ffffff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.tabla-sistema {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.tabla-sistema thead tr {
+    background-color: #1a1a1a;
+    color: #ffffff;
+}
+
+.tabla-sistema thead th {
+    padding: 12px 16px;
+    font-weight: 500;
+    font-size: 13px;
+    text-align: left;
+}
+
+.tabla-sistema tbody tr {
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.15s;
+}
+
+.tabla-sistema tbody tr:hover {
+    background-color: #fafafa;
+}
+
+.tabla-sistema tbody td {
+    padding: 12px 16px;
+    color: #333333;
+}
+
+.texto-vacio {
+    text-align: center;
+    color: #aaaaaa;
+    font-size: 13px;
+    padding: 32px !important;
+}
+
+/* =====================================================
+   BADGES DE ESTADO Y ROL
+   ===================================================== */
+.badge-estado,
+.badge-rol {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.badge-activo {
+    background-color: #e6f4ea;
+    color: #2d7a3a;
+}
+
+.badge-inactivo {
+    background-color: #fdecea;
+    color: #cc0000;
+}
+
+.badge-admin {
+    background-color: #fff3e0;
+    color: #e65100;
+}
+
+.badge-emp {
+    background-color: #e3f2fd;
+    color: #1565c0;
+}
+
+/* =====================================================
+   BOTONES DE ACCIÓN
+   ===================================================== */
+.btn-accion {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background-color: var(--color-acento);
+    color: #ffffff;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.btn-accion:hover {
+    background-color: var(--color-acento-hover);
+    color: #ffffff;
+}
+
+.acciones {
+    display: flex;
+    gap: 6px;
+}
+
+.btn-tabla {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+    font-size: 14px;
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+
+.btn-ver {
+    background-color: #e3f2fd;
+    color: #1565c0;
+}
+
+.btn-ver:hover {
+    background-color: #1565c0;
+    color: #ffffff;
+}
+
+.btn-editar {
+    background-color: #fff3e0;
+    color: #e65100;
+}
+
+.btn-editar:hover {
+    background-color: #e65100;
+    color: #ffffff;
+}
+
+.btn-desactivar {
+    background-color: #fdecea;
+    color: #cc0000;
+}
+
+.btn-desactivar:hover {
+    background-color: #cc0000;
+    color: #ffffff;
+}
+
+.btn-activar {
+    background-color: #e6f4ea;
+    color: #2d7a3a;
+}
+
+.btn-activar:hover {
+    background-color: #2d7a3a;
+    color: #ffffff;
+}
+
+
+/* =====================================================
+   CARDS DE DETALLE
+   ===================================================== */
+.card-detalle {
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 24px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+    height: 100%;
+}
+
+.detalle-seccion-titulo {
+    font-size: 13px;
+    font-weight: 600;
+    color: #888888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.detalle-label {
+    font-size: 11px;
+    color: #aaaaaa;
+    margin-bottom: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.detalle-valor {
+    font-size: 14px;
+    color: #1a1a1a;
+    margin-bottom: 0;
+    font-weight: 500;
+}
+
+/* Foto de perfil en detalle */
+.foto-perfil {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Avatar grande con iniciales */
+.avatar-grande {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: var(--color-acento);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0 auto;
+}
+
+/* Botón secundario */
+.btn-secundario {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background-color: #ffffff;
+    color: #555555;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    border: 1px solid var(--color-borde);
+    transition: background-color 0.2s;
+}
+
+.btn-secundario:hover {
+    background-color: #f5f5f5;
+    color: #333333;
+}
+
+/* =====================================================
+   FORMULARIOS
+   ===================================================== */
+.campo-form {
+    margin-bottom: 4px;
+}
+
+.campo-form .form-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #333333;
+    margin-bottom: 4px;
+}
+
+.campo-requerido {
+    color: var(--color-acento);
+    margin-left: 2px;
+}
+
+/* Estilos para todos los inputs del sistema */
+.campo-form input,
+.campo-form select,
+.campo-form textarea {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #dddddd;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #333333;
+    background-color: #ffffff;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.campo-form input:focus,
+.campo-form select:focus,
+.campo-form textarea:focus {
+    outline: none;
+    border-color: var(--color-acento);
+    box-shadow: 0 0 0 3px rgba(204, 0, 0, 0.1);
+}
+
+.campo-form textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+/* Mensaje de error por campo */
+.campo-error {
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--color-acento);
+}
+
+/* Mensaje de error general del formulario */
+.alerta-form-error {
+    background-color: #fff0f0;
+    border: 1px solid #ffcccc;
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: var(--color-acento);
+}

@@ -1,0 +1,15 @@
+<!-- Partial reutilizable para renderizar un campo de formulario con su label y errores -->
+<div class="campo-form">
+    <label class="form-label" for="{{ campo.id_for_label }}">
+        {{ campo.label }}
+        {% if campo.field.required %}<span class="campo-requerido">*</span>{% endif %}
+    </label>
+    {{ campo }}
+    {% if campo.errors %}
+    <div class="campo-error">
+        {% for error in campo.errors %}
+        <p class="mb-0"><i class="bi bi-exclamation-circle"></i> {{ error }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>

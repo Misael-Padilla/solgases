@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block titulo %}SOLGASES — {{ titulo }}{% endblock %}
+{% block titulo_pagina %}{{ titulo }}{% endblock %}
+
+{% block contenido %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h5 class="fw-bold mb-0">{{ titulo }}</h5>
+    <a href="{% url 'usuarios:lista_clientes' %}" class="btn-secundario">
+        <i class="bi bi-arrow-left"></i> Volver
+    </a>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+        <div class="card-detalle">
+
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                <div class="alerta-form-error mb-3">
+                    {% for error in form.non_field_errors %}
+                    <p class="mb-0"><i class="bi bi-exclamation-circle"></i> {{ error }}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <!-- Sección — Identificación -->
+                <p class="detalle-seccion-titulo">Identificación</p>
+                <div class="row g-3 mb-4">
+                    <div class="col-6">
+                        {% include 'partials/campo_form.html' with campo=form.tipo_identificacion %}
+                    </div>
+                    <div class="col-6">
+                        {% include 'partials/campo_form.html' with campo=form.identificacion %}
+                    </div>
+                    <div class="col-6">
+                        {% include 'partials/campo_form.html' with campo=form.nombres %}
+                    </div>
+                    <div class="col-6">
+                        {% include 'partials/campo_form.html' with campo=form.apellidos %}
+                    </div>
+                    <div class="col-12">
+                        {% include 'partials/campo_form.html' with campo=form.razon_social %}
+                    </div>
+                    <div class="col-6">
+                        {% include 'partials/campo_form.html' with campo=form.nombre_comercial %}
+                    </div>
+                    <div class="col-6">
+                        {% include 'partials/campo_form.html' with campo=form.representante_legal %}
+                    </div>
+                </div>
+
+                <!-- Sección — Contacto -->
+                <p class="detalle-seccion-titulo">Contacto</p>
+                <div class="row g-3 mb-4">
+                    <div class="col-6">
+                        {% include 'partials/campo_form.html' with campo=form.correo_electronico %}
+                    </div>
+                    <div class="col-6">
+                        {% include 'partials/campo_form.html' with campo=form.telefono %}
+                    </div>
+                    <div class="col-12">
+                        {% include 'partials/campo_form.html' with campo=form.direccion %}
+                    </div>
+                    <div class="col-6">
+                        {% include 'partials/campo_form.html' with campo=form.ciudad %}
+                    </div>
+                    <div class="col-6">
+                        {% include 'partials/campo_form.html' with campo=form.departamento %}
+                    </div>
+                </div>
+
+                <!-- Sección — Estado y metadatos -->
+                <p class="detalle-seccion-titulo">Estado y metadatos</p>
+                <div class="row g-3 mb-4">
+                    <div class="col-6">
+                        {% include 'partials/campo_form.html' with campo=form.estado %}
+                    </div>
+                    <div class="col-12">
+                        {% include 'partials/campo_form.html' with campo=form.imagen %}
+                    </div>
+                    <div class="col-12">
+                        {% include 'partials/campo_form.html' with campo=form.observaciones %}
+                    </div>
+                </div>
+
+                <!-- Botones -->
+                <div class="d-flex justify-content-end gap-2">
+                    <a href="{% url 'usuarios:lista_clientes' %}" class="btn-secundario">
+                        Cancelar
+                    </a>
+                    <button type="submit" class="btn-accion">
+                        <i class="bi bi-check-lg"></i> Guardar
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

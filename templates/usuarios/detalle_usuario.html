@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block titulo %}SOLGASES — Detalle de usuario{% endblock %}
+{% block titulo_pagina %}Detalle de usuario{% endblock %}
+
+{% block contenido %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h5 class="fw-bold mb-0">{{ usuario.nombres }} {{ usuario.apellidos }}</h5>
+    <div class="d-flex gap-2">
+        <a href="{% url 'usuarios:lista_usuarios' %}" class="btn-secundario">
+            <i class="bi bi-arrow-left"></i> Volver
+        </a>
+        {% if request.user.rol == 'ADMIN' %}
+        <a href="{% url 'usuarios:editar_usuario' usuario.id %}" class="btn-accion">
+            <i class="bi bi-pencil"></i> Editar
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row g-4">
+
+    <!-- Foto y estado -->
+    <div class="col-12 col-md-3">
+        <div class="card-detalle text-center">
+            {% if usuario.imagen %}
+            <img src="{{ usuario.imagen.url }}" class="foto-perfil mb-3" alt="Foto de perfil">
+            {% else %}
+            <div class="avatar-grande mb-3">
+                {{ usuario.nombres|slice:":1" }}{{ usuario.apellidos|slice:":1" }}
+            </div>
+            {% endif %}
+            <p class="fw-bold mb-1">{{ usuario.nombres }} {{ usuario.apellidos }}</p>
+            <span class="badge-rol badge-{{ usuario.rol|lower }}">{{ usuario.rol }}</span>
+            <div class="mt-2">
+                <span class="badge-estado badge-{{ usuario.estado|lower }}">{{ usuario.estado }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Datos del usuario -->
+    <div class="col-12 col-md-9">
+        <div class="card-detalle">
+            <p class="detalle-seccion-titulo">Información personal</p>
+            <div class="row g-3">
+                <div class="col-6">
+                    <p class="detalle-label">Tipo de identificación</p>
+                    <p class="detalle-valor">{{ usuario.tipo_identificacion }}</p>
+                </div>
+                <div class="col-6">
+                    <p class="detalle-label">Número de identificación</p>
+                    <p class="detalle-valor">{{ usuario.identificacion }}</p>
+                </div>
+                <div class="col-6">
+                    <p class="detalle-label">Correo electrónico</p>
+                    <p class="detalle-valor">{{ usuario.correo_electronico }}</p>
+                </div>
+                <div class="col-6">
+                    <p class="detalle-label">Teléfono</p>
+                    <p class="detalle-valor">{{ usuario.telefono }}</p>
+                </div>
+                <div class="col-6">
+                    <p class="detalle-label">Ciudad</p>
+                    <p class="detalle-valor">{{ usuario.ciudad }}</p>
+                </div>
+                <div class="col-6">
+                    <p class="detalle-label">Departamento</p>
+                    <p class="detalle-valor">{{ usuario.departamento }}</p>
+                </div>
+                <div class="col-12">
+                    <p class="detalle-label">Dirección</p>
+                    <p class="detalle-valor">{{ usuario.direccion }}</p>
+                </div>
+                {% if usuario.observaciones %}
+                <div class="col-12">
+                    <p class="detalle-label">Observaciones</p>
+                    <p class="detalle-valor">{{ usuario.observaciones }}</p>
+                </div>
+                {% endif %}
+                <div class="col-6">
+                    <p class="detalle-label">Fecha de registro</p>
+                    <p class="detalle-valor">{{ usuario.fecha_creacion|date:"d/m/Y H:i" }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
