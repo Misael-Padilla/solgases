@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block titulo %}SOLGASES — Productos{% endblock %}
+{% block titulo_pagina %}Productos{% endblock %}
+
+{% block contenido %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h5 class="fw-bold mb-0">Listado de productos</h5>
+    <a href="{% url 'productos:crear_producto' %}" class="btn-accion">
+        <i class="bi bi-plus-lg"></i> Nuevo producto
+    </a>
+</div>
+
+<div class="tabla-contenedor">
+    <table class="tabla-sistema">
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th>Nombre</th>
+                <th>Categoría</th>
+                <th>Stock</th>
+                <th>Nivel</th>
+                <th>Precio venta</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for producto in productos %}
+            <tr>
+                <td>{{ producto.codigo }}</td>
+                <td>{{ producto.nombre }}</td>
+                <td>{{ producto.categoria }}</td>
+                <td>{{ producto.stock }}</td>
+                <td>
+                    <span class="badge-nivel badge-nivel-{{ producto.nivel_stock|lower }}">
+                        {{ producto.nivel_stock }}
+                    </span>
+                </td>
+                <td>${{ producto.precio_venta }}</td>
+                <td>
+                    <span class="badge-estado badge-{{ producto.estado|lower }}">
+                        {{ producto.estado }}
+                    </span>
+                </td>
+                <td class="acciones">
+                    <a href="{% url 'productos:detalle_producto' producto.id %}" class="btn-tabla btn-ver">
+                        <i class="bi bi-eye"></i>
+                    </a>
+                    <a href="{% url 'productos:editar_producto' producto.id %}" class="btn-tabla btn-editar">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+                    {% if request.user.rol == 'ADMIN' %}
+                    <a href="{% url 'productos:cambiar_estado_producto' producto.id %}" class="btn-tabla {% if producto.estado == 'ACTIVO' %}btn-desactivar{% else %}btn-activar{% endif %}">
+                        <i class="bi {% if producto.estado == 'ACTIVO' %}bi-toggle-on{% else %}bi-toggle-off{% endif %}"></i>
+                    </a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8" class="texto-vacio">No hay productos registrados.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
