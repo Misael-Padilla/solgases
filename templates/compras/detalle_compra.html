@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+
+{% block titulo %}SOLGASES — Detalle de compra{% endblock %}
+{% block titulo_pagina %}Detalle de compra{% endblock %}
+
+{% block contenido %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h5 class="fw-bold mb-0">Factura {{ compra.numero_factura }}</h5>
+    <div class="d-flex gap-2">
+        <a href="{% url 'compras:lista_compras' %}" class="btn-secundario">
+            <i class="bi bi-arrow-left"></i> Volver
+        </a>
+        {% if request.user.rol == 'ADMIN' %}
+        <a href="{% url 'compras:cambiar_estado_compra' compra.id %}" class="btn-tabla {% if compra.estado == 'ACTIVO' %}btn-desactivar{% else %}btn-activar{% endif %}" style="width:auto; padding: 8px 16px;">
+            {% if compra.estado == 'ACTIVO' %}
+            <i class="bi bi-toggle-on"></i> Desactivar
+            {% else %}
+            <i class="bi bi-toggle-off"></i> Activar
+            {% endif %}
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row g-4">
+
+    <!-- Cabecera de la factura -->
+    <div class="col-12">
+        <div class="card-detalle">
+            <p class="detalle-seccion-titulo">Información de la factura</p>
+            <div class="row g-3">
+                <div class="col-6 col-md-3">
+                    <p class="detalle-label">N° Factura</p>
+                    <p class="detalle-valor">{{ compra.numero_factura }}</p>
+                </div>
+                <div class="col-6 col-md-3">
+                    <p class="detalle-label">Proveedor</p>
+                    <p class="detalle-valor">{{ compra.proveedor }}</p>
+                </div>
+                <div class="col-6 col-md-3">
+                    <p class="detalle-label">Registrado por</p>
+                    <p class="detalle-valor">{{ compra.registrado_por }}</p>
+                </div>
+                <div class="col-6 col-md-3">
+                    <p class="detalle-label">Estado</p>
+                    <p class="detalle-valor">
+                        <span class="badge-estado badge-{{ compra.estado|lower }}">{{ compra.estado }}</span>
+                    </p>
+                </div>
+                <div class="col-6 col-md-3">
+                    <p class="detalle-label">Fecha factura</p>
+                    <p class="detalle-valor">{{ compra.fecha_factura|date:"d/m/Y H:i" }}</p>
+                </div>
+                <div class="col-6 col-md-3">
+                    <p class="detalle-label">Fecha registro</p>
+                    <p class="detalle-valor">{{ compra.fecha_registro|date:"d/m/Y H:i" }}</p>
+                </div>
+                <div class="col-6 col-md-2">
+                    <p class="detalle-label">Subtotal</p>
+                    <p class="detalle-valor">${{ compra.subtotal }}</p>
+                </div>
+                <div class="col-6 col-md-2">
+                    <p class="detalle-label">IVA</p>
+                    <p class="detalle-valor">${{ compra.iva }}</p>
+                </div>
+                <div class="col-6 col-md-2">
+                    <p class="detalle-label">Total</p>
+                    <p class="detalle-valor fw-bold">${{ compra.total }}</p>
+                </div>
+                {% if compra.observaciones %}
+                <div class="col-12">
+                    <p class="detalle-label">Observaciones</p>
+                    <p class="detalle-valor">{{ compra.observaciones }}</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Detalles de la factura -->
+    <div class="col-12">
+        <div class="card-detalle">
+            <p class="detalle-seccion-titulo">Ítems de la factura</p>
+            <div class="tabla-contenedor">
+                <table class="tabla-sistema">
+                    <thead>
+                        <tr>
+                            <th>Tipo</th>
+                            <th>Código</th>
+                            <th>Descripción</th>
+                            <th>Cantidad</th>
+                            <th>Precio unitario</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for detalle in compra.detalles.all %}
+                        <tr>
+                            <td>{{ detalle.tipo_item }}</td>
+                            <td>{{ detalle.codigo_item }}</td>
+                            <td>{{ detalle.descripcion }}</td>
+                            <td>{{ detalle.cantidad }}</td>
+                            <td>${{ detalle.precio_unitario }}</td>
+                            <td>${{ detalle.subtotal }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="texto-vacio">No hay ítems registrados.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
