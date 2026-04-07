@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block titulo %}SOLGASES — Insumos{% endblock %}
+{% block titulo_pagina %}Insumos{% endblock %}
+
+{% block contenido %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h5 class="fw-bold mb-0">Listado de insumos</h5>
+    <a href="{% url 'insumos:crear_insumo' %}" class="btn-accion">
+        <i class="bi bi-plus-lg"></i> Nuevo insumo
+    </a>
+</div>
+
+<div class="tabla-contenedor">
+    <table class="tabla-sistema">
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th>Nombre</th>
+                <th>Subcategoría</th>
+                <th>Unidad</th>
+                <th>Stock</th>
+                <th>Nivel</th>
+                <th>Proveedor</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for insumo in insumos %}
+            <tr>
+                <td>{{ insumo.codigo }}</td>
+                <td>{{ insumo.nombre }}</td>
+                <td>{{ insumo.subcategoria }}</td>
+                <td>{{ insumo.unidad_medida }}</td>
+                <td>{{ insumo.stock }}</td>
+                <td>
+                    <span class="badge-nivel badge-nivel-{{ insumo.nivel_stock|lower }}">
+                        {{ insumo.nivel_stock }}
+                    </span>
+                </td>
+                <td>{{ insumo.proveedor }}</td>
+                <td>
+                    <span class="badge-estado badge-{{ insumo.estado|lower }}">
+                        {{ insumo.estado }}
+                    </span>
+                </td>
+                <td class="acciones">
+                    <a href="{% url 'insumos:detalle_insumo' insumo.id %}" class="btn-tabla btn-ver">
+                        <i class="bi bi-eye"></i>
+                    </a>
+                    <a href="{% url 'insumos:editar_insumo' insumo.id %}" class="btn-tabla btn-editar">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+                    {% if request.user.rol == 'ADMIN' %}
+                    <a href="{% url 'insumos:cambiar_estado_insumo' insumo.id %}" class="btn-tabla {% if insumo.estado == 'ACTIVO' %}btn-desactivar{% else %}btn-activar{% endif %}">
+                        <i class="bi {% if insumo.estado == 'ACTIVO' %}bi-toggle-on{% else %}bi-toggle-off{% endif %}"></i>
+                    </a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="9" class="texto-vacio">No hay insumos registrados.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

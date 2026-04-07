@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+
+{% block titulo %}SOLGASES — Detalle de insumo{% endblock %}
+{% block titulo_pagina %}Detalle de insumo{% endblock %}
+
+{% block contenido %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h5 class="fw-bold mb-0">{{ insumo.nombre }}</h5>
+    <div class="d-flex gap-2">
+        <a href="{% url 'insumos:lista_insumos' %}" class="btn-secundario">
+            <i class="bi bi-arrow-left"></i> Volver
+        </a>
+        <a href="{% url 'insumos:editar_insumo' insumo.id %}" class="btn-accion">
+            <i class="bi bi-pencil"></i> Editar
+        </a>
+        {% if request.user.rol == 'ADMIN' %}
+        <a href="{% url 'insumos:modificar_stock_insumo' insumo.id %}" class="btn-accion">
+            <i class="bi bi-droplet"></i> Modificar stock
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row g-4">
+
+    <!-- Imagen y estado -->
+    <div class="col-12 col-md-3">
+        <div class="card-detalle text-center">
+            {% if insumo.imagen %}
+            <img src="{{ insumo.imagen.url }}" class="foto-perfil mb-3" alt="Imagen del insumo">
+            {% else %}
+            <div class="avatar-grande mb-3">
+                <i class="bi bi-droplet"></i>
+            </div>
+            {% endif %}
+            <p class="fw-bold mb-1">{{ insumo.codigo }}</p>
+            <span class="badge-estado badge-{{ insumo.estado|lower }}">{{ insumo.estado }}</span>
+            <div class="mt-2">
+                <span class="badge-nivel badge-nivel-{{ insumo.nivel_stock|lower }}">
+                    Stock {{ insumo.nivel_stock }}
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Datos del insumo -->
+    <div class="col-12 col-md-9">
+        <div class="card-detalle">
+
+            <p class="detalle-seccion-titulo">Información general</p>
+            <div class="row g-3 mb-4">
+                <div class="col-6">
+                    <p class="detalle-label">Código</p>
+                    <p class="detalle-valor">{{ insumo.codigo }}</p>
+                </div>
+                <div class="col-6">
+                    <p class="detalle-label">Nombre</p>
+                    <p class="detalle-valor">{{ insumo.nombre }}</p>
+                </div>
+                <div class="col-6">
+                    <p class="detalle-label">Subcategoría</p>
+                    <p class="detalle-valor">{{ insumo.subcategoria }}</p>
+                </div>
+                <div class="col-6">
+                    <p class="detalle-label">Unidad de medida</p>
+                    <p class="detalle-valor">{{ insumo.unidad_medida }}</p>
+                </div>
+            </div>
+
+            <p class="detalle-seccion-titulo">Precio</p>
+            <div class="row g-3 mb-4">
+                <div class="col-6">
+                    <p class="detalle-label">Precio de compra</p>
+                    <p class="detalle-valor">${{ insumo.precio_compra }}</p>
+                </div>
+            </div>
+
+            <p class="detalle-seccion-titulo">Inventario</p>
+            <div class="row g-3 mb-4">
+                <div class="col-4">
+                    <p class="detalle-label">Stock actual</p>
+                    <p class="detalle-valor">{{ insumo.stock }}</p>
+                </div>
+                <div class="col-4">
+                    <p class="detalle-label">Stock mínimo</p>
+                    <p class="detalle-valor">{{ insumo.stock_minimo }}</p>
+                </div>
+                <div class="col-4">
+                    <p class="detalle-label">Stock máximo</p>
+                    <p class="detalle-valor">{{ insumo.stock_maximo }}</p>
+                </div>
+            </div>
+
+            <p class="detalle-seccion-titulo">Proveedor principal</p>
+            <div class="row g-3 mb-4">
+                <div class="col-12">
+                    <p class="detalle-valor">{{ insumo.proveedor }}</p>
+                </div>
+            </div>
+
+            {% if insumo.observaciones %}
+            <p class="detalle-seccion-titulo">Observaciones</p>
+            <div class="row g-3 mb-4">
+                <div class="col-12">
+                    <p class="detalle-valor">{{ insumo.observaciones }}</p>
+                </div>
+            </div>
+            {% endif %}
+
+            <p class="detalle-seccion-titulo">Metadatos</p>
+            <div class="row g-3">
+                <div class="col-6">
+                    <p class="detalle-label">Fecha de registro</p>
+                    <p class="detalle-valor">{{ insumo.fecha_creacion|date:"d/m/Y H:i" }}</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
