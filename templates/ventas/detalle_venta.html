@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% block titulo %}SOLGASES — Detalle de venta{% endblock %}
+{% block titulo_pagina %}Detalle de venta{% endblock %}
+
+{% block contenido %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h5 class="fw-bold mb-0">Factura {{ venta.numero_factura }}</h5>
+    <div class="d-flex gap-2">
+        <a href="{% url 'ventas:lista_ventas' %}" class="btn-secundario">
+            <i class="bi bi-arrow-left"></i> Volver
+        </a>
+        {% if request.user.rol == 'ADMIN' %}
+        <a href="{% url 'ventas:cambiar_estado_venta' venta.id %}" class="btn-tabla {% if venta.estado == 'ACTIVO' %}btn-desactivar{% else %}btn-activar{% endif %}" style="width:auto; padding: 8px 16px;">
+            {% if venta.estado == 'ACTIVO' %}
+            <i class="bi bi-toggle-on"></i> Desactivar
+            {% else %}
+            <i class="bi bi-toggle-off"></i> Activar
+            {% endif %}
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row g-4">
+
+    <!-- Cabecera de la factura -->
+    <div class="col-12">
+        <div class="card-detalle">
+            <p class="detalle-seccion-titulo">Información de la factura</p>
+            <div class="row g-3">
+                <div class="col-6 col-md-3">
+                    <p class="detalle-label">N° Factura</p>
+                    <p class="detalle-valor">{{ venta.numero_factura }}</p>
+                </div>
+                <div class="col-6 col-md-3">
+                    <p class="detalle-label">Cliente</p>
+                    <p class="detalle-valor">{{ venta.cliente }}</p>
+                </div>
+                <div class="col-6 col-md-3">
+                    <p class="detalle-label">Registrado por</p>
+                    <p class="detalle-valor">{{ venta.registrado_por }}</p>
+                </div>
+                <div class="col-6 col-md-3">
+                    <p class="detalle-label">Recibido por</p>
+                    <p class="detalle-valor">{{ venta.recibido_por|default:"—" }}</p>
+                </div>
+                <div class="col-6 col-md-3">
+                    <p class="detalle-label">Estado</p>
+                    <p class="detalle-valor">
+                        <span class="badge-estado badge-{{ venta.estado|lower }}">{{ venta.estado }}</span>
+                    </p>
+                </div>
+                <div class="col-6 col-md-3">
+                    <p class="detalle-label">Método de pago</p>
+                    <p class="detalle-valor">{{ venta.metodo_pago }}</p>
+                </div>
+                <div class="col-6 col-md-3">
+                    <p class="detalle-label">Fecha factura</p>
+                    <p class="detalle-valor">{{ venta.fecha_factura|date:"d/m/Y H:i" }}</p>
+                </div>
+                <div class="col-6 col-md-3">
+                    <p class="detalle-label">Fecha registro</p>
+                    <p class="detalle-valor">{{ venta.fecha_registro|date:"d/m/Y H:i" }}</p>
+                </div>
+                <div class="col-6 col-md-2">
+                    <p class="detalle-label">Subtotal</p>
+                    <p class="detalle-valor">${{ venta.subtotal }}</p>
+                </div>
+                <div class="col-6 col-md-2">
+                    <p class="detalle-label">IVA</p>
+                    <p class="detalle-valor">${{ venta.iva }}</p>
+                </div>
+                <div class="col-6 col-md-2">
+                    <p class="detalle-label">Total</p>
+                    <p class="detalle-valor fw-bold">${{ venta.total }}</p>
+                </div>
+                {% if venta.observaciones %}
+                <div class="col-12">
+                    <p class="detalle-label">Observaciones</p>
+                    <p class="detalle-valor">{{ venta.observaciones }}</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Detalles de la factura -->
+    <div class="col-12">
+        <div class="card-detalle">
+            <p class="detalle-seccion-titulo">Ítems de la factura</p>
+            <div class="tabla-contenedor">
+                <table class="tabla-sistema">
+                    <thead>
+                        <tr>
+                            <th>Tipo</th>
+                            <th>Código</th>
+                            <th>Descripción</th>
+                            <th>Cantidad</th>
+                            <th>Precio unitario</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for detalle in venta.detalles.all %}
+                        <tr>
+                            <td>{{ detalle.tipo_item }}</td>
+                            <td>{{ detalle.codigo_item }}</td>
+                            <td>{{ detalle.descripcion }}</td>
+                            <td>{{ detalle.cantidad }}</td>
+                            <td>${{ detalle.precio_unitario }}</td>
+                            <td>${{ detalle.subtotal }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="texto-vacio">No hay ítems registrados.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

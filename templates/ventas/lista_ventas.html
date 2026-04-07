@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block titulo %}SOLGASES — Ventas{% endblock %}
+{% block titulo_pagina %}Ventas{% endblock %}
+
+{% block contenido %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h5 class="fw-bold mb-0">Facturas de venta</h5>
+    <a href="{% url 'ventas:crear_venta' %}" class="btn-accion">
+        <i class="bi bi-plus-lg"></i> Nueva factura
+    </a>
+</div>
+
+{% if messages %}
+{% for message in messages %}
+<div class="alerta-{{ message.tags }} mb-3">
+    <i class="bi bi-info-circle"></i> {{ message }}
+</div>
+{% endfor %}
+{% endif %}
+
+<div class="tabla-contenedor">
+    <table class="tabla-sistema">
+        <thead>
+            <tr>
+                <th>N° Factura</th>
+                <th>Cliente</th>
+                <th>Registrado por</th>
+                <th>Fecha factura</th>
+                <th>Método pago</th>
+                <th>Total</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for venta in ventas %}
+            <tr>
+                <td>{{ venta.numero_factura }}</td>
+                <td>{{ venta.cliente }}</td>
+                <td>{{ venta.registrado_por }}</td>
+                <td>{{ venta.fecha_factura|date:"d/m/Y" }}</td>
+                <td>{{ venta.metodo_pago }}</td>
+                <td>${{ venta.total }}</td>
+                <td>
+                    <span class="badge-estado badge-{{ venta.estado|lower }}">
+                        {{ venta.estado }}
+                    </span>
+                </td>
+                <td class="acciones">
+                    <a href="{% url 'ventas:detalle_venta' venta.id %}" class="btn-tabla btn-ver">
+                        <i class="bi bi-eye"></i>
+                    </a>
+                    {% if request.user.rol == 'ADMIN' %}
+                    <a href="{% url 'ventas:cambiar_estado_venta' venta.id %}" class="btn-tabla {% if venta.estado == 'ACTIVO' %}btn-desactivar{% else %}btn-activar{% endif %}">
+                        <i class="bi {% if venta.estado == 'ACTIVO' %}bi-toggle-on{% else %}bi-toggle-off{% endif %}"></i>
+                    </a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8" class="texto-vacio">No hay facturas de venta registradas.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
