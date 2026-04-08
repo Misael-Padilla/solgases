@@ -566,3 +566,16 @@ body {
     font-size: 13px;
     color: #cc0000;
 }
+
+/* =====================================================
+   BADGES DE TIPO DE BACKUP
+   ===================================================== */
+.badge-manual {
+    background-color: #fff3e0;
+    color: #e65100;
+}
+
+.badge-automatico {
+    background-color: #e3f2fd;
+    color: #1565c0;
+}

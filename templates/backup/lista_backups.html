@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block titulo %}SOLGASES — Backup{% endblock %}
+{% block titulo_pagina %}Backup{% endblock %}
+
+{% block contenido %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h5 class="fw-bold mb-0">Copias de seguridad</h5>
+
+    <!-- Botón generar backup manual — hace POST -->
+    <form method="post" action="{% url 'backup:generar_backup' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn-accion">
+            <i class="bi bi-shield-plus"></i> Generar backup
+        </button>
+    </form>
+</div>
+
+{% if messages %}
+{% for message in messages %}
+<div class="alerta-{{ message.tags }} mb-3">
+    <i class="bi bi-info-circle"></i> {{ message }}
+</div>
+{% endfor %}
+{% endif %}
+
+<div class="tabla-contenedor">
+    <table class="tabla-sistema">
+        <thead>
+            <tr>
+                <th>Nombre del archivo</th>
+                <th>Tipo</th>
+                <th>Peso</th>
+                <th>Generado por</th>
+                <th>Fecha</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for backup in backups %}
+            <tr>
+                <td>{{ backup.nombre_archivo }}</td>
+                <td>
+                    <span class="badge-rol badge-{{ backup.tipo|lower }}">
+                        {{ backup.tipo }}
+                    </span>
+                </td>
+                <td>{{ backup.peso_archivo }}</td>
+                <td>
+                    {% if backup.generado_por %}
+                        {{ backup.generado_por.nombres }} {{ backup.generado_por.apellidos }}
+                    {% else %}
+                        <span style="color: #aaaaaa;">Automático</span>
+                    {% endif %}
+                </td>
+                <td>{{ backup.fecha_creacion|date:"d/m/Y H:i" }}</td>
+                <td class="acciones">
+                    <!-- Botón restaurar -->
+                    <a href="{% url 'backup:restaurar_backup' backup.id %}" class="btn-tabla btn-editar">
+                        <i class="bi bi-arrow-counterclockwise"></i>
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="texto-vacio">No hay backups registrados.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

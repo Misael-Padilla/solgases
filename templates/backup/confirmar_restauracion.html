@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block titulo %}SOLGASES — Confirmar restauración{% endblock %}
+{% block titulo_pagina %}Restaurar backup{% endblock %}
+
+{% block contenido %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h5 class="fw-bold mb-0">Confirmar restauración</h5>
+    <a href="{% url 'backup:lista_backups' %}" class="btn-secundario">
+        <i class="bi bi-arrow-left"></i> Volver
+    </a>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-6">
+        <div class="card-detalle">
+
+            <!-- Advertencia -->
+            <div class="alerta-error mb-4">
+                <p class="fw-bold mb-1">
+                    <i class="bi bi-exclamation-triangle"></i> Advertencia — Operación crítica
+                </p>
+                <p class="mb-0" style="font-size: 13px;">
+                    Esta acción restaurará la base de datos al estado del backup seleccionado.
+                    Los datos actuales serán reemplazados. Esta operación no se puede deshacer.
+                </p>
+            </div>
+
+            <!-- Información del backup -->
+            <p class="detalle-seccion-titulo">Backup a restaurar</p>
+            <div class="row g-3 mb-4">
+                <div class="col-6">
+                    <p class="detalle-label">Nombre del archivo</p>
+                    <p class="detalle-valor">{{ backup.nombre_archivo }}</p>
+                </div>
+                <div class="col-6">
+                    <p class="detalle-label">Tipo</p>
+                    <p class="detalle-valor">{{ backup.tipo }}</p>
+                </div>
+                <div class="col-6">
+                    <p class="detalle-label">Peso</p>
+                    <p class="detalle-valor">{{ backup.peso_archivo }}</p>
+                </div>
+                <div class="col-6">
+                    <p class="detalle-label">Fecha de generación</p>
+                    <p class="detalle-valor">{{ backup.fecha_creacion|date:"d/m/Y H:i" }}</p>
+                </div>
+            </div>
+
+            <!-- Botones de confirmación -->
+            <div class="d-flex justify-content-end gap-2">
+                <a href="{% url 'backup:lista_backups' %}" class="btn-secundario">
+                    Cancelar
+                </a>
+                <form method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-accion" style="background-color: #cc0000;">
+                        <i class="bi bi-arrow-counterclockwise"></i> Confirmar restauración
+                    </button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}
