@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.utils import timezone
 from django.contrib import messages
 from apps.insumos.models import Insumo
 from apps.insumos.forms import InsumoForm, StockInsumoForm
@@ -73,6 +74,9 @@ def modificar_stock_insumo(request, id):
         form = StockInsumoForm(request.POST)
         if form.is_valid():
             insumo.stock = form.cleaned_data['stock']
+            motivo = form.cleaned_data['motivo']
+            registro = f"\n[{timezone.now().strftime('%d/%m/%Y %H:%M')}] Stock modificado a {insumo.stock} — Motivo: {motivo}"
+            insumo.observaciones = (insumo.observaciones or '') + registro
             insumo.save()
             messages.success(request, f'Stock de {insumo.nombre} actualizado a {insumo.stock}.')
             return redirect('insumos:detalle_insumo', id=insumo.id)

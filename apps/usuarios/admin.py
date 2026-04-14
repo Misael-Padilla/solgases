@@ -27,10 +27,6 @@ class UsuarioAdmin(UserAdmin):
         }),
     )
 
-    # Campo de login personalizado
-    USERNAME_FIELD = 'correo_electronico'
-
-
 @admin.register(Cliente)
 class ClienteAdmin(admin.ModelAdmin):
     # Campos que se muestran en el listado de clientes

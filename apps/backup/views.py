@@ -14,7 +14,7 @@ from apps.usuarios.decoradores import admin_requerido
 @admin_requerido
 def lista_backups(request):
     """Lista todos los backups generados — solo ADMIN."""
-    backups = Backup.objects.all().order_by('-fecha_creacion')
+    backups = Backup.objects.all()
     return render(request, 'backup/lista_backups.html', {'backups': backups})
 
 

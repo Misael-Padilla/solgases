@@ -76,7 +76,7 @@ class DetalleCompraForm(forms.ModelForm):
 
 
 # Formset — permite manejar múltiples DetalleCompra dentro de una misma vista
-# extra=1 → muestra 1 fila vacía por defecto
+# extra=0 → sin filas vacías al cargar — se agregan dinámicamente con JS
 # can_delete=True → permite eliminar filas del formset
 DetalleCompraFormSet = inlineformset_factory(
     FacturaCompra,

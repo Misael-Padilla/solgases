@@ -321,6 +321,30 @@ body {
     color: #1565c0;
 }
 
+/* Badges de nivel de stock (DA-002) */
+.badge-nivel {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.badge-nivel-bajo {
+    background-color: #fdecea;
+    color: #cc0000;
+}
+
+.badge-nivel-normal {
+    background-color: #e6f4ea;
+    color: #2d7a3a;
+}
+
+.badge-nivel-alto {
+    background-color: #fff3e0;
+    color: #e65100;
+}
+
 /* =====================================================
    BOTONES DE ACCIÓN
    ===================================================== */

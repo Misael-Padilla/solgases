@@ -1,12 +1,12 @@
 from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
+from apps.usuarios.decoradores import login_requerido
 from django.contrib.auth import login, logout, authenticate
 from django.shortcuts import redirect
 from django.db import models
 
 
 
-@login_required
+@login_requerido
 def inicio(request):
     """Vista principal del dashboard — muestra métricas y alertas de stock."""
     from apps.productos.models import Producto
@@ -37,18 +37,37 @@ def inicio(request):
     )
     alertas_stock_bajo = list(productos_bajo) + list(insumos_bajo)
 
+    # Alertas de sobrestock — productos e insumos sobre su umbral máximo (DA-002)
+    productos_alto = Producto.objects.filter(estado='ACTIVO').filter(
+        stock__gte=models.F('stock_maximo')
+    )
+    insumos_alto = Insumo.objects.filter(estado='ACTIVO').filter(
+        stock__gte=models.F('stock_maximo')
+    )
+    alertas_sobrestock = list(productos_alto) + list(insumos_alto)
+
+    # Últimas 5 ventas registradas
+    ultimas_ventas = FacturaVenta.objects.filter(estado='ACTIVO').order_by('-fecha_registro')[:5]
+
+    # Últimas 5 compras registradas
+    from apps.compras.models import FacturaCompra
+    ultimas_compras = FacturaCompra.objects.filter(estado='ACTIVO').order_by('-fecha_registro')[:5]
+
     context = {
         'total_productos':    total_productos,
         'total_insumos':      total_insumos,
         'total_clientes':     total_clientes,
         'ventas_mes':         ventas_mes,
         'alertas_stock_bajo': alertas_stock_bajo,
+        'alertas_sobrestock': alertas_sobrestock,
+        'ultimas_ventas':     ultimas_ventas,
+        'ultimas_compras':    ultimas_compras,
     }
 
     return render(request, 'core/inicio.html', context)
 
 
-@login_required
+@login_requerido
 def manual(request):
     """Vista del manual de usuario — requiere autenticación."""
     return render(request, 'core/manual.html')
@@ -75,6 +94,7 @@ def login_view(request):
 
         if user is not None:
             # Credenciales correctas — inicia sesión y redirige al dashboard
+            user.estado == 'INACTIVO'
             login(request, user)
             return redirect('core:inicio')
         else:

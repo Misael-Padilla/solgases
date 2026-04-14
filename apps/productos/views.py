@@ -1,6 +1,4 @@
-from django.shortcuts import render
-
-# Create your views here.
+from django.utils import timezone
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from apps.productos.models import Producto
@@ -76,6 +74,9 @@ def modificar_stock(request, id):
         form = StockForm(request.POST)
         if form.is_valid():
             producto.stock = form.cleaned_data['stock']
+            motivo = form.cleaned_data['motivo']
+            registro = f"\n[{timezone.now().strftime('%d/%m/%Y %H:%M')}] Stock modificado a {producto.stock} — Motivo: {motivo}"
+            producto.observaciones = (producto.observaciones or '') + registro
             producto.save()
             messages.success(request, f'Stock de {producto.nombre} actualizado a {producto.stock}.')
             return redirect('productos:detalle_producto', id=producto.id)
