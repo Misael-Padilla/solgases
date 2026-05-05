@@ -56,15 +56,19 @@
                     <p class="detalle-label">Fecha registro</p>
                     <p class="detalle-valor">{{ compra.fecha_registro|date:"d/m/Y H:i" }}</p>
                 </div>
-                <div class="col-6 col-md-2">
+                <div class="col-6 col-md-3">
                     <p class="detalle-label">Subtotal</p>
                     <p class="detalle-valor">${{ compra.subtotal }}</p>
                 </div>
-                <div class="col-6 col-md-2">
+                <div class="col-6 col-md-3">
+                    <p class="detalle-label">IVA (%)</p>
+                    <p class="detalle-valor">{{ compra.iva_porcentaje }}%</p>
+                </div>
+                <div class="col-6 col-md-3">
                     <p class="detalle-label">IVA</p>
                     <p class="detalle-valor">${{ compra.iva }}</p>
                 </div>
-                <div class="col-6 col-md-2">
+                <div class="col-6 col-md-3">
                     <p class="detalle-label">Total</p>
                     <p class="detalle-valor fw-bold">${{ compra.total }}</p>
                 </div>

@@ -1,3 +1,4 @@
+from decimal import Decimal
 from django import forms
 from django.forms import inlineformset_factory
 from apps.compras.models import FacturaCompra, DetalleCompra
@@ -13,36 +14,52 @@ class FacturaCompraForm(forms.ModelForm):
         model = FacturaCompra
         fields = [
             'numero_factura', 'proveedor', 'fecha_factura',
-            'subtotal', 'iva', 'total',
+            'subtotal', 'iva_porcentaje', 'iva', 'total',
             'estado', 'observaciones',
         ]
         widgets = {
-            # Input de fecha con tipo datetime-local para mejor UX
             'fecha_factura': forms.DateTimeInput(
                 attrs={'type': 'datetime-local'},
                 format='%Y-%m-%dT%H:%M'
             ),
+            # Campos calculados por JavaScript — no editables por el usuario
+            'subtotal': forms.NumberInput(attrs={'readonly': True}),
+            'iva':      forms.NumberInput(attrs={'readonly': True}),
+            'total':    forms.NumberInput(attrs={'readonly': True}),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Formato correcto para el widget datetime-local
         self.fields['fecha_factura'].input_formats = ['%Y-%m-%dT%H:%M']
+
+        # Valor inicial del IVA (%) — solo para formularios nuevos
+        if not self.instance.pk:
+            self.fields['iva_porcentaje'].initial = Decimal('19.00')
 
     def clean(self):
         """
-        Validación cruzada:
-        - total debe ser igual a subtotal + iva.
+        Validación cruzada de valores monetarios.
+        Verifica que iva y total sean consistentes con el porcentaje aplicado:
+        - iva = subtotal × (iva_porcentaje / 100)
+        - total = subtotal + iva
         """
-        cleaned_data = super().clean()
-        subtotal = cleaned_data.get('subtotal')
-        iva      = cleaned_data.get('iva')
-        total    = cleaned_data.get('total')
+        cleaned_data   = super().clean()
+        subtotal       = cleaned_data.get('subtotal')
+        iva_porcentaje = cleaned_data.get('iva_porcentaje')
+        iva            = cleaned_data.get('iva')
+        total          = cleaned_data.get('total')
 
-        if subtotal is not None and iva is not None and total is not None:
-            if total != subtotal + iva:
+        if all(v is not None for v in [subtotal, iva_porcentaje, iva, total]):
+            iva_esperado   = (subtotal * iva_porcentaje / Decimal('100')).quantize(Decimal('0.01'))
+            total_esperado = subtotal + iva_esperado
+
+            if iva != iva_esperado:
                 raise forms.ValidationError(
-                    f'El total ({total}) debe ser igual a subtotal ({subtotal}) + IVA ({iva}).'
+                    f'El IVA ({iva}) no coincide con el {iva_porcentaje}% del subtotal. Esperado: {iva_esperado}.'
+                )
+            if total != total_esperado:
+                raise forms.ValidationError(
+                    f'El total ({total}) debe ser {subtotal} + {iva_esperado} = {total_esperado}.'
                 )
         return cleaned_data
 
@@ -61,8 +78,8 @@ class DetalleCompraForm(forms.ModelForm):
         ]
 
     def clean(self):
-        """Validación: cantidad y precio deben ser mayores que cero."""
-        cleaned_data = super().clean()
+        """Cantidad y precio unitario deben ser mayores que cero."""
+        cleaned_data    = super().clean()
         cantidad        = cleaned_data.get('cantidad')
         precio_unitario = cleaned_data.get('precio_unitario')
 
@@ -75,9 +92,7 @@ class DetalleCompraForm(forms.ModelForm):
         return cleaned_data
 
 
-# Formset — permite manejar múltiples DetalleCompra dentro de una misma vista
-# extra=0 → sin filas vacías al cargar — se agregan dinámicamente con JS
-# can_delete=True → permite eliminar filas del formset
+# Formset de detalles — extra=0 porque las filas se agregan dinámicamente con JS
 DetalleCompraFormSet = inlineformset_factory(
     FacturaCompra,
     DetalleCompra,

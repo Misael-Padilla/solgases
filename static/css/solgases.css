@@ -603,3 +603,25 @@ body {
     background-color: #e3f2fd;
     color: #1565c0;
 }
+
+/* =====================================================
+   BOTÓN ELIMINAR ÍTEM — Formset dinámico
+   ===================================================== */
+.btn-eliminar-item {
+    background-color: #fdecea;
+    color: #cc0000;
+    border: 1px solid #ffcccc;
+    border-radius: 6px;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-eliminar-item:hover {
+    background-color: #cc0000;
+    color: #ffffff;
+}

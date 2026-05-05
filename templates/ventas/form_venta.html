@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block titulo %}SOLGASES — {{ titulo }}{% endblock %}
 {% block titulo_pagina %}{{ titulo }}{% endblock %}
@@ -23,7 +24,7 @@
 <form method="post">
     {% csrf_token %}
 
-    <!-- Cabecera de la factura -->
+    <!-- Sección 1 — Datos de la factura -->
     <div class="card-detalle mb-4">
 
         {% if form.non_field_errors %}
@@ -35,7 +36,7 @@
         {% endif %}
 
         <p class="detalle-seccion-titulo">Datos de la factura</p>
-        <div class="row g-3 mb-4">
+        <div class="row g-3">
             <div class="col-6">
                 {% include 'partials/campo_form.html' with campo=form.numero_factura %}
             </div>
@@ -55,37 +56,14 @@
                 {% include 'partials/campo_form.html' with campo=form.estado %}
             </div>
         </div>
-
-        <p class="detalle-seccion-titulo">Valores</p>
-        <div class="row g-3 mb-4">
-            <div class="col-4">
-                {% include 'partials/campo_form.html' with campo=form.subtotal %}
-            </div>
-            <div class="col-4">
-                {% include 'partials/campo_form.html' with campo=form.iva %}
-            </div>
-            <div class="col-4">
-                {% include 'partials/campo_form.html' with campo=form.total %}
-            </div>
-        </div>
-
-        <p class="detalle-seccion-titulo">Observaciones</p>
-        <div class="row g-3">
-            <div class="col-12">
-                {% include 'partials/campo_form.html' with campo=form.observaciones %}
-            </div>
-        </div>
-
     </div>
 
-    <!-- Detalles de la factura — Formset -->
+    <!-- Sección 2 — Ítems de la factura -->
     <div class="card-detalle mb-4">
         <p class="detalle-seccion-titulo">Ítems de la factura</p>
 
-        <!-- Gestión interna del formset — campo obligatorio de Django -->
         {{ formset.management_form }}
 
-        <!-- Contenedor donde se agregan las filas dinámicamente -->
         <div id="formset-contenedor"></div>
 
         <!-- Fila plantilla oculta — el JS la clona al agregar ítems -->
@@ -94,7 +72,7 @@
                 <div class="row g-3 align-items-end">
                     <div class="col-2">
                         <div class="campo-form">
-                            <label class="form-label">Tipo ítem</label>
+                            <label class="form-label">Tipo ítem <span class="campo-requerido">*</span></label>
                             <select name="detalles-__prefix__-tipo_item">
                                 <option value="PRODUCTO">Producto</option>
                                 <option value="INSUMO">Insumo</option>
@@ -103,52 +81,81 @@
                     </div>
                     <div class="col-2">
                         <div class="campo-form">
-                            <label class="form-label">Código</label>
+                            <label class="form-label">Código <span class="campo-requerido">*</span></label>
                             <input type="text" name="detalles-__prefix__-codigo_item" placeholder="Ej: PROD001">
                         </div>
                     </div>
                     <div class="col-3">
                         <div class="campo-form">
-                            <label class="form-label">Descripción</label>
+                            <label class="form-label">Descripción <span class="campo-requerido">*</span></label>
                             <input type="text" name="detalles-__prefix__-descripcion" placeholder="Nombre del ítem">
                         </div>
                     </div>
                     <div class="col-1">
                         <div class="campo-form">
-                            <label class="form-label">Cantidad</label>
+                            <label class="form-label">Cantidad <span class="campo-requerido">*</span></label>
                             <input type="number" name="detalles-__prefix__-cantidad" min="1" placeholder="0">
                         </div>
                     </div>
                     <div class="col-2">
                         <div class="campo-form">
-                            <label class="form-label">Precio unitario</label>
+                            <label class="form-label">Precio unitario <span class="campo-requerido">*</span></label>
                             <input type="number" name="detalles-__prefix__-precio_unitario" step="0.01" min="0" placeholder="0.00">
                         </div>
                     </div>
                     <div class="col-1">
                         <div class="campo-form">
                             <label class="form-label">Subtotal</label>
-                            <input type="number" name="detalles-__prefix__-subtotal" step="0.01" min="0" placeholder="0.00">
+                            <input type="number" name="detalles-__prefix__-subtotal" step="0.01" min="0" placeholder="0.00" readonly>
                         </div>
                     </div>
                     <div class="col-1 d-flex align-items-end">
-                        <!-- Botón eliminar ítem -->
                         <button type="button" class="btn-eliminar-item" onclick="eliminarFila(this)">
                             <i class="bi bi-trash"></i>
                         </button>
                     </div>
-                    <!-- Campo oculto requerido por Django -->
                     <input type="hidden" name="detalles-__prefix__-id" value="">
                 </div>
                 <hr class="mt-3">
             </div>
         </div>
 
-        <!-- Botón agregar ítem -->
         <button type="button" id="btn-agregar-item" class="btn-secundario mt-2">
             <i class="bi bi-plus-lg"></i> Agregar ítem
         </button>
+    </div>
 
+    <!-- Sección 3 — Valores -->
+    <div class="card-detalle mb-4">
+        <p class="detalle-seccion-titulo">Valores</p>
+        <div class="row g-3">
+            <div class="col-3">
+                {% include 'partials/campo_form.html' with campo=form.subtotal %}
+            </div>
+            <div class="col-3">
+                {% include 'partials/campo_form.html' with campo=form.iva_porcentaje %}
+            </div>
+            <div class="col-3">
+                {% include 'partials/campo_form.html' with campo=form.iva %}
+            </div>
+            <div class="col-3">
+                {% include 'partials/campo_form.html' with campo=form.total %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección 4 — Información adicional -->
+    <div class="card-detalle mb-4">
+        <p class="detalle-seccion-titulo">Información adicional</p>
+        <div class="row g-3">
+            <div class="col-6">
+                <p class="detalle-label">Registrado por</p>
+                <p class="detalle-valor">{{ request.user.nombres }} {{ request.user.apellidos }}</p>
+            </div>
+            <div class="col-6">
+                {% include 'partials/campo_form.html' with campo=form.observaciones %}
+            </div>
+        </div>
     </div>
 
     <!-- Botones -->
@@ -166,69 +173,6 @@
 {% endblock %}
 
 {% block scripts_extra %}
-<script>
-    // =====================================================
-    // Gestión dinámica del formset de ventas
-    // =====================================================
-
-    let totalForms = 0;
-
-    // Agrega una nueva fila clonando la plantilla oculta
-    document.getElementById('btn-agregar-item').addEventListener('click', function () {
-        const plantilla  = document.getElementById('fila-plantilla').innerHTML;
-        const nuevaFila  = plantilla.replace(/__prefix__/g, totalForms);
-        const contenedor = document.getElementById('formset-contenedor');
-
-        contenedor.insertAdjacentHTML('beforeend', nuevaFila);
-        totalForms++;
-
-        // Actualiza el contador del management_form
-        document.getElementById('id_detalles-TOTAL_FORMS').value = totalForms;
-    });
-
-    // Elimina la fila del ítem correspondiente
-    function eliminarFila(boton) {
-        const fila = boton.closest('.formset-fila');
-        fila.remove();
-        totalForms--;
-        document.getElementById('id_detalles-TOTAL_FORMS').value = totalForms;
-
-        // Reindexar todas las filas restantes
-        const filas = document.querySelectorAll('.formset-fila');
-        filas.forEach(function (f, idx) {
-            f.querySelectorAll('input, select, textarea').forEach(function (campo) {
-                if (campo.name) campo.name = campo.name.replace(/detalles-\d+-/, `detalles-${idx}-`);
-                if (campo.id)   campo.id   = campo.id.replace(/detalles-\d+-/, `detalles-${idx}-`);
-            });
-        });
-    }
-
-    // Agrega una fila vacía automáticamente al cargar la página
-    document.getElementById('btn-agregar-item').click();
-</script>
+<script src="{% static 'js/formset_dinamico.js' %}"></script>
+<script src="{% static 'js/calculo_iva.js' %}"></script>
 {% endblock %}
-
-{% block estilos_extra %}
-<style>
-    /* Botón eliminar ítem — rojo pequeño */
-    .btn-eliminar-item {
-        background-color: #fdecea;
-        color: #cc0000;
-        border: 1px solid #ffcccc;
-        border-radius: 6px;
-        width: 34px;
-        height: 34px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: background-color 0.2s;
-    }
-
-    .btn-eliminar-item:hover {
-        background-color: #cc0000;
-        color: #ffffff;
-    }
-</style>
-{% endblock %}
-

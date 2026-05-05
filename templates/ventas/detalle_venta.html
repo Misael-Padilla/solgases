@@ -64,15 +64,19 @@
                     <p class="detalle-label">Fecha registro</p>
                     <p class="detalle-valor">{{ venta.fecha_registro|date:"d/m/Y H:i" }}</p>
                 </div>
-                <div class="col-6 col-md-2">
+                <div class="col-6 col-md-3">
                     <p class="detalle-label">Subtotal</p>
                     <p class="detalle-valor">${{ venta.subtotal }}</p>
                 </div>
-                <div class="col-6 col-md-2">
+                <div class="col-6 col-md-3">
+                    <p class="detalle-label">IVA (%)</p>
+                    <p class="detalle-valor">{{ venta.iva_porcentaje }}%</p>
+                </div>
+                <div class="col-6 col-md-3">
                     <p class="detalle-label">IVA</p>
                     <p class="detalle-valor">${{ venta.iva }}</p>
                 </div>
-                <div class="col-6 col-md-2">
+                <div class="col-6 col-md-3">
                     <p class="detalle-label">Total</p>
                     <p class="detalle-valor fw-bold">${{ venta.total }}</p>
                 </div>
