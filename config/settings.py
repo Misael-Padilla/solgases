@@ -30,7 +30,7 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('DEBUG')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['localhost', '127.0.0.1'])
 
 
 # Application definition
@@ -42,6 +42,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # Apps de terceros
+    'axes',
 
     # Apps del proyecto
     'apps.core',
@@ -62,6 +65,13 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'axes.middleware.AxesMiddleware',
+]
+
+# Backend de autenticación — axes debe ir primero para interceptar intentos fallidos
+AUTHENTICATION_BACKENDS = [
+    'axes.backends.AxesBackend',
+    'django.contrib.auth.backends.ModelBackend',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -140,8 +150,8 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 # Redirecciones de login y logout:
-LOGIN_REDIRECT_URL = 'inicio'
-LOGOUT_REDIRECT_URL = 'login'
+LOGIN_REDIRECT_URL = 'core:inicio'
+LOGOUT_REDIRECT_URL = 'core:login'
 
 
 # Modelo de usuario personalizado
@@ -149,3 +159,46 @@ AUTH_USER_MODEL = 'usuarios.Usuario'
 
 # URL de login — redirige aquí cuando se requiere autenticación
 LOGIN_URL = 'core:login'
+
+# Sesiones — la sesión expira al cerrar el navegador o después de 1 hora
+# de inactividad, lo que ocurra primero (seguridad para sistema interno)
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_AGE = 3600
+
+# Tipo de campo auto-incremental por defecto para modelos
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# ==============================================================
+# Django-Axes — protección contra fuerza bruta (OWASP A07:2025)
+# ==============================================================
+from datetime import timedelta
+
+# Bloquear después de 5 intentos fallidos
+AXES_FAILURE_LIMIT = 5
+
+# Desbloquear automáticamente después de 15 minutos
+AXES_COOLOFF_TIME = timedelta(minutes=15)
+
+# Bloquear por usuario, no por IP (un atacante puede cambiar de IP)
+AXES_LOCKOUT_PARAMETERS = ['username']
+
+# Resetear el contador después de un login exitoso
+AXES_RESET_ON_SUCCESS = True
+
+# Campo del formulario que contiene el nombre de usuario
+AXES_USERNAME_FORM_FIELD = 'username'
+
+# Template personalizado para la respuesta de bloqueo
+AXES_LOCKOUT_TEMPLATE = 'core/lockout.html'
+
+# ==============================================================
+# Seguridad para producción — activar cuando DEBUG=False
+# ==============================================================
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True

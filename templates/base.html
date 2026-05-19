@@ -19,7 +19,7 @@
 </head>
 <body>
 
-<div class="d-flex" style="min-height: 100vh;">
+<div class="d-flex layout-principal">
 
     <!-- ===================== SIDEBAR ===================== -->
     <nav id="sidebar">
@@ -33,7 +33,7 @@
         <!-- Menú de navegación -->
         <ul class="sidebar-menu">
             <li>
-                <a href="{% url 'core:inicio' %}" class="sidebar-link {% if request.resolver_match.namespace == 'core' %}activo{% endif %}">
+                <a href="{% url 'core:inicio' %}" class="sidebar-link {% if request.resolver_match.url_name == 'inicio' %}activo{% endif %}">
                     <i class="bi bi-speedometer2"></i> Dashboard
                 </a>
             </li>
@@ -114,13 +114,46 @@
                     {{ request.user.nombres|slice:":1" }}{{ request.user.apellidos|slice:":1" }}
                 </div>
 
-                <!-- Botón cerrar sesión -->
-                <a href="{% url 'core:logout' %}" class="btn-cerrar-sesion">
-                    <i class="bi bi-box-arrow-right"></i> Cerrar sesión
-                </a>
+                <!-- Botón cerrar sesión — método POST para prevenir CSRF -->
+                <form action="{% url 'core:logout' %}" method="POST" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-cerrar-sesion">
+                        <i class="bi bi-box-arrow-right"></i> Cerrar sesión
+                    </button>
+                </form>
             </div>
         </header>
         <!-- FIN HEADER -->
+        
+        <!-- BREADCRUMBS — navegación de migas de pan -->
+        {% if breadcrumbs %}
+        <nav aria-label="breadcrumb" class="breadcrumbs-nav">
+            <ol class="breadcrumbs-lista">
+                {% for bc in breadcrumbs %}
+                    {% if bc.url %}
+                    <li class="breadcrumbs-item">
+                        <a href="{{ bc.url }}" class="breadcrumbs-link">{{ bc.nombre }}</a>
+                        <span class="breadcrumbs-separador">/</span>
+                    </li>
+                    {% else %}
+                    <li class="breadcrumbs-item activo">{{ bc.nombre }}</li>
+                    {% endif %}
+                {% endfor %}
+            </ol>
+        </nav>
+        {% endif %}
+
+        <!-- MENSAJES FLASH — retroalimentación de acciones del usuario -->
+        {% if messages %}
+        <div class="contenido-principal" style="padding-bottom: 0;">
+            {% for message in messages %}
+            <div class="{% if 'error' in message.tags %}alerta-error{% elif 'success' in message.tags %}alerta-success{% endif %} mb-3" role="alert" aria-live="polite">
+                <i class="bi bi-{% if 'error' in message.tags %}exclamation-circle{% elif 'success' in message.tags %}check-circle{% endif %}"></i>
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
 
         <!-- ÁREA DE CONTENIDO -->
         <main class="contenido-principal flex-grow-1">
