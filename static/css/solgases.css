@@ -423,11 +423,22 @@ body {
     color: #333333;
 }
 
+/* Variante compacta para tablas de preview en dashboard */
+.tabla-sistema-sm {
+    font-size: 13px;
+}
+
 .texto-vacio {
     text-align: center;
     color: var(--color-texto-light);
     font-size: 13px;
     padding: 32px !important;
+}
+
+/* Mensaje de vacío sin centrar — para uso dentro de cards */
+.texto-vacio-inline {
+    color: var(--color-texto-light);
+    font-size: 13px;
 }
 
 
@@ -576,7 +587,6 @@ body {
     border-radius: 10px;
     padding: 24px;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
-    height: 100%;
 }
 
 .detalle-seccion-titulo {
@@ -644,6 +654,17 @@ body {
 .btn-secundario:hover {
     background-color: var(--color-contenido-bg);
     color: #333333;
+}
+
+/* Icono con color de acento — uso general en títulos y secciones */
+.icono-acento {
+    color: var(--color-acento);
+}
+
+/* Texto descriptivo dentro de cards — tipografía estándar para párrafos informativos */
+.texto-descripcion {
+    font-size: 13px;
+    color: var(--color-texto-secundario);
 }
 
 

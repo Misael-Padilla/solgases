@@ -54,6 +54,7 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
 
     # Configuración de credenciales
     USERNAME_FIELD  = 'correo_electronico'
+    EMAIL_FIELD     = 'correo_electronico'
     REQUIRED_FIELDS = ['nombres', 'apellidos', 'identificacion']
 
     class Meta:

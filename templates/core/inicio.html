@@ -10,8 +10,8 @@
     <!-- Tarjeta — Total productos -->
     <div class="col-12 col-md-6 col-lg-3">
         <div class="card-metrica">
-            <div class="card-metrica-icono" style="background-color: rgba(204,0,0,0.1);">
-                <i class="bi bi-box-seam" style="color: #cc0000;"></i>
+            <div class="card-metrica-icono">
+                <i class="bi bi-box-seam"></i>
             </div>
             <div>
                 <p class="card-metrica-valor">{{ total_productos }}</p>
@@ -67,7 +67,7 @@
         <div class="card-detalle">
             <p class="detalle-seccion-titulo">Últimas ventas</p>
             {% if ultimas_ventas %}
-            <table class="tabla-sistema" style="font-size: 13px;">
+            <table class="tabla-sistema tabla-sistema-sm">
                 <thead>
                     <tr>
                         <th>N° Factura</th>
@@ -86,10 +86,10 @@
                 </tbody>
             </table>
             <div class="mt-2 text-end">
-                <a href="{% url 'ventas:lista_ventas' %}" style="font-size: 12px; color: #cc0000;">Ver todas las ventas</a>
+                <a href="{% url 'ventas:lista_ventas' %}" class="link-ver-todo">Ver todas las ventas</a>
             </div>
             {% else %}
-            <p style="font-size: 13px; color: #aaaaaa;">No hay ventas registradas.</p>
+            <p class="texto-vacio-inline">No hay ventas registradas.</p>
             {% endif %}
         </div>
     </div>
@@ -117,10 +117,10 @@
                 </tbody>
             </table>
             <div class="mt-2 text-end">
-                <a href="{% url 'compras:lista_compras' %}" style="font-size: 12px; color: #cc0000;">Ver todas las compras</a>
+                <a href="{% url 'compras:lista_compras' %}" class="link-ver-todo">Ver todas las compras</a>
             </div>
             {% else %}
-            <p style="font-size: 13px; color: #aaaaaa;">No hay compras registradas.</p>
+            <p class="texto-vacio-inline">No hay compras registradas.</p>
             {% endif %}
         </div>
     </div>
@@ -144,8 +144,8 @@
 
 <!-- Alertas de sobrestock -->
 {% if alertas_sobrestock %}
-<div class="alerta-stock mb-4" style="background-color: #fff3e0; border-color: #ffcc80; border-left-color: #e65100;">
-    <p class="alerta-stock-titulo" style="color: #e65100;">
+<div class="alerta-sobrestock mb-4">
+    <p class="alerta-stock-titulo">
         <i class="bi bi-exclamation-triangle"></i>
         Sobrestock — {{ alertas_sobrestock|length }} ítem(s) con inventario excesivo
     </p>

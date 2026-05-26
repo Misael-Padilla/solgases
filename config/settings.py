@@ -169,6 +169,11 @@ SESSION_COOKIE_AGE = 3600
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # ==============================================================
+# Email — consola en desarrollo, SMTP en producción
+# ==============================================================
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# ==============================================================
 # Django-Axes — protección contra fuerza bruta (OWASP A07:2025)
 # ==============================================================
 from datetime import timedelta

@@ -8,31 +8,35 @@
 <div class="row justify-content-center">
     <div class="col-12 col-lg-8">
 
-        <div class="card p-4 mb-4">
+        <!-- Encabezado del manual -->
+        <div class="card-detalle mb-4">
             <h5 class="fw-bold mb-1">Manual de usuario — SOLGASES</h5>
-            <p class="text-muted" style="font-size: 13px;">
+            <p class="texto-descripcion">
                 Guía de uso del sistema de gestión empresarial.
             </p>
         </div>
 
         <!-- Sección Dashboard -->
-        <div class="card p-4 mb-3">
+        <div class="card-detalle mb-3">
             <h6 class="fw-bold mb-2">
-                <i class="bi bi-speedometer2" style="color: #cc0000;"></i> Dashboard
+                <i class="bi bi-speedometer2 icono-acento"></i> Dashboard
             </h6>
-            <p style="font-size: 13px; color: #555;">
-                El dashboard muestra las métricas principales del sistema: productos activos,
-                insumos activos, clientes registrados y ventas del mes. También muestra alertas
-                cuando el stock de un producto o insumo está por debajo del mínimo establecido.
+            <p class="texto-descripcion">
+                El dashboard es la pantalla principal del sistema. Muestra cuatro métricas
+                en tiempo real: productos activos, insumos activos, clientes registrados y
+                ventas del mes actual. Debajo se muestran las últimas 5 ventas y las últimas
+                5 compras registradas. Si algún producto o insumo tiene stock por debajo del
+                mínimo o por encima del máximo establecido (DA-002), el sistema muestra alertas
+                de color naranja para que el administrador tome acción.
             </p>
         </div>
 
         <!-- Sección Productos e Insumos -->
-        <div class="card p-4 mb-3">
+        <div class="card-detalle mb-3">
             <h6 class="fw-bold mb-2">
-                <i class="bi bi-box-seam" style="color: #cc0000;"></i> Productos e Insumos
+                <i class="bi bi-box-seam icono-acento"></i> Productos e Insumos
             </h6>
-            <p style="font-size: 13px; color: #555;">
+            <p class="texto-descripcion">
                 El stock se actualiza automáticamente al registrar compras y ventas.
                 No se modifica manualmente en operación normal. Cada producto e insumo
                 tiene un stock mínimo y máximo que define el rango óptimo de inventario.
@@ -40,11 +44,11 @@
         </div>
 
         <!-- Sección Compras -->
-        <div class="card p-4 mb-3">
+        <div class="card-detalle mb-3">
             <h6 class="fw-bold mb-2">
-                <i class="bi bi-cart" style="color: #cc0000;"></i> Compras
+                <i class="bi bi-cart icono-acento"></i> Compras
             </h6>
-            <p style="font-size: 13px; color: #555;">
+            <p class="texto-descripcion">
                 Al registrar una factura de compra, el stock de los productos e insumos
                 incluidos en los detalles se incrementa automáticamente. Si el código
                 de un ítem no existe en el sistema, se crea automáticamente.
@@ -52,11 +56,11 @@
         </div>
 
         <!-- Sección Ventas -->
-        <div class="card p-4 mb-3">
+        <div class="card-detalle mb-3">
             <h6 class="fw-bold mb-2">
-                <i class="bi bi-receipt" style="color: #cc0000;"></i> Ventas
+                <i class="bi bi-receipt icono-acento"></i> Ventas
             </h6>
-            <p style="font-size: 13px; color: #555;">
+            <p class="texto-descripcion">
                 Al registrar una factura de venta, el stock se descuenta automáticamente.
                 El sistema valida que haya stock suficiente antes de registrar la venta.
                 Solo se aceptan pagos en efectivo o transferencia bancaria.
@@ -64,11 +68,11 @@
         </div>
 
         <!-- Sección Backup -->
-        <div class="card p-4 mb-3">
+        <div class="card-detalle mb-3">
             <h6 class="fw-bold mb-2">
-                <i class="bi bi-shield-check" style="color: #cc0000;"></i> Backup
+                <i class="bi bi-shield-check icono-acento"></i> Backup
             </h6>
-            <p style="font-size: 13px; color: #555;">
+            <p class="texto-descripcion">
                 Solo accesible para el rol ADMIN. Permite generar copias de seguridad
                 manuales de la base de datos completa y consultar el historial de backups
                 generados automáticamente por el sistema.
