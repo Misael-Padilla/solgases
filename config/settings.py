@@ -169,9 +169,16 @@ SESSION_COOKIE_AGE = 3600
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # ==============================================================
-# Email — consola en desarrollo, SMTP en producción
+# Email — consola en desarrollo, Gmail SMTP en producción
+# Desarrollo: sin variables en .env → imprime en terminal automáticamente
+# Producción: configurar variables EMAIL_* en .env con Gmail App Password
 # ==============================================================
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND       = env('EMAIL_BACKEND', default='apps.core.mail.ConsoleEmailBackend')
+EMAIL_HOST          = env('EMAIL_HOST', default='')
+EMAIL_PORT          = env.int('EMAIL_PORT', default=587)
+EMAIL_USE_TLS       = env.bool('EMAIL_USE_TLS', default=True)
+EMAIL_HOST_USER     = env('EMAIL_HOST_USER', default='')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='')
 
 # ==============================================================
 # Django-Axes — protección contra fuerza bruta (OWASP A07:2025)
