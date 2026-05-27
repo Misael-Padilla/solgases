@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
+from django.views.decorators.http import require_POST
 from apps.usuarios.models import Usuario, Cliente, Proveedor
 from apps.usuarios.decoradores import login_requerido, admin_requerido
 
@@ -56,6 +57,7 @@ def editar_usuario(request, id):
 
 
 @admin_requerido
+@require_POST
 def cambiar_estado_usuario(request, id):
     """Activa o desactiva un usuario — solo ADMIN. Sin eliminación física."""
     usuario = get_object_or_404(Usuario, id=id)
@@ -119,6 +121,7 @@ def editar_cliente(request, id):
 
 
 @admin_requerido
+@require_POST
 def cambiar_estado_cliente(request, id):
     """Activa o desactiva un cliente — solo ADMIN."""
     cliente = get_object_or_404(Cliente, id=id)
@@ -182,6 +185,7 @@ def editar_proveedor(request, id):
 
 
 @admin_requerido
+@require_POST
 def cambiar_estado_proveedor(request, id):
     """Activa o desactiva un proveedor — solo ADMIN."""
     proveedor = get_object_or_404(Proveedor, id=id)

@@ -50,9 +50,12 @@
                         <i class="bi bi-pencil"></i>
                     </a>
                     {% if request.user.rol == 'ADMIN' %}
-                    <a href="{% url 'usuarios:cambiar_estado_proveedor' proveedor.id %}" class="btn-tabla {% if proveedor.estado == 'ACTIVO' %}btn-desactivar{% else %}btn-activar{% endif %}">
-                        <i class="bi {% if proveedor.estado == 'ACTIVO' %}bi-toggle-on{% else %}bi-toggle-off{% endif %}"></i>
-                    </a>
+                    <form method="post" action="{% url 'usuarios:cambiar_estado_proveedor' proveedor.id %}" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-tabla {% if proveedor.estado == 'ACTIVO' %}btn-desactivar{% else %}btn-activar{% endif %}">
+                            <i class="bi {% if proveedor.estado == 'ACTIVO' %}bi-toggle-on{% else %}bi-toggle-off{% endif %}"></i>
+                        </button>
+                    </form>
                     {% endif %}
                 </td>
             </tr>
