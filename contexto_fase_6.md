@@ -18,7 +18,7 @@
 
 | Módulo | Fecha aprobación | Commits |
 |---|---|---|
-| `core` | 2026-05-26 | `0604f36`, `d1e6771`, `429bd50`, commit cierre |
+| `core` | 2026-05-26 | `0604f36`, `d1e6771`, `429bd50`, `39bfcc5` |
 
 ## Módulos pendientes (en orden)
 

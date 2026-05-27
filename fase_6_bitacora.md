@@ -14,7 +14,7 @@
 
 | Orden | Módulo | Estado | Fecha aprobación | Commit cierre |
 |---|---|---|---|---|
-| 1 | `core` | ✅ Aprobado | 2026-05-26 | `a ser llenado` |
+| 1 | `core` | ✅ Aprobado | 2026-05-26 | `39bfcc5` |
 | 2 | `usuarios` | ⏳ Pendiente | — | — |
 | 3 | `productos` | ⏳ Pendiente | — | — |
 | 4 | `insumos` | ⏳ Pendiente | — | — |
@@ -148,7 +148,7 @@
     0604f36 — fix(core): seguridad login, django-axes, templates y CSS — Fase 6
     d1e6771 — feat(core): flujo recuperación de contraseña — Fase 6
     429bd50 — feat(core): email dual console/SMTP con backend legible
-    [cierre] — test(core): verificación Fase 6 completada
+    39bfcc5 — test(core): verificación Fase 6 completada
 
 Funcionalidades verificadas:
 - Login seguro con mensajes específicos, toggle contraseña, imagen de fondo
@@ -200,7 +200,7 @@ Transversales: Breadcrumbs ✅ | Search/pagination N/A
 | `0604f36` | fix(core): seguridad login, django-axes, templates y CSS — Fase 6 | 2026-05-19 |
 | `d1e6771` | feat(core): flujo recuperación de contraseña — Fase 6 | 2026-05-26 |
 | `429bd50` | feat(core): email dual console/SMTP con backend legible | 2026-05-26 |
-| *(cierre)* | test(core): verificación Fase 6 completada | 2026-05-26 |
+| `39bfcc5` | test(core): verificación Fase 6 completada | 2026-05-26 |
 
 ---
 
