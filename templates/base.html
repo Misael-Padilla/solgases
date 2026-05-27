@@ -38,17 +38,17 @@
                 </a>
             </li>
             <li>
-                <a href="{% url 'usuarios:lista_usuarios' %}" class="sidebar-link {% if request.resolver_match.url_name == 'lista_usuarios' %}activo{% endif %}">
+                <a href="{% url 'usuarios:lista_usuarios' %}" class="sidebar-link {% if request.resolver_match.namespace == 'usuarios' and 'usuario' in request.resolver_match.url_name %}activo{% endif %}">
                     <i class="bi bi-people"></i> Usuarios
                 </a>
             </li>
             <li>
-                <a href="{% url 'usuarios:lista_clientes' %}" class="sidebar-link {% if request.resolver_match.url_name == 'lista_clientes' %}activo{% endif %}">
+                <a href="{% url 'usuarios:lista_clientes' %}" class="sidebar-link {% if request.resolver_match.namespace == 'usuarios' and 'cliente' in request.resolver_match.url_name %}activo{% endif %}">
                     <i class="bi bi-person"></i> Clientes
                 </a>
             </li>
             <li>
-                <a href="{% url 'usuarios:lista_proveedores' %}" class="sidebar-link {% if request.resolver_match.url_name == 'lista_proveedores' %}activo{% endif %}">
+                <a href="{% url 'usuarios:lista_proveedores' %}" class="sidebar-link {% if request.resolver_match.namespace == 'usuarios' and 'proveedor' in request.resolver_match.url_name %}activo{% endif %}">
                     <i class="bi bi-truck"></i> Proveedores
                 </a>
             </li>
