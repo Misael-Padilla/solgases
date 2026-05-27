@@ -203,6 +203,9 @@ AXES_USERNAME_FORM_FIELD = 'username'
 # Template personalizado para la respuesta de bloqueo
 AXES_LOCKOUT_TEMPLATE = 'core/lockout.html'
 
+# Política de referrer — aplica en todos los entornos (OWASP A05:2025)
+SECURE_REFERRER_POLICY = 'strict-origin-when-cross-origin'
+
 # ==============================================================
 # Seguridad para producción — activar cuando DEBUG=False
 # ==============================================================
