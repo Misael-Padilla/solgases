@@ -20,3 +20,7 @@ media/
 
 # Archivos estáticos recolectados
 staticfiles/
+
+# Documentación interna de desarrollo (bitácoras y contextos de fase)
+fase_*.md
+contexto_fase_*.md
