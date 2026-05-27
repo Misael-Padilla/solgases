@@ -44,16 +44,16 @@
                     </span>
                 </td>
                 <td class="acciones">
-                    <a href="{% url 'usuarios:detalle_usuario' usuario.id %}" class="btn-tabla btn-ver">
+                    <a href="{% url 'usuarios:detalle_usuario' usuario.id %}" class="btn-tabla btn-ver" aria-label="Ver {{ usuario }}">
                         <i class="bi bi-eye"></i>
                     </a>
                     {% if request.user.rol == 'ADMIN' %}
-                    <a href="{% url 'usuarios:editar_usuario' usuario.id %}" class="btn-tabla btn-editar">
+                    <a href="{% url 'usuarios:editar_usuario' usuario.id %}" class="btn-tabla btn-editar" aria-label="Editar {{ usuario }}">
                         <i class="bi bi-pencil"></i>
                     </a>
                     <form method="post" action="{% url 'usuarios:cambiar_estado_usuario' usuario.id %}" class="d-inline">
                         {% csrf_token %}
-                        <button type="submit" class="btn-tabla {% if usuario.estado == 'ACTIVO' %}btn-desactivar{% else %}btn-activar{% endif %}">
+                        <button type="submit" class="btn-tabla {% if usuario.estado == 'ACTIVO' %}btn-desactivar{% else %}btn-activar{% endif %}" aria-label="{% if usuario.estado == 'ACTIVO' %}Desactivar{% else %}Activar{% endif %} {{ usuario }}">
                             <i class="bi {% if usuario.estado == 'ACTIVO' %}bi-toggle-on{% else %}bi-toggle-off{% endif %}"></i>
                         </button>
                     </form>
