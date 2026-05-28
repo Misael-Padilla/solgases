@@ -59,6 +59,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'csp.middleware.CSPMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -205,6 +206,21 @@ AXES_LOCKOUT_TEMPLATE = 'core/lockout.html'
 
 # Política de referrer — aplica en todos los entornos (OWASP A05:2025)
 SECURE_REFERRER_POLICY = 'strict-origin-when-cross-origin'
+
+# ==============================================================
+# Content Security Policy — django-csp 4.0 (OWASP A03:2025 XSS)
+# Permite solo recursos propios y Bootstrap CDN
+# ==============================================================
+CONTENT_SECURITY_POLICY = {
+    "DIRECTIVES": {
+        "default-src": ["'self'"],
+        "style-src":   ["'self'", "https://cdn.jsdelivr.net", "'unsafe-inline'"],
+        "script-src":  ["'self'", "https://cdn.jsdelivr.net"],
+        "font-src":    ["'self'", "https://cdn.jsdelivr.net"],
+        "img-src":     ["'self'", "data:"],
+        "frame-ancestors": ["'none'"],
+    }
+}
 
 # ==============================================================
 # Seguridad para producción — activar cuando DEBUG=False
