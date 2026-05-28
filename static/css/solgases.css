@@ -21,16 +21,17 @@
  *   7. Dashboard — Tarjetas de métricas
  *   8. Dashboard — Alertas de stock (DA-002)
  *   9. Dashboard — Enlaces rápidos
- *  10. Tablas del sistema
- *  11. Badges
- *  12. Botones de acción
- *  13. Cards de detalle
- *  14. Formularios
- *  15. Mensajes flash
- *  16. Badges de backup (DA-005)
- *  17. Botón eliminar ítem — Formset dinámico
- *  18. Login
- *  19. Responsive
+ *  10. Barra de búsqueda
+ *  11. Tablas del sistema
+ *  12. Badges
+ *  13. Botones de acción
+ *  14. Cards de detalle
+ *  15. Formularios
+ *  16. Mensajes flash
+ *  17. Badges de backup (DA-005)
+ *  18. Botón eliminar ítem — Formset dinámico
+ *  19. Login
+ *  20. Responsive
  */
 
 
@@ -415,7 +416,72 @@ body {
 
 
 /* ==========================================================
-   10. Tablas del sistema
+   10. Barra de búsqueda
+   ========================================================== */
+.barra-busqueda {
+    width: 100%;
+}
+
+.busqueda-grupo {
+    position: relative;
+    display: flex;
+    align-items: center;
+    max-width: 480px;
+}
+
+.busqueda-icono {
+    position: absolute;
+    left: 12px;
+    color: var(--color-texto-muted);
+    font-size: 15px;
+    pointer-events: none;
+}
+
+.busqueda-input {
+    width: 100%;
+    padding: 9px 40px 9px 36px;
+    border: 1px solid var(--color-borde);
+    border-radius: 6px;
+    font-size: 14px;
+    color: var(--color-texto-primario);
+    background-color: #ffffff;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.busqueda-input:focus {
+    outline: none;
+    border-color: var(--color-acento);
+    box-shadow: 0 0 0 3px rgba(204, 0, 0, 0.12);
+}
+
+.busqueda-input::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.busqueda-limpiar {
+    position: absolute;
+    right: 10px;
+    color: var(--color-texto-muted);
+    text-decoration: none;
+    font-size: 13px;
+    line-height: 1;
+    padding: 2px;
+}
+
+.busqueda-limpiar:hover {
+    color: var(--color-acento);
+}
+
+.busqueda-resultado {
+    font-size: 13px;
+    color: var(--color-texto-secundario);
+    margin-bottom: 8px;
+}
+
+
+/* ==========================================================
+   11. Tablas del sistema
    ========================================================== */
 .tabla-contenedor {
     background-color: #ffffff;

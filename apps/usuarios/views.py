@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.views.decorators.http import require_POST
+from django.db.models import Q
 from apps.usuarios.models import Usuario, Cliente, Proveedor
 from apps.usuarios.decoradores import login_requerido, admin_requerido
 
@@ -12,8 +13,16 @@ from apps.usuarios.decoradores import login_requerido, admin_requerido
 @login_requerido
 def lista_usuarios(request):
     """Lista todos los usuarios del sistema — accesible para ADMIN y EMP."""
+    q = request.GET.get('q', '').strip()
     usuarios = Usuario.objects.all().order_by('nombres')
-    return render(request, 'usuarios/lista_usuarios.html', {'usuarios': usuarios})
+    if q:
+        usuarios = usuarios.filter(
+            Q(identificacion__icontains=q) |
+            Q(nombres__icontains=q) |
+            Q(apellidos__icontains=q) |
+            Q(correo_electronico__icontains=q)
+        )
+    return render(request, 'usuarios/lista_usuarios.html', {'usuarios': usuarios, 'q': q})
 
 
 @login_requerido
@@ -78,8 +87,18 @@ def cambiar_estado_usuario(request, id):
 @login_requerido
 def lista_clientes(request):
     """Lista todos los clientes — accesible para ADMIN y EMP."""
+    q = request.GET.get('q', '').strip()
     clientes = Cliente.objects.all().order_by('identificacion')
-    return render(request, 'usuarios/lista_clientes.html', {'clientes': clientes})
+    if q:
+        clientes = clientes.filter(
+            Q(identificacion__icontains=q) |
+            Q(nombres__icontains=q) |
+            Q(apellidos__icontains=q) |
+            Q(razon_social__icontains=q) |
+            Q(ciudad__icontains=q) |
+            Q(telefono__icontains=q)
+        )
+    return render(request, 'usuarios/lista_clientes.html', {'clientes': clientes, 'q': q})
 
 
 @login_requerido
@@ -142,8 +161,18 @@ def cambiar_estado_cliente(request, id):
 @login_requerido
 def lista_proveedores(request):
     """Lista todos los proveedores — accesible para ADMIN y EMP."""
+    q = request.GET.get('q', '').strip()
     proveedores = Proveedor.objects.all().order_by('identificacion')
-    return render(request, 'usuarios/lista_proveedores.html', {'proveedores': proveedores})
+    if q:
+        proveedores = proveedores.filter(
+            Q(identificacion__icontains=q) |
+            Q(nombres__icontains=q) |
+            Q(apellidos__icontains=q) |
+            Q(razon_social__icontains=q) |
+            Q(ciudad__icontains=q) |
+            Q(telefono__icontains=q)
+        )
+    return render(request, 'usuarios/lista_proveedores.html', {'proveedores': proveedores, 'q': q})
 
 
 @login_requerido

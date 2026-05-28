@@ -12,7 +12,32 @@
     </a>
 </div>
 
-<div class="tabla-contenedor">
+<!-- Barra de búsqueda -->
+<form method="get" role="search" class="barra-busqueda mb-3">
+    <div class="busqueda-grupo">
+        <i class="bi bi-search busqueda-icono"></i>
+        <input type="search" name="q" value="{{ q }}" class="busqueda-input"
+               placeholder="Buscar por identificación, nombre, ciudad o teléfono..."
+               aria-label="Buscar proveedores">
+        <a href="{% url 'usuarios:lista_proveedores' %}" class="busqueda-limpiar {% if not q %}d-none{% endif %}" aria-label="Limpiar búsqueda">
+            <i class="bi bi-x-lg"></i>
+        </a>
+    </div>
+</form>
+
+<div id="resultados-container">
+{% if q %}
+<p class="busqueda-resultado" aria-live="polite">
+    {% with total=proveedores|length %}
+        {% if total == 0 %}Sin resultados para <strong>"{{ q }}"</strong>.
+        {% elif total == 1 %}1 resultado para <strong>"{{ q }}"</strong>.
+        {% else %}{{ total }} resultados para <strong>"{{ q }}"</strong>.
+        {% endif %}
+    {% endwith %}
+</p>
+{% endif %}
+
+<div class="tabla-contenedor" aria-live="polite" aria-atomic="false">
     <table class="tabla-sistema">
         <thead>
             <tr>
@@ -68,5 +93,6 @@
         </tbody>
     </table>
 </div>
+</div><!-- fin resultados-container -->
 
 {% endblock %}
