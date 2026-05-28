@@ -7,11 +7,16 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h5 class="fw-bold mb-0">Listado de usuarios</h5>
-    {% if request.user.rol == 'ADMIN' %}
-    <a href="{% url 'usuarios:crear_usuario' %}" class="btn-accion">
-        <i class="bi bi-plus-lg"></i> Nuevo usuario
-    </a>
-    {% endif %}
+    <div class="d-flex gap-2">
+        <a href="{% url 'usuarios:exportar_usuarios' %}" class="btn-exportar">
+            <i class="bi bi-file-earmark-excel"></i> Exportar Excel
+        </a>
+        {% if request.user.rol == 'ADMIN' %}
+        <a href="{% url 'usuarios:crear_usuario' %}" class="btn-accion">
+            <i class="bi bi-plus-lg"></i> Nuevo usuario
+        </a>
+        {% endif %}
+    </div>
 </div>
 
 <!-- Barra de búsqueda -->

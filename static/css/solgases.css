@@ -620,6 +620,25 @@ body {
     color: #ffffff;
 }
 
+.btn-exportar {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background-color: #1d6f42;
+    color: #ffffff;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.btn-exportar:hover {
+    background-color: #155232;
+    color: #ffffff;
+}
+
 .acciones {
     display: flex;
     gap: 6px;

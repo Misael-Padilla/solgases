@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from apps.usuarios.managers import UsuarioManager
@@ -44,6 +45,17 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     imagen              = models.ImageField(upload_to='usuarios/', null=True, blank=True)
     observaciones       = models.TextField(null=True, blank=True)
     fecha_creacion      = models.DateTimeField(auto_now_add=True)
+
+    # Auditoría — quién creó y quién modificó por última vez
+    creado_por          = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, blank=True,
+        on_delete=models.SET_NULL, related_name='usuarios_creados'
+    )
+    modificado_por      = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, blank=True,
+        on_delete=models.SET_NULL, related_name='usuarios_modificados'
+    )
+    modificado_en       = models.DateTimeField(auto_now=True)
 
     # Atributos de Django Auth para gestión de permisos
     is_staff            = models.BooleanField(default=False)
@@ -111,6 +123,17 @@ class Cliente(models.Model):
     observaciones       = models.TextField(null=True, blank=True)
     fecha_creacion      = models.DateTimeField(auto_now_add=True)
 
+    # Auditoría
+    creado_por          = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, blank=True,
+        on_delete=models.SET_NULL, related_name='clientes_creados'
+    )
+    modificado_por      = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, blank=True,
+        on_delete=models.SET_NULL, related_name='clientes_modificados'
+    )
+    modificado_en       = models.DateTimeField(auto_now=True)
+
     class Meta:
         db_table = 'cliente'
         verbose_name = 'Cliente'
@@ -166,6 +189,17 @@ class Proveedor(models.Model):
     imagen              = models.ImageField(upload_to='proveedores/', null=True, blank=True)
     observaciones       = models.TextField(null=True, blank=True)
     fecha_creacion      = models.DateTimeField(auto_now_add=True)
+
+    # Auditoría
+    creado_por          = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, blank=True,
+        on_delete=models.SET_NULL, related_name='proveedores_creados'
+    )
+    modificado_por      = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, blank=True,
+        on_delete=models.SET_NULL, related_name='proveedores_modificados'
+    )
+    modificado_en       = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = 'proveedor'

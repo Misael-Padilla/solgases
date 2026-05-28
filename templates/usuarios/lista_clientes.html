@@ -7,9 +7,14 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h5 class="fw-bold mb-0">Listado de clientes</h5>
-    <a href="{% url 'usuarios:crear_cliente' %}" class="btn-accion">
-        <i class="bi bi-plus-lg"></i> Nuevo cliente
-    </a>
+    <div class="d-flex gap-2">
+        <a href="{% url 'usuarios:exportar_clientes' %}" class="btn-exportar">
+            <i class="bi bi-file-earmark-excel"></i> Exportar Excel
+        </a>
+        <a href="{% url 'usuarios:crear_cliente' %}" class="btn-accion">
+            <i class="bi bi-plus-lg"></i> Nuevo cliente
+        </a>
+    </div>
 </div>
 
 <!-- Barra de búsqueda -->

@@ -12,6 +12,7 @@ urlpatterns = [
     path('crear/', views.crear_usuario, name='crear_usuario'),
     path('<int:id>/editar/', views.editar_usuario, name='editar_usuario'),
     path('<int:id>/estado/', views.cambiar_estado_usuario, name='cambiar_estado_usuario'),
+    path('exportar/', views.exportar_usuarios_excel, name='exportar_usuarios'),
 
     # ---- Clientes ----
     path('clientes/', views.lista_clientes, name='lista_clientes'),
@@ -19,6 +20,7 @@ urlpatterns = [
     path('clientes/crear/', views.crear_cliente, name='crear_cliente'),
     path('clientes/<int:id>/editar/', views.editar_cliente, name='editar_cliente'),
     path('clientes/<int:id>/estado/', views.cambiar_estado_cliente, name='cambiar_estado_cliente'),
+    path('clientes/exportar/', views.exportar_clientes_excel, name='exportar_clientes'),
 
     # ---- Proveedores ----
     path('proveedores/', views.lista_proveedores, name='lista_proveedores'),
@@ -26,5 +28,6 @@ urlpatterns = [
     path('proveedores/crear/', views.crear_proveedor, name='crear_proveedor'),
     path('proveedores/<int:id>/editar/', views.editar_proveedor, name='editar_proveedor'),
     path('proveedores/<int:id>/estado/', views.cambiar_estado_proveedor, name='cambiar_estado_proveedor'),
+    path('proveedores/exportar/', views.exportar_proveedores_excel, name='exportar_proveedores'),
 
 ]
