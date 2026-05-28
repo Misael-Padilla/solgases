@@ -67,6 +67,31 @@ body {
     background-color: var(--color-contenido-bg);
 }
 
+/* Skip-to-content — WCAG 2.4.1 (visible solo al recibir foco de teclado) */
+.skip-to-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    clip-path: inset(50%);
+    -webkit-clip-path: inset(50%);
+    white-space: nowrap;
+    overflow: hidden;
+    z-index: 9999;
+    padding: 10px 20px;
+    background-color: var(--color-acento);
+    color: #ffffff;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 0 0 4px 0;
+}
+
+.skip-to-content:focus {
+    clip-path: none;
+    -webkit-clip-path: none;
+    white-space: normal;
+    overflow: visible;
+}
+
 
 /* ==========================================================
    3. Sidebar

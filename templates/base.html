@@ -19,10 +19,13 @@
 </head>
 <body>
 
+<!-- Skip-to-content — primer elemento focusable (WCAG 2.4.1) -->
+<a href="#contenido-principal" class="skip-to-content">Saltar al contenido</a>
+
 <div class="d-flex layout-principal">
 
     <!-- ===================== SIDEBAR ===================== -->
-    <nav id="sidebar">
+    <nav id="sidebar" aria-label="Navegación principal">
 
         <!-- Logo y nombre del sistema -->
         <div class="sidebar-header">
@@ -156,7 +159,7 @@
         {% endif %}
 
         <!-- ÁREA DE CONTENIDO -->
-        <main class="contenido-principal flex-grow-1">
+        <main id="contenido-principal" tabindex="-1" class="contenido-principal flex-grow-1">
             {% block contenido %}{% endblock %}
         </main>
         <!-- FIN ÁREA DE CONTENIDO -->
