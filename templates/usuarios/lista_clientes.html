@@ -39,6 +39,7 @@
                 <td>{{ cliente.ciudad }}</td>
                 <td>
                     <span class="badge-estado badge-{{ cliente.estado|lower }}">
+                        <i class="bi bi-{% if cliente.estado == 'ACTIVO' %}check-circle-fill{% else %}x-circle-fill{% endif %}"></i>
                         {{ cliente.estado }}
                     </span>
                 </td>

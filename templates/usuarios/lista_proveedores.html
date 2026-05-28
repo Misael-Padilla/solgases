@@ -39,6 +39,7 @@
                 <td>{{ proveedor.ciudad }}</td>
                 <td>
                     <span class="badge-estado badge-{{ proveedor.estado|lower }}">
+                        <i class="bi bi-{% if proveedor.estado == 'ACTIVO' %}check-circle-fill{% else %}x-circle-fill{% endif %}"></i>
                         {{ proveedor.estado }}
                     </span>
                 </td>
