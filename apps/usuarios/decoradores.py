@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.shortcuts import redirect
 from functools import wraps
 
@@ -5,13 +6,14 @@ from functools import wraps
 def admin_requerido(funcion):
     """
     Decorador que restringe el acceso exclusivamente al rol ADMIN.
-    Si el usuario es EMP, redirige al dashboard con acceso denegado.
+    Si el usuario es EMP, muestra un mensaje de error y redirige al dashboard.
     """
     @wraps(funcion)
     def wrapper(request, *args, **kwargs):
         if not request.user.is_authenticated:
             return redirect('core:login')
         if request.user.rol != 'ADMIN':
+            messages.error(request, 'Acceso restringido. Solo el administrador puede realizar esta acción.')
             return redirect('core:inicio')
         return funcion(request, *args, **kwargs)
     return wrapper
