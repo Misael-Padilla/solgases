@@ -9,355 +9,401 @@
     <div class="col-12 col-lg-8">
 
         <!-- Encabezado del manual -->
-        <div class="card-detalle mb-4">
-            <h5 class="fw-bold mb-1">Manual de usuario — SOLGASES</h5>
-            <p class="texto-descripcion">
+        <header class="card-detalle mb-4">
+            <h2 class="h5 fw-bold mb-1">Manual de usuario — SOLGASES</h2>
+            <p class="texto-descripcion mb-0">
                 Guía de uso del sistema de gestión empresarial.
             </p>
-        </div>
+        </header>
 
-        <!-- Sección Roles y Permisos -->
-        <div class="card-detalle mb-3">
-            <h6 class="fw-bold mb-3">
-                <i class="bi bi-shield-lock icono-acento"></i> Roles y permisos
-            </h6>
-            <p class="texto-descripcion mb-3">
-                El sistema tiene dos roles de acceso. Las acciones marcadas con
-                <span class="badge-rol badge-admin" style="font-size:11px;">ADMIN</span>
-                son exclusivas del administrador.
-            </p>
+        <!-- Índice de contenidos -->
+        <nav class="card-detalle mb-4" aria-label="Índice del manual">
+            <h2 class="h6 fw-bold mb-3">
+                <i class="bi bi-list-ul icono-acento"></i> Contenido
+            </h2>
+            <ol class="mb-0 ps-3">
+                <li class="mb-1"><a href="#roles">Roles y permisos</a></li>
+                <li class="mb-1"><a href="#dashboard">Dashboard</a></li>
+                <li class="mb-1"><a href="#productos">Productos</a></li>
+                <li class="mb-1"><a href="#insumos">Insumos</a></li>
+                <li class="mb-1"><a href="#compras">Compras</a></li>
+                <li class="mb-1"><a href="#ventas">Ventas</a></li>
+                <li class="mb-1"><a href="#backup">Backup</a></li>
+            </ol>
+        </nav>
 
-            <p class="detalle-seccion-titulo">Usuarios del sistema</p>
-            <div class="tabla-contenedor mb-3">
-                <table class="tabla-sistema tabla-sistema-sm">
-                    <thead>
-                        <tr>
-                            <th scope="col">Acción</th>
-                            <th scope="col" class="text-center">ADMIN</th>
-                            <th scope="col" class="text-center">EMP</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>Ver lista de usuarios</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
-                        <tr><td>Ver detalle de usuario</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
-                        <tr><td>Exportar Excel de usuarios</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
-                        <tr><td>Crear usuario</td><td class="text-center text-success">✔</td><td class="text-center text-danger">✘</td></tr>
-                        <tr><td>Editar usuario</td><td class="text-center text-success">✔</td><td class="text-center text-danger">✘</td></tr>
-                        <tr><td>Activar / Desactivar usuario</td><td class="text-center text-success">✔</td><td class="text-center text-danger">✘</td></tr>
-                    </tbody>
-                </table>
+        <!-- Roles y permisos -->
+        <section id="roles" aria-labelledby="titulo-roles">
+            <div class="card-detalle mb-3">
+                <h2 id="titulo-roles" class="h6 fw-bold mb-3">
+                    <i class="bi bi-shield-lock icono-acento"></i> Roles y permisos
+                </h2>
+                <p class="texto-descripcion mb-3">
+                    El sistema tiene dos roles de acceso. Las acciones marcadas con
+                    <span class="badge-rol badge-admin">ADMIN</span>
+                    son exclusivas del administrador.
+                </p>
+
+                <h3 class="detalle-seccion-titulo">Usuarios del sistema</h3>
+                <div class="table-responsive mb-3">
+                    <table class="tabla-sistema tabla-sistema-sm" aria-label="Permisos en el módulo de usuarios">
+                        <thead>
+                            <tr>
+                                <th scope="col">Acción</th>
+                                <th scope="col" class="text-center">ADMIN</th>
+                                <th scope="col" class="text-center">EMP</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Ver lista de usuarios</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
+                            <tr><td>Ver detalle de usuario</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
+                            <tr><td>Exportar Excel de usuarios</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
+                            <tr><td>Crear usuario</td><td class="text-center text-success">✔</td><td class="text-center text-danger">✘</td></tr>
+                            <tr><td>Editar usuario</td><td class="text-center text-success">✔</td><td class="text-center text-danger">✘</td></tr>
+                            <tr><td>Activar / Desactivar usuario</td><td class="text-center text-success">✔</td><td class="text-center text-danger">✘</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3 class="detalle-seccion-titulo">Clientes y Proveedores</h3>
+                <div class="table-responsive mb-3">
+                    <table class="tabla-sistema tabla-sistema-sm" aria-label="Permisos en clientes y proveedores">
+                        <thead>
+                            <tr>
+                                <th scope="col">Acción</th>
+                                <th scope="col" class="text-center">ADMIN</th>
+                                <th scope="col" class="text-center">EMP</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Ver lista / detalle</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
+                            <tr><td>Crear cliente / proveedor</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
+                            <tr><td>Editar cliente / proveedor</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
+                            <tr><td>Exportar Excel</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
+                            <tr><td>Activar / Desactivar</td><td class="text-center text-success">✔</td><td class="text-center text-danger">✘</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3 class="detalle-seccion-titulo">Productos</h3>
+                <div class="table-responsive mb-3">
+                    <table class="tabla-sistema tabla-sistema-sm" aria-label="Permisos en el módulo de productos">
+                        <thead>
+                            <tr>
+                                <th scope="col">Acción</th>
+                                <th scope="col" class="text-center">ADMIN</th>
+                                <th scope="col" class="text-center">EMP</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Ver lista de productos</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
+                            <tr><td>Ver detalle de producto</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
+                            <tr><td>Crear producto</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
+                            <tr><td>Editar producto</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
+                            <tr><td>Exportar Excel</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
+                            <tr><td>Activar / Desactivar producto</td><td class="text-center text-success">✔</td><td class="text-center text-danger">✘</td></tr>
+                            <tr><td>Modificar stock manualmente</td><td class="text-center text-success">✔</td><td class="text-center text-danger">✘</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3 class="detalle-seccion-titulo">Insumos</h3>
+                <div class="table-responsive mb-3">
+                    <table class="tabla-sistema tabla-sistema-sm" aria-label="Permisos en el módulo de insumos">
+                        <thead>
+                            <tr>
+                                <th scope="col">Acción</th>
+                                <th scope="col" class="text-center">ADMIN</th>
+                                <th scope="col" class="text-center">EMP</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Ver lista de insumos</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
+                            <tr><td>Ver detalle de insumo</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
+                            <tr><td>Crear insumo</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
+                            <tr><td>Editar insumo</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
+                            <tr><td>Exportar Excel</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
+                            <tr><td>Activar / Desactivar insumo</td><td class="text-center text-success">✔</td><td class="text-center text-danger">✘</td></tr>
+                            <tr><td>Modificar stock manualmente</td><td class="text-center text-success">✔</td><td class="text-center text-danger">✘</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3 class="detalle-seccion-titulo">Compras</h3>
+                <div class="table-responsive mb-3">
+                    <table class="tabla-sistema tabla-sistema-sm" aria-label="Permisos en el módulo de compras">
+                        <thead>
+                            <tr>
+                                <th scope="col">Acción</th>
+                                <th scope="col" class="text-center">ADMIN</th>
+                                <th scope="col" class="text-center">EMP</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Ver lista de facturas de compra</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
+                            <tr><td>Ver detalle de factura</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
+                            <tr><td>Registrar factura de compra</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
+                            <tr><td>Exportar Excel de compras</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
+                            <tr><td>Activar / Desactivar factura</td><td class="text-center text-success">✔</td><td class="text-center text-danger">✘</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3 class="detalle-seccion-titulo">Ventas</h3>
+                <div class="table-responsive mb-3">
+                    <table class="tabla-sistema tabla-sistema-sm" aria-label="Permisos en el módulo de ventas">
+                        <thead>
+                            <tr>
+                                <th scope="col">Acción</th>
+                                <th scope="col" class="text-center">ADMIN</th>
+                                <th scope="col" class="text-center">EMP</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Ver lista de facturas de venta</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
+                            <tr><td>Ver detalle de factura</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
+                            <tr><td>Registrar factura de venta</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
+                            <tr><td>Exportar Excel de ventas</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
+                            <tr><td>Activar / Desactivar factura</td><td class="text-center text-success">✔</td><td class="text-center text-danger">✘</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3 class="detalle-seccion-titulo">Otras secciones</h3>
+                <div class="table-responsive">
+                    <table class="tabla-sistema tabla-sistema-sm" aria-label="Permisos en otras secciones del sistema">
+                        <thead>
+                            <tr>
+                                <th scope="col">Sección</th>
+                                <th scope="col" class="text-center">ADMIN</th>
+                                <th scope="col" class="text-center">EMP</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Dashboard</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
+                            <tr><td>Backup</td><td class="text-center text-success">✔</td><td class="text-center text-danger">✘</td></tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
+        </section>
 
-            <p class="detalle-seccion-titulo">Clientes y Proveedores</p>
-            <div class="tabla-contenedor mb-3">
-                <table class="tabla-sistema tabla-sistema-sm">
-                    <thead>
-                        <tr>
-                            <th scope="col">Acción</th>
-                            <th scope="col" class="text-center">ADMIN</th>
-                            <th scope="col" class="text-center">EMP</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>Ver lista / detalle</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
-                        <tr><td>Crear cliente / proveedor</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
-                        <tr><td>Editar cliente / proveedor</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
-                        <tr><td>Exportar Excel</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
-                        <tr><td>Activar / Desactivar</td><td class="text-center text-success">✔</td><td class="text-center text-danger">✘</td></tr>
-                    </tbody>
-                </table>
+        <!-- Dashboard -->
+        <section id="dashboard" aria-labelledby="titulo-dashboard">
+            <div class="card-detalle mb-3">
+                <h2 id="titulo-dashboard" class="h6 fw-bold mb-2">
+                    <i class="bi bi-speedometer2 icono-acento"></i> Dashboard
+                </h2>
+                <p class="texto-descripcion">
+                    El dashboard es la pantalla principal del sistema. Muestra cuatro métricas
+                    en tiempo real: productos activos, insumos activos, clientes registrados y
+                    ventas del mes actual. Debajo se muestran las últimas 5 ventas y las últimas
+                    5 compras registradas. Si algún producto o insumo tiene stock por debajo del
+                    mínimo o por encima del máximo establecido (DA-002), el sistema muestra alertas
+                    de color naranja para que el administrador tome acción.
+                </p>
             </div>
+        </section>
 
-            <p class="detalle-seccion-titulo">Productos</p>
-            <div class="tabla-contenedor mb-3">
-                <table class="tabla-sistema tabla-sistema-sm">
-                    <thead>
-                        <tr>
-                            <th scope="col">Acción</th>
-                            <th scope="col" class="text-center">ADMIN</th>
-                            <th scope="col" class="text-center">EMP</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>Ver lista de productos</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
-                        <tr><td>Ver detalle de producto</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
-                        <tr><td>Crear producto</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
-                        <tr><td>Editar producto</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
-                        <tr><td>Activar / Desactivar producto</td><td class="text-center text-success">✔</td><td class="text-center text-danger">✘</td></tr>
-                        <tr><td>Modificar stock manualmente</td><td class="text-center text-success">✔</td><td class="text-center text-danger">✘</td></tr>
-                    </tbody>
-                </table>
+        <!-- Productos -->
+        <section id="productos" aria-labelledby="titulo-productos">
+            <div class="card-detalle mb-3">
+                <h2 id="titulo-productos" class="h6 fw-bold mb-2">
+                    <i class="bi bi-box-seam icono-acento"></i> Productos
+                </h2>
+                <p class="texto-descripcion mb-3">
+                    Catálogo de dotación y elementos de protección personal (EPP) que la empresa
+                    compra y vende. Cada producto tiene código único, categoría (Dotación / EPP),
+                    género, talla opcional, precio de compra y precio de venta.
+                </p>
+
+                <h3 class="detalle-seccion-titulo">Niveles de stock</h3>
+                <p class="texto-descripcion mb-3">
+                    Cada producto tiene un stock mínimo y un stock máximo. El sistema calcula
+                    automáticamente el nivel de inventario y lo muestra como indicador visual:
+                </p>
+                <div class="table-responsive mb-3">
+                    <table class="tabla-sistema tabla-sistema-sm" aria-label="Niveles de stock de productos">
+                        <thead>
+                            <tr>
+                                <th scope="col">Nivel</th>
+                                <th scope="col">Condición</th>
+                                <th scope="col">Acción recomendada</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><span class="badge-nivel badge-nivel-bajo">BAJO</span></td><td>Stock actual ≤ stock mínimo</td><td>Reabastecer — aparece alerta en el Dashboard</td></tr>
+                            <tr><td><span class="badge-nivel badge-nivel-normal">NORMAL</span></td><td>Stock entre mínimo y máximo</td><td>Inventario en rango óptimo</td></tr>
+                            <tr><td><span class="badge-nivel badge-nivel-alto">ALTO</span></td><td>Stock actual ≥ stock máximo</td><td>Sobrestock — aparece alerta en el Dashboard</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3 class="detalle-seccion-titulo">Modificar stock</h3>
+                <p class="texto-descripcion mb-3">
+                    En operación normal, el stock se actualiza automáticamente al registrar
+                    compras y ventas. Si se requiere una corrección excepcional (ajuste de
+                    inventario físico, pérdida, etc.), solo el <strong>ADMIN</strong> puede
+                    modificar el stock desde el detalle del producto usando el botón
+                    <strong>"Modificar stock"</strong>. El sistema exige ingresar un motivo
+                    obligatorio que queda registrado en el historial de stock del producto.
+                </p>
+
+                <h3 class="detalle-seccion-titulo">Activar / Desactivar</h3>
+                <p class="texto-descripcion">
+                    Solo el <strong>ADMIN</strong> puede activar o desactivar un producto.
+                    Al hacerlo, el sistema muestra un cuadro de confirmación donde es obligatorio
+                    escribir una observación que explique el motivo. Los productos inactivos no
+                    aparecen disponibles para nuevas ventas, pero su historial se conserva.
+                </p>
             </div>
+        </section>
 
-            <p class="detalle-seccion-titulo">Insumos</p>
-            <div class="tabla-contenedor mb-3">
-                <table class="tabla-sistema tabla-sistema-sm">
-                    <thead>
-                        <tr>
-                            <th scope="col">Acción</th>
-                            <th scope="col" class="text-center">ADMIN</th>
-                            <th scope="col" class="text-center">EMP</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>Ver lista de insumos</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
-                        <tr><td>Ver detalle de insumo</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
-                        <tr><td>Crear insumo</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
-                        <tr><td>Editar insumo</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
-                        <tr><td>Activar / Desactivar insumo</td><td class="text-center text-success">✔</td><td class="text-center text-danger">✘</td></tr>
-                        <tr><td>Modificar stock manualmente</td><td class="text-center text-success">✔</td><td class="text-center text-danger">✘</td></tr>
-                    </tbody>
-                </table>
+        <!-- Insumos -->
+        <section id="insumos" aria-labelledby="titulo-insumos">
+            <div class="card-detalle mb-3">
+                <h2 id="titulo-insumos" class="h6 fw-bold mb-2">
+                    <i class="bi bi-droplet icono-acento"></i> Insumos
+                </h2>
+                <p class="texto-descripcion mb-3">
+                    Catálogo de gases industriales y productos químicos que la empresa adquiere
+                    para sus operaciones. Cada insumo tiene código único, subcategoría (Gas /
+                    Químico), unidad de medida (Litros, Kilos, Unidades), precio de compra y
+                    un proveedor principal de referencia.
+                </p>
+
+                <h3 class="detalle-seccion-titulo">Niveles de stock</h3>
+                <p class="texto-descripcion mb-3">
+                    Mismo sistema de umbrales que los productos (BAJO / NORMAL / ALTO).
+                    Las alertas de stock bajo y sobrestock de insumos también se muestran en el Dashboard.
+                </p>
+
+                <h3 class="detalle-seccion-titulo">Proveedor principal</h3>
+                <p class="texto-descripcion mb-3">
+                    Cada insumo tiene asignado un proveedor principal. Este dato sirve de
+                    referencia para saber a quién contactar cuando el stock esté bajo.
+                    En el desplegable solo aparecen los proveedores con estado <strong>Activo</strong>.
+                </p>
+
+                <h3 class="detalle-seccion-titulo">Modificar stock</h3>
+                <p class="texto-descripcion mb-3">
+                    Igual que en productos: el stock se actualiza automáticamente con las compras.
+                    Para correcciones manuales, solo el <strong>ADMIN</strong> puede modificar
+                    el stock desde el detalle del insumo. El motivo es obligatorio y queda
+                    registrado en el historial de stock.
+                </p>
+
+                <h3 class="detalle-seccion-titulo">Activar / Desactivar</h3>
+                <p class="texto-descripcion">
+                    Solo el <strong>ADMIN</strong> puede cambiar el estado de un insumo.
+                    Se requiere observación obligatoria. Los insumos inactivos no están
+                    disponibles para nuevas compras, pero su historial se conserva.
+                </p>
             </div>
+        </section>
 
-            <p class="detalle-seccion-titulo">Compras</p>
-            <div class="tabla-contenedor mb-3">
-                <table class="tabla-sistema tabla-sistema-sm">
-                    <thead>
-                        <tr>
-                            <th scope="col">Acción</th>
-                            <th scope="col" class="text-center">ADMIN</th>
-                            <th scope="col" class="text-center">EMP</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>Ver lista de facturas de compra</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
-                        <tr><td>Ver detalle de factura</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
-                        <tr><td>Registrar factura de compra</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
-                        <tr><td>Exportar Excel de compras</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
-                        <tr><td>Activar / Desactivar factura</td><td class="text-center text-success">✔</td><td class="text-center text-danger">✘</td></tr>
-                    </tbody>
-                </table>
+        <!-- Compras -->
+        <section id="compras" aria-labelledby="titulo-compras">
+            <div class="card-detalle mb-3">
+                <h2 id="titulo-compras" class="h6 fw-bold mb-2">
+                    <i class="bi bi-cart icono-acento"></i> Compras
+                </h2>
+                <p class="texto-descripcion mb-3">
+                    Registro de facturas de compra a proveedores. Cada factura puede incluir
+                    múltiples ítems (productos e insumos). Al guardar, el stock de cada ítem
+                    se incrementa automáticamente. Si el código de un ítem no existe en el
+                    sistema, se crea automáticamente con valores por defecto.
+                </p>
+
+                <h3 class="detalle-seccion-titulo">Cálculo de valores</h3>
+                <p class="texto-descripcion mb-3">
+                    Los campos <strong>Subtotal</strong>, <strong>IVA</strong> y
+                    <strong>Total</strong> se calculan automáticamente mientras se agregan
+                    ítems. El porcentaje de IVA predeterminado es 19% pero puede modificarse.
+                    Los valores calculados no son editables directamente — el sistema los
+                    recalcula al cambiar cantidades, precios o el porcentaje de IVA.
+                </p>
+
+                <h3 class="detalle-seccion-titulo">Activar / Desactivar factura</h3>
+                <p class="texto-descripcion mb-3">
+                    Solo el <strong>ADMIN</strong> puede cambiar el estado de una factura de
+                    compra. Se requiere observación obligatoria.
+                </p>
+                <div class="alert alert-warning d-flex gap-2" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill flex-shrink-0 mt-1"></i>
+                    <div>
+                        <strong>Efecto sobre el inventario:</strong>
+                        Al <strong>desactivar</strong> una factura, el stock de todos los ítems
+                        se revierte automáticamente (se restan las cantidades recibidas).
+                        Al <strong>activar</strong> una factura inactiva, el stock se restaura
+                        (se vuelven a sumar). Este mecanismo garantiza la coherencia del
+                        inventario cuando se anula una compra registrada por error.
+                    </div>
+                </div>
             </div>
+        </section>
 
-            <p class="detalle-seccion-titulo">Ventas</p>
-            <div class="tabla-contenedor mb-3">
-                <table class="tabla-sistema tabla-sistema-sm">
-                    <thead>
-                        <tr>
-                            <th scope="col">Acción</th>
-                            <th scope="col" class="text-center">ADMIN</th>
-                            <th scope="col" class="text-center">EMP</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>Ver lista de facturas de venta</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
-                        <tr><td>Ver detalle de factura</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
-                        <tr><td>Registrar factura de venta</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
-                        <tr><td>Exportar Excel de ventas</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
-                        <tr><td>Activar / Desactivar factura</td><td class="text-center text-success">✔</td><td class="text-center text-danger">✘</td></tr>
-                    </tbody>
-                </table>
+        <!-- Ventas -->
+        <section id="ventas" aria-labelledby="titulo-ventas">
+            <div class="card-detalle mb-3">
+                <h2 id="titulo-ventas" class="h6 fw-bold mb-2">
+                    <i class="bi bi-receipt icono-acento"></i> Ventas
+                </h2>
+                <p class="texto-descripcion mb-3">
+                    Registro de facturas de venta a clientes. Cada factura puede incluir
+                    múltiples ítems (productos e insumos). Al guardar, el stock de cada ítem
+                    se descuenta automáticamente. El sistema valida que haya stock suficiente
+                    antes de registrar cada ítem — si el stock es insuficiente, la factura
+                    completa no se guarda y se muestra un mensaje de error.
+                </p>
+
+                <h3 class="detalle-seccion-titulo">Métodos de pago</h3>
+                <p class="texto-descripcion mb-3">
+                    El sistema acepta dos métodos de pago: <strong>Efectivo</strong> y
+                    <strong>Transferencia Bancaria</strong>. Se puede registrar el nombre de
+                    la persona que recibe el pago en el campo <em>Recibido por</em>.
+                </p>
+
+                <h3 class="detalle-seccion-titulo">Cálculo de valores</h3>
+                <p class="texto-descripcion mb-3">
+                    Mismo mecanismo que en compras. Los campos <strong>IVA</strong> y
+                    <strong>Total</strong> se calculan automáticamente. El porcentaje de IVA
+                    predeterminado es 19%.
+                </p>
+
+                <h3 class="detalle-seccion-titulo">Activar / Desactivar factura</h3>
+                <p class="texto-descripcion mb-3">
+                    Solo el <strong>ADMIN</strong> puede cambiar el estado de una factura de
+                    venta. Se requiere observación obligatoria.
+                </p>
+                <div class="alert alert-warning d-flex gap-2" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill flex-shrink-0 mt-1"></i>
+                    <div>
+                        <strong>Efecto sobre el inventario:</strong>
+                        Al <strong>desactivar</strong> una factura, el stock de todos los ítems
+                        se restaura (se devuelven las cantidades vendidas).
+                        Al <strong>activar</strong> una factura inactiva, el sistema verifica
+                        primero que haya stock suficiente — si no lo hay, muestra un mensaje de
+                        error y la factura permanece inactiva. Si hay stock disponible, el
+                        descuento se re-aplica automáticamente.
+                    </div>
+                </div>
             </div>
+        </section>
 
-            <p class="detalle-seccion-titulo">Otras secciones</p>
-            <div class="tabla-contenedor">
-                <table class="tabla-sistema tabla-sistema-sm">
-                    <thead>
-                        <tr>
-                            <th scope="col">Sección</th>
-                            <th scope="col" class="text-center">ADMIN</th>
-                            <th scope="col" class="text-center">EMP</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>Dashboard</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
-                        <tr><td>Backup</td><td class="text-center text-success">✔</td><td class="text-center text-danger">✘</td></tr>
-                    </tbody>
-                </table>
+        <!-- Backup -->
+        <section id="backup" aria-labelledby="titulo-backup">
+            <div class="card-detalle mb-3">
+                <h2 id="titulo-backup" class="h6 fw-bold mb-2">
+                    <i class="bi bi-shield-check icono-acento"></i> Backup
+                </h2>
+                <p class="texto-descripcion">
+                    Solo accesible para el rol ADMIN. Permite generar copias de seguridad
+                    manuales de la base de datos completa y consultar el historial de backups
+                    generados automáticamente por el sistema.
+                </p>
             </div>
-        </div>
-
-        <!-- Sección Dashboard -->
-        <div class="card-detalle mb-3">
-            <h6 class="fw-bold mb-2">
-                <i class="bi bi-speedometer2 icono-acento"></i> Dashboard
-            </h6>
-            <p class="texto-descripcion">
-                El dashboard es la pantalla principal del sistema. Muestra cuatro métricas
-                en tiempo real: productos activos, insumos activos, clientes registrados y
-                ventas del mes actual. Debajo se muestran las últimas 5 ventas y las últimas
-                5 compras registradas. Si algún producto o insumo tiene stock por debajo del
-                mínimo o por encima del máximo establecido (DA-002), el sistema muestra alertas
-                de color naranja para que el administrador tome acción.
-            </p>
-        </div>
-
-        <!-- Sección Productos -->
-        <div class="card-detalle mb-3">
-            <h6 class="fw-bold mb-2">
-                <i class="bi bi-box-seam icono-acento"></i> Productos
-            </h6>
-            <p class="texto-descripcion mb-3">
-                Catálogo de dotación y elementos de protección personal (EPP) que la empresa
-                compra y vende. Cada producto tiene código único, categoría (Dotación / EPP),
-                género, talla opcional, precio de compra y precio de venta.
-            </p>
-
-            <p class="detalle-seccion-titulo">Niveles de stock</p>
-            <p class="texto-descripcion mb-3">
-                Cada producto tiene un stock mínimo y un stock máximo. El sistema calcula
-                automáticamente el nivel de inventario y lo muestra como indicador visual:
-            </p>
-            <div class="tabla-contenedor mb-3">
-                <table class="tabla-sistema tabla-sistema-sm">
-                    <thead>
-                        <tr>
-                            <th scope="col">Nivel</th>
-                            <th scope="col">Condición</th>
-                            <th scope="col">Acción recomendada</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td><span class="badge-nivel badge-nivel-bajo">BAJO</span></td><td>Stock actual ≤ stock mínimo</td><td>Reabastecer — aparece alerta en el Dashboard</td></tr>
-                        <tr><td><span class="badge-nivel badge-nivel-normal">NORMAL</span></td><td>Stock entre mínimo y máximo</td><td>Inventario en rango óptimo</td></tr>
-                        <tr><td><span class="badge-nivel badge-nivel-alto">ALTO</span></td><td>Stock actual ≥ stock máximo</td><td>Sobrestock — aparece alerta en el Dashboard</td></tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <p class="detalle-seccion-titulo">Modificar stock</p>
-            <p class="texto-descripcion mb-3">
-                En operación normal, el stock se actualiza automáticamente al registrar
-                compras y ventas. Si se requiere una corrección excepcional (ajuste de
-                inventario físico, pérdida, etc.), solo el <strong>ADMIN</strong> puede
-                modificar el stock desde el detalle del producto usando el botón
-                <strong>"Modificar stock"</strong>. El sistema exige ingresar un motivo
-                obligatorio que queda registrado en el historial de stock del producto.
-            </p>
-
-            <p class="detalle-seccion-titulo">Activar / Desactivar</p>
-            <p class="texto-descripcion">
-                Solo el <strong>ADMIN</strong> puede activar o desactivar un producto.
-                Al hacerlo, el sistema muestra un cuadro de confirmación donde es obligatorio
-                escribir una observación que explique el motivo. Los productos inactivos no
-                aparecen disponibles para nuevas ventas, pero su historial se conserva.
-            </p>
-        </div>
-
-        <!-- Sección Insumos -->
-        <div class="card-detalle mb-3">
-            <h6 class="fw-bold mb-2">
-                <i class="bi bi-droplet icono-acento"></i> Insumos
-            </h6>
-            <p class="texto-descripcion mb-3">
-                Catálogo de gases industriales y productos químicos que la empresa adquiere
-                para sus operaciones. Cada insumo tiene código único, subcategoría (Gas /
-                Químico), unidad de medida (Litros, Kilos, Unidades), precio de compra y
-                un proveedor principal de referencia.
-            </p>
-
-            <p class="detalle-seccion-titulo">Niveles de stock</p>
-            <p class="texto-descripcion mb-3">
-                Mismo sistema de umbrales que los productos (BAJO / NORMAL / ALTO).
-                Las alertas de stock bajo y sobrestock de insumos también se muestran en el Dashboard.
-            </p>
-
-            <p class="detalle-seccion-titulo">Proveedor principal</p>
-            <p class="texto-descripcion mb-3">
-                Cada insumo tiene asignado un proveedor principal. Este dato sirve de
-                referencia para saber a quién contactar cuando el stock esté bajo.
-                En el desplegable solo aparecen los proveedores con estado <strong>Activo</strong>.
-            </p>
-
-            <p class="detalle-seccion-titulo">Modificar stock</p>
-            <p class="texto-descripcion mb-3">
-                Igual que en productos: el stock se actualiza automáticamente con las compras.
-                Para correcciones manuales, solo el <strong>ADMIN</strong> puede modificar
-                el stock desde el detalle del insumo. El motivo es obligatorio y queda
-                registrado en el historial de stock.
-            </p>
-
-            <p class="detalle-seccion-titulo">Activar / Desactivar</p>
-            <p class="texto-descripcion">
-                Solo el <strong>ADMIN</strong> puede cambiar el estado de un insumo.
-                Se requiere observación obligatoria. Los insumos inactivos no están
-                disponibles para nuevas compras, pero su historial se conserva.
-            </p>
-        </div>
-
-        <!-- Sección Compras -->
-        <div class="card-detalle mb-3">
-            <h6 class="fw-bold mb-2">
-                <i class="bi bi-cart icono-acento"></i> Compras
-            </h6>
-            <p class="texto-descripcion mb-3">
-                Registro de facturas de compra a proveedores. Cada factura puede incluir
-                múltiples ítems (productos e insumos). Al guardar, el stock de cada ítem
-                se incrementa automáticamente. Si el código de un ítem no existe en el
-                sistema, se crea automáticamente con valores por defecto.
-            </p>
-
-            <p class="detalle-seccion-titulo">Cálculo de valores</p>
-            <p class="texto-descripcion mb-3">
-                Los campos <strong>Subtotal</strong>, <strong>IVA</strong> y
-                <strong>Total</strong> se calculan automáticamente mientras se agregan
-                ítems. El porcentaje de IVA predeterminado es 19% pero puede modificarse.
-                Los valores calculados no son editables directamente — el sistema los
-                recalcula al cambiar cantidades, precios o el porcentaje de IVA.
-            </p>
-
-            <p class="detalle-seccion-titulo">Activar / Desactivar factura</p>
-            <p class="texto-descripcion">
-                Solo el <strong>ADMIN</strong> puede cambiar el estado de una factura de
-                compra. Se requiere observación obligatoria. Al <strong>desactivar</strong>
-                una factura, el stock de todos los ítems se revierte (se restan las
-                cantidades recibidas). Al <strong>activar</strong> una factura inactiva,
-                el stock se restaura (se vuelven a sumar). Este mecanismo garantiza la
-                coherencia del inventario cuando se anula una compra registrada por error.
-            </p>
-        </div>
-
-        <!-- Sección Ventas -->
-        <div class="card-detalle mb-3">
-            <h6 class="fw-bold mb-2">
-                <i class="bi bi-receipt icono-acento"></i> Ventas
-            </h6>
-            <p class="texto-descripcion mb-3">
-                Registro de facturas de venta a clientes. Cada factura puede incluir
-                múltiples ítems (productos e insumos). Al guardar, el stock de cada ítem
-                se descuenta automáticamente. El sistema valida que haya stock suficiente
-                antes de registrar cada ítem — si el stock es insuficiente, la factura
-                completa no se guarda y se muestra un mensaje de error.
-            </p>
-
-            <p class="detalle-seccion-titulo">Métodos de pago</p>
-            <p class="texto-descripcion mb-3">
-                El sistema acepta dos métodos de pago: <strong>Efectivo</strong> y
-                <strong>Transferencia Bancaria</strong>. Se puede registrar el nombre de
-                la persona que recibe el pago en el campo <em>Recibido por</em>.
-            </p>
-
-            <p class="detalle-seccion-titulo">Cálculo de valores</p>
-            <p class="texto-descripcion mb-3">
-                Mismo mecanismo que en compras. Los campos <strong>IVA</strong> y
-                <strong>Total</strong> se calculan automáticamente. El porcentaje de IVA
-                predeterminado es 19%.
-            </p>
-
-            <p class="detalle-seccion-titulo">Activar / Desactivar factura</p>
-            <p class="texto-descripcion">
-                Solo el <strong>ADMIN</strong> puede cambiar el estado de una factura de
-                venta. Se requiere observación obligatoria. Al <strong>desactivar</strong>
-                una factura, el stock se restaura (se devuelven las cantidades vendidas).
-                Al <strong>activar</strong> una factura inactiva, el sistema verifica
-                primero que haya stock suficiente — si no lo hay, muestra un mensaje de
-                error y la factura permanece inactiva. Si hay stock disponible, el descuento
-                se re-aplica automáticamente.
-            </p>
-        </div>
-
-        <!-- Sección Backup -->
-        <div class="card-detalle mb-3">
-            <h6 class="fw-bold mb-2">
-                <i class="bi bi-shield-check icono-acento"></i> Backup
-            </h6>
-            <p class="texto-descripcion">
-                Solo accesible para el rol ADMIN. Permite generar copias de seguridad
-                manuales de la base de datos completa y consultar el historial de backups
-                generados automáticamente por el sistema.
-            </p>
-        </div>
+        </section>
 
     </div>
 </div>
