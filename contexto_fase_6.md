@@ -2,14 +2,14 @@
 
 > **Última actualización:** 29 de mayo de 2026
 > **Rama:** `main`
-> **Último commit:** `9295480`
+> **Último commit:** `cierre-insumos` (se actualiza tras el commit de cierre)
 
 ---
 
 ## Estado general
 
 - **Fase actual:** 6 — Pruebas y Verificación
-- **Módulo en progreso:** `insumos` (siguiente)
+- **Módulo en progreso:** `compras` (siguiente)
 - **Protocolo activo:** Protocolo de Veracidad — Fase 6 v1.1
 
 ---
@@ -18,43 +18,31 @@
 
 | Módulo | Estado | Commits clave |
 |--------|--------|---------------|
-| `core` | ✅ Aprobado — 2026-05-26 | `0604f36`, `d1e6771`, `429bd50`, `39bfcc5` |
+| `core` | ✅ Aprobado — 2026-05-26 | `39bfcc5` (cierre) |
 | `usuarios` | ✅ Aprobado — 2026-05-29 | `88d74b4` (cierre) |
 | `productos` | ✅ Aprobado — 2026-05-29 | `9295480` (cierre) |
-| `insumos` | ⏳ Pendiente | — |
+| `insumos` | ✅ Aprobado — 2026-05-29 | `cierre-insumos` (cierre) |
 | `compras` | ⏳ Pendiente | — |
 | `ventas` | ⏳ Pendiente | — |
 | `backup` | ⏳ Pendiente | — |
 
 ---
 
-## Módulo `productos` — resumen de lo hecho
+## Módulo `insumos` — resumen de lo hecho
 
-### Capas
-
-| Capa | Estado |
-|------|--------|
-| 1 — Modelo | ✅ Verificada |
-| 2 — Formulario | ✅ Verificada |
-| 3 — Vistas | ✅ Verificada |
-| 4 — Templates | ✅ Verificada |
-| 5 — Integración | ✅ Verificada |
-
-### Cambios principales implementados
-
-- Modelo `HistorialStock` dedicado (reemplaza texto en `observaciones`)
-- Auditoría `creado_por`/`modificado_por`/`modificado_en` en `Producto`
-- `MinValueValidator` en stock y precios a nivel modelo
-- `ProductoForm` con `es_edicion`: oculta `stock` al editar
-- Validación `precio_venta >= precio_compra` en `clean()`
-- `@require_POST` + observación obligatoria en `cambiar_estado_producto`
-- Búsqueda por código/nombre/categoría + paginación 15 registros
+- Modelo `HistorialStockInsumo` dedicado
+- Auditoría `creado_por`/`modificado_por`/`modificado_en` en `Insumo`
+- `MinValueValidator` en stock y precio a nivel modelo
+- `InsumoForm` con `es_edicion`: oculta `stock` al editar
+- Queryset de `proveedor` filtrado solo a activos
+- `@require_POST` + observación obligatoria en `cambiar_estado_insumo`
+- Búsqueda por código/nombre/subcategoría/proveedor + paginación 15 registros
 - Breadcrumbs en las 6 vistas
 - Modal confirmación (reutiliza `modal_estado.js`)
-- `get_categoria_display` en lista y detalle
+- `get_subcategoria_display` en lista y detalle
 - Historial de stock en vista de detalle
-- `'PRODUCTO'` agregado a `HistorialCambio.MODELO_CHOICES`
-- Mensaje de acceso denegado en `admin_requerido` (mejora global)
+- `'INSUMO'` agregado a `HistorialCambio.MODELO_CHOICES`
+- Manual del sistema: sección Productos e Insumos expandida + matriz de roles
 
 ---
 
@@ -70,10 +58,12 @@
 | `openpyxl` + `zoneinfo` para Excel | Sin `pytz` — Python 3.9+ tiene `zoneinfo` nativo |
 | Auditoría manual (sin `django-simple-history`) | Overkill para sistema interno |
 | `HistorialCambio` para trazabilidad de estado | Observación obligatoria en activar/desactivar |
-| `HistorialStock` como modelo dedicado en productos | Datos consultables; consistente con `HistorialCambio` |
-| `stock` solo editable en creación (no en edición) | Edición de stock va por `modificar_stock` con motivo obligatorio |
-| Tooltip del modal toggle via `title` nativo | `data-bs-toggle` ya usado por modal; no se puede duplicar |
+| `HistorialStock` / `HistorialStockInsumo` como modelos dedicados | Datos consultables; cada módulo tiene su propio modelo |
+| `stock` solo editable en creación (no en edición) | Edición de stock via modificar_stock con motivo obligatorio |
+| Tooltip del modal toggle via `title` nativo | `data-bs-toggle` ya usado por modal |
 | `MinValueValidator` en modelo Y en formulario | Modelo protege ORM directo; formulario da mensajes de usuario |
+| Queryset `proveedor` filtrado a activos en `InsumoForm` | Un insumo no debe asignarse a un proveedor inactivo |
+| `HistorialStockInsumo` independiente de `HistorialStock` | Módulos desacoplados; evita FK cruzada entre apps |
 
 ---
 
@@ -81,11 +71,8 @@
 
 | Archivo | Propósito |
 |---------|-----------|
-| `static/js/busqueda.js` | Búsqueda en tiempo real debounce 350ms |
-| `static/js/modal_estado.js` | Modal confirmación activar/desactivar (escucha `show.bs.modal`) |
-
-Ambos se cargan en `base.html` al final del `<body>`, después del Bootstrap bundle.
-El `modal_estado.js` es reutilizable: cualquier módulo que tenga `#modal-cambiar-estado` lo usa sin cambios.
+| `static/js/busqueda.js` | Búsqueda en tiempo real debounce 350ms (reutilizado en todos los módulos) |
+| `static/js/modal_estado.js` | Modal confirmación activar/desactivar (reutilizado en todos los módulos) |
 
 ---
 

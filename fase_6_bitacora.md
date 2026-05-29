@@ -4,7 +4,7 @@
 > **Fase:** 6 — Pruebas y Verificación Módulo por Módulo
 > **Autor:** Jorge Padilla
 > **Fecha de inicio:** 06 de mayo de 2026
-> **Última actualización:** 29 de mayo de 2026
+> **Última actualización:** 29 de mayo de 2026 (insumos)
 > **Commit de referencia (inicio Fase 6):** `b2a41ed`
 > **Protocolo:** Protocolo de Veracidad — Fase 6 v1.1
 
@@ -17,7 +17,7 @@
 | 1 | `core` | ✅ Aprobado | 2026-05-26 | `39bfcc5` |
 | 2 | `usuarios` | ✅ Aprobado | 2026-05-29 | `88d74b4` |
 | 3 | `productos` | ✅ Aprobado | 2026-05-29 | `9295480` |
-| 4 | `insumos` | ⏳ Pendiente | — | — |
+| 4 | `insumos` | ✅ Aprobado | 2026-05-29 | `cierre-insumos` |
 | 5 | `compras` | ⏳ Pendiente | — | — |
 | 6 | `ventas` | ⏳ Pendiente | — | — |
 | 7 | `backup` | ⏳ Pendiente | — | — |
@@ -461,4 +461,119 @@ Transversales: Búsqueda ✅ | Breadcrumbs ✅ | Paginación ✅
 
 ---
 
-*Bitácora actualizada el 29 de mayo de 2026.*
+## Módulo: `insumos` — ✅ Aprobado
+
+### Capas verificadas
+
+| Capa | Estado | Observaciones |
+|---|---|---|
+| 1 — Modelo | ✅ Verificada | Auditoría `creado_por`/`modificado_por`/`modificado_en` + modelo `HistorialStockInsumo` + `MinValueValidator` |
+| 2 — Formulario | ✅ Verificada | `es_edicion` oculta `stock` en edición, queryset solo proveedores activos, labels con tildes |
+| 3 — Vistas | ✅ Verificada | `@require_POST`, auditoría, búsqueda Q (código/nombre/subcategoría/proveedor), paginación, breadcrumbs, `HistorialStockInsumo` |
+| 4 — Templates | ✅ Verificada | POST modal estado, `aria-label`, `scope="col"`, badges con ícono, `get_subcategoria_display`, `linebreaksbr`, búsqueda, paginación, breadcrumbs |
+| 5 — Integración | ✅ Verificada | I-01 sidebar ✅ I-03 FK Proveedor con PROTECT ✅ I-04 dashboard contadores y alertas reales ✅ |
+
+### Incidencias detectadas y corregidas
+
+| Código | Severidad | Descripción | Commit | Estado |
+|---|---|---|---|---|
+| INC-I01 | **Alta** | `cambiar_estado_insumo` acepta GET — riesgo CSRF | `91a645d` | ✅ Corregido |
+| INC-I02 | Media | `stock` editable sin control en `InsumoForm` al editar | `fab1bed` | ✅ Corregido |
+| INC-I03 | Media | `proveedor` queryset muestra proveedores INACTIVOS | `fab1bed` | ✅ Corregido |
+| INC-I04 | Media | Sin auditoría `creado_por`/`modificado_por` | `a4e8087` + `60bb19a` | ✅ Corregido |
+| INC-I05 | Media | Sin paginación en lista | `60bb19a` | ✅ Corregido |
+| INC-I06 | Media | Sin búsqueda/filtro en lista | `60bb19a` | ✅ Corregido |
+| INC-I07 | Media | Sin breadcrumbs en 6 vistas | `60bb19a` | ✅ Corregido |
+| INC-I08 | Media | Sin `aria-label` en botones de tabla — WCAG 4.1.2 | `9fb4653` | ✅ Corregido |
+| INC-I09 | Media | `{{ insumo.subcategoria }}` sin `get_subcategoria_display` | `9fb4653` + `38f54c4` | ✅ Corregido |
+| INC-I10 | Media | `{{ insumo.observaciones }}` sin `\|linebreaksbr` | `38f54c4` | ✅ Corregido |
+| INC-I11 | Media | Sin auditoría en `cambiar_estado_insumo` | `91a645d` | ✅ Corregido |
+| INC-I12 | Media | `modificar_stock_insumo` escribe en `observaciones` (no estructurado) | `a4e8087` + `60bb19a` | ✅ Corregido |
+| INC-I13 | Media | `HistorialCambio.MODELO_CHOICES` sin `'INSUMO'` | `990adde` | ✅ Corregido |
+| INC-I14 | Baja | Sin `scope="col"` en `<th>` — WCAG 1.3.1 | `9fb4653` | ✅ Corregido |
+| INC-I15 | Baja | Badges de estado sin ícono — WCAG 1.4.1 | `9fb4653` | ✅ Corregido |
+| INC-I16 | Baja | Sin `MinValueValidator` a nivel modelo | `a4e8087` | ✅ Corregido |
+| INC-I17 | Baja | Labels sin tildes en formulario | `fab1bed` | ✅ Corregido |
+| INC-I18 | Baja | Historial de stock en `observaciones` (texto plano) | `a4e8087` + `60bb19a` | ✅ Corregido |
+
+### Solicitudes de cambio
+
+| Código | Tipo | Descripción | Commit | Estado |
+|---|---|---|---|---|
+| SC-I01 | Agregar | Modelo `HistorialStockInsumo` dedicado | `a4e8087` | ✅ Implementado |
+| SC-I02 | Agregar | Auditoría `creado_por`/`modificado_por`/`modificado_en` en `Insumo` | `a4e8087` | ✅ Implementado |
+| SC-I03 | Agregar | Queryset solo proveedores activos en `InsumoForm` | `fab1bed` | ✅ Implementado |
+| SC-I04 | Agregar | Breadcrumbs en 6 vistas | `60bb19a` | ✅ Implementado |
+| SC-I05 | Agregar | Búsqueda en tiempo real (código/nombre/subcategoría/proveedor) | `60bb19a` + `9fb4653` | ✅ Implementado |
+| SC-I06 | Agregar | Paginación 15 registros por página | `60bb19a` + `9fb4653` | ✅ Implementado |
+| SC-I07 | Agregar | Modal confirmación con observación obligatoria | `9fb4653` | ✅ Implementado |
+| SC-I08 | Agregar | Historial de stock en vista de detalle | `60bb19a` + `38f54c4` | ✅ Implementado |
+| SC-I09 | Agregar | `'INSUMO'` en `HistorialCambio.MODELO_CHOICES` | `990adde` | ✅ Implementado |
+| SC-I10 | Agregar | Manual del sistema — sección Productos e Insumos + matriz de roles | `405a2b9` | ✅ Implementado |
+
+### Decisiones tomadas en módulo `insumos`
+
+| Decisión | Justificación |
+|---|---|
+| `HistorialStockInsumo` como modelo independiente (no reutilizar `HistorialStock` de productos) | Módulos independientes; evita acoplamiento entre apps |
+| Queryset de `proveedor` filtrado a `estado='ACTIVO'` | Un insumo no debe asignarse a un proveedor inactivo |
+| Búsqueda incluye `proveedor__razon_social` y `proveedor__nombres` | Permite buscar por proveedor tanto empresas (NIT) como personas naturales |
+| `HistorialCambio` reutilizado para cambios de estado (modelo `'INSUMO'`) | DRY — misma infraestructura que usuarios y productos |
+
+### Nuevas dependencias instaladas
+
+Ninguna — reutilización completa del stack ya instalado.
+
+### Nuevos archivos y migraciones
+
+| Archivo | Descripción |
+|---|---|
+| `apps/insumos/migrations/0002_auditoria_historialstockinsumo_validadores.py` | Campos de auditoría + modelo `HistorialStockInsumo` + validadores |
+
+---
+
+## Resumen de commits — módulo `insumos`
+
+| Hash | Descripción | Fecha |
+|---|---|---|
+| `990adde` | feat(usuarios): agregar INSUMO a HistorialCambio.MODELO_CHOICES | 2026-05-29 |
+| `a4e8087` | feat(insumos): auditoria, HistorialStockInsumo y validadores | 2026-05-29 |
+| `fab1bed` | fix(insumos): InsumoForm — es_edicion, queryset activos y labels | 2026-05-29 |
+| `91a645d` | fix(insumos): cambiar_estado requiere POST — previene CSRF | 2026-05-29 |
+| `60bb19a` | feat(insumos): auditoria, HistorialStockInsumo, paginacion, busqueda, breadcrumbs | 2026-05-29 |
+| `9fb4653` | fix(insumos): POST estado, aria-label, scope, badges, busqueda y paginacion | 2026-05-29 |
+| `38f54c4` | fix(insumos): detalle con get_subcategoria_display, linebreaksbr, historial y auditoria | 2026-05-29 |
+| `143d870` | fix(insumos): stock condicional en formulario de edicion | 2026-05-29 |
+| `3b5fe7b` | fix(insumos): auditoria en admin y registro HistorialStockInsumo | 2026-05-29 |
+| `405a2b9` | feat(manual): matriz de roles y descripcion completa de productos e insumos | 2026-05-29 |
+
+---
+
+## Resumen de cierre — `insumos`
+
+```
+## Módulo: insumos — APROBADO ✅
+
+- Fecha de inicio de revisión: 2026-05-29
+- Fecha de aprobación: 2026-05-29
+- Commits del módulo:
+    990adde — feat(usuarios): INSUMO en HistorialCambio.MODELO_CHOICES
+    a4e8087 — feat(insumos): auditoria, HistorialStockInsumo y validadores
+    fab1bed — fix(insumos): InsumoForm — es_edicion, queryset activos y labels
+    91a645d — fix(insumos): cambiar_estado requiere POST — previene CSRF
+    60bb19a — feat(insumos): auditoria, HistorialStockInsumo, paginacion, busqueda, breadcrumbs
+    9fb4653 — fix(insumos): POST estado, aria-label, scope, badges, busqueda y paginacion
+    38f54c4 — fix(insumos): detalle — get_subcategoria_display, linebreaksbr, historial
+    143d870 — fix(insumos): stock condicional en formulario de edicion
+    3b5fe7b — fix(insumos): auditoria en admin y registro HistorialStockInsumo
+    405a2b9 — feat(manual): productos e insumos en manual del sistema
+
+Incidencias: 18 detectadas, 18 corregidas — 0 bugs en verificación
+Solicitudes de cambio: 10 implementadas
+Pendientes Fase 5 resueltos: N/A
+Transversales: Búsqueda ✅ | Breadcrumbs ✅ | Paginación ✅
+```
+
+---
+
+*Bitácora actualizada el 29 de mayo de 2026 — módulo insumos.*
