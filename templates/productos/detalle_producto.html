@@ -5,6 +5,8 @@
 
 {% block contenido %}
 
+{% include 'partials/breadcrumbs.html' %}
+
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h5 class="fw-bold mb-0">{{ producto.nombre }}</h5>
     <div class="d-flex gap-2">
@@ -35,7 +37,10 @@
             </div>
             {% endif %}
             <p class="fw-bold mb-1">{{ producto.codigo }}</p>
-            <span class="badge-estado badge-{{ producto.estado|lower }}">{{ producto.estado }}</span>
+            <span class="badge-estado badge-{{ producto.estado|lower }}">
+                <i class="bi bi-{% if producto.estado == 'ACTIVO' %}check-circle-fill{% else %}x-circle-fill{% endif %}"></i>
+                {{ producto.estado }}
+            </span>
             <div class="mt-2">
                 <span class="badge-nivel badge-nivel-{{ producto.nivel_stock|lower }}">
                     Stock {{ producto.nivel_stock }}
@@ -59,7 +64,7 @@
                 </div>
                 <div class="col-6">
                     <p class="detalle-label">Categoría</p>
-                    <p class="detalle-valor">{{ producto.categoria }}</p>
+                    <p class="detalle-valor">{{ producto.get_categoria_display }}</p>
                 </div>
                 <div class="col-6">
                     <p class="detalle-label">Género</p>
@@ -103,20 +108,60 @@
 
             {% if producto.observaciones %}
             <p class="detalle-seccion-titulo">Observaciones</p>
-            <div class="row g-3">
+            <div class="row g-3 mb-4">
                 <div class="col-12">
-                    <p class="detalle-valor">{{ producto.observaciones }}</p>
+                    <p class="detalle-valor">{{ producto.observaciones|linebreaksbr }}</p>
                 </div>
             </div>
             {% endif %}
 
             <p class="detalle-seccion-titulo">Metadatos</p>
-            <div class="row g-3">
+            <div class="row g-3 mb-4">
                 <div class="col-6">
                     <p class="detalle-label">Fecha de registro</p>
                     <p class="detalle-valor">{{ producto.fecha_creacion|date:"d/m/Y H:i" }}</p>
                 </div>
+                {% if producto.creado_por %}
+                <div class="col-6">
+                    <p class="detalle-label">Creado por</p>
+                    <p class="detalle-valor">{{ producto.creado_por.nombres }} {{ producto.creado_por.apellidos }}</p>
+                </div>
+                {% endif %}
+                {% if producto.modificado_por %}
+                <div class="col-6">
+                    <p class="detalle-label">Última modificación</p>
+                    <p class="detalle-valor">{{ producto.modificado_por.nombres }} {{ producto.modificado_por.apellidos }} — {{ producto.modificado_en|date:"d/m/Y H:i" }}</p>
+                </div>
+                {% endif %}
             </div>
+
+            {% if historial %}
+            <p class="detalle-seccion-titulo">Historial de stock</p>
+            <div class="tabla-contenedor">
+                <table class="tabla-sistema tabla-sistema-sm">
+                    <thead>
+                        <tr>
+                            <th scope="col">Fecha</th>
+                            <th scope="col">Anterior</th>
+                            <th scope="col">Nuevo</th>
+                            <th scope="col">Motivo</th>
+                            <th scope="col">Realizado por</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for h in historial %}
+                        <tr>
+                            <td>{{ h.fecha|date:"d/m/Y H:i" }}</td>
+                            <td>{{ h.stock_anterior }}</td>
+                            <td>{{ h.stock_nuevo }}</td>
+                            <td>{{ h.motivo }}</td>
+                            <td>{% if h.realizado_por %}{{ h.realizado_por.nombres }} {{ h.realizado_por.apellidos }}{% else %}—{% endif %}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
 
         </div>
     </div>
