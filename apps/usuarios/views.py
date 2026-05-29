@@ -4,6 +4,7 @@ from datetime import datetime
 from django.conf import settings
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
 from django.contrib import messages
 from django.views.decorators.http import require_POST
 from django.db.models import Q
@@ -32,14 +33,23 @@ def lista_usuarios(request):
             Q(apellidos__icontains=q) |
             Q(correo_electronico__icontains=q)
         )
-    return render(request, 'usuarios/lista_usuarios.html', {'usuarios': usuarios, 'q': q})
+    breadcrumbs = [
+        {'nombre': 'Dashboard', 'url': reverse('core:inicio')},
+        {'nombre': 'Usuarios', 'url': None},
+    ]
+    return render(request, 'usuarios/lista_usuarios.html', {'usuarios': usuarios, 'q': q, 'breadcrumbs': breadcrumbs})
 
 
 @login_requerido
 def detalle_usuario(request, id):
     """Muestra el detalle de un usuario específico."""
     usuario = get_object_or_404(Usuario, id=id)
-    return render(request, 'usuarios/detalle_usuario.html', {'usuario': usuario})
+    breadcrumbs = [
+        {'nombre': 'Dashboard', 'url': reverse('core:inicio')},
+        {'nombre': 'Usuarios', 'url': reverse('usuarios:lista_usuarios')},
+        {'nombre': f'{usuario.nombres} {usuario.apellidos}', 'url': None},
+    ]
+    return render(request, 'usuarios/detalle_usuario.html', {'usuario': usuario, 'breadcrumbs': breadcrumbs})
 
 
 @admin_requerido
@@ -57,7 +67,12 @@ def crear_usuario(request):
             return redirect('usuarios:lista_usuarios')
     else:
         form = UsuarioForm()
-    return render(request, 'usuarios/form_usuario.html', {'form': form, 'titulo': 'Crear usuario'})
+    breadcrumbs = [
+        {'nombre': 'Dashboard', 'url': reverse('core:inicio')},
+        {'nombre': 'Usuarios', 'url': reverse('usuarios:lista_usuarios')},
+        {'nombre': 'Crear usuario', 'url': None},
+    ]
+    return render(request, 'usuarios/form_usuario.html', {'form': form, 'titulo': 'Crear usuario', 'breadcrumbs': breadcrumbs})
 
 
 @admin_requerido
@@ -75,7 +90,13 @@ def editar_usuario(request, id):
             return redirect('usuarios:detalle_usuario', id=usuario.id)
     else:
         form = UsuarioEditarForm(instance=usuario)
-    return render(request, 'usuarios/form_usuario.html', {'form': form, 'titulo': 'Editar usuario'})
+    breadcrumbs = [
+        {'nombre': 'Dashboard', 'url': reverse('core:inicio')},
+        {'nombre': 'Usuarios', 'url': reverse('usuarios:lista_usuarios')},
+        {'nombre': f'{usuario.nombres} {usuario.apellidos}', 'url': reverse('usuarios:detalle_usuario', args=[usuario.id])},
+        {'nombre': 'Editar', 'url': None},
+    ]
+    return render(request, 'usuarios/form_usuario.html', {'form': form, 'titulo': 'Editar usuario', 'breadcrumbs': breadcrumbs})
 
 
 @admin_requerido
@@ -111,14 +132,24 @@ def lista_clientes(request):
             Q(ciudad__icontains=q) |
             Q(telefono__icontains=q)
         )
-    return render(request, 'usuarios/lista_clientes.html', {'clientes': clientes, 'q': q})
+    breadcrumbs = [
+        {'nombre': 'Dashboard', 'url': reverse('core:inicio')},
+        {'nombre': 'Clientes', 'url': None},
+    ]
+    return render(request, 'usuarios/lista_clientes.html', {'clientes': clientes, 'q': q, 'breadcrumbs': breadcrumbs})
 
 
 @login_requerido
 def detalle_cliente(request, id):
     """Muestra el detalle de un cliente específico."""
     cliente = get_object_or_404(Cliente, id=id)
-    return render(request, 'usuarios/detalle_cliente.html', {'cliente': cliente})
+    nombre_cliente = cliente.razon_social if cliente.tipo_identificacion == 'NIT' else f'{cliente.nombres} {cliente.apellidos}'
+    breadcrumbs = [
+        {'nombre': 'Dashboard', 'url': reverse('core:inicio')},
+        {'nombre': 'Clientes', 'url': reverse('usuarios:lista_clientes')},
+        {'nombre': nombre_cliente, 'url': None},
+    ]
+    return render(request, 'usuarios/detalle_cliente.html', {'cliente': cliente, 'breadcrumbs': breadcrumbs})
 
 
 @login_requerido
@@ -135,7 +166,12 @@ def crear_cliente(request):
             return redirect('usuarios:lista_clientes')
     else:
         form = ClienteForm()
-    return render(request, 'usuarios/form_cliente.html', {'form': form, 'titulo': 'Crear cliente'})
+    breadcrumbs = [
+        {'nombre': 'Dashboard', 'url': reverse('core:inicio')},
+        {'nombre': 'Clientes', 'url': reverse('usuarios:lista_clientes')},
+        {'nombre': 'Crear cliente', 'url': None},
+    ]
+    return render(request, 'usuarios/form_cliente.html', {'form': form, 'titulo': 'Crear cliente', 'breadcrumbs': breadcrumbs})
 
 
 @login_requerido
@@ -153,7 +189,14 @@ def editar_cliente(request, id):
             return redirect('usuarios:detalle_cliente', id=cliente.id)
     else:
         form = ClienteForm(instance=cliente)
-    return render(request, 'usuarios/form_cliente.html', {'form': form, 'titulo': 'Editar cliente'})
+    nombre_cliente = cliente.razon_social if cliente.tipo_identificacion == 'NIT' else f'{cliente.nombres} {cliente.apellidos}'
+    breadcrumbs = [
+        {'nombre': 'Dashboard', 'url': reverse('core:inicio')},
+        {'nombre': 'Clientes', 'url': reverse('usuarios:lista_clientes')},
+        {'nombre': nombre_cliente, 'url': reverse('usuarios:detalle_cliente', args=[cliente.id])},
+        {'nombre': 'Editar', 'url': None},
+    ]
+    return render(request, 'usuarios/form_cliente.html', {'form': form, 'titulo': 'Editar cliente', 'breadcrumbs': breadcrumbs})
 
 
 @admin_requerido
@@ -189,14 +232,24 @@ def lista_proveedores(request):
             Q(ciudad__icontains=q) |
             Q(telefono__icontains=q)
         )
-    return render(request, 'usuarios/lista_proveedores.html', {'proveedores': proveedores, 'q': q})
+    breadcrumbs = [
+        {'nombre': 'Dashboard', 'url': reverse('core:inicio')},
+        {'nombre': 'Proveedores', 'url': None},
+    ]
+    return render(request, 'usuarios/lista_proveedores.html', {'proveedores': proveedores, 'q': q, 'breadcrumbs': breadcrumbs})
 
 
 @login_requerido
 def detalle_proveedor(request, id):
     """Muestra el detalle de un proveedor específico."""
     proveedor = get_object_or_404(Proveedor, id=id)
-    return render(request, 'usuarios/detalle_proveedor.html', {'proveedor': proveedor})
+    nombre_proveedor = proveedor.razon_social if proveedor.tipo_identificacion == 'NIT' else f'{proveedor.nombres} {proveedor.apellidos}'
+    breadcrumbs = [
+        {'nombre': 'Dashboard', 'url': reverse('core:inicio')},
+        {'nombre': 'Proveedores', 'url': reverse('usuarios:lista_proveedores')},
+        {'nombre': nombre_proveedor, 'url': None},
+    ]
+    return render(request, 'usuarios/detalle_proveedor.html', {'proveedor': proveedor, 'breadcrumbs': breadcrumbs})
 
 
 @login_requerido
@@ -213,7 +266,12 @@ def crear_proveedor(request):
             return redirect('usuarios:lista_proveedores')
     else:
         form = ProveedorForm()
-    return render(request, 'usuarios/form_proveedor.html', {'form': form, 'titulo': 'Crear proveedor'})
+    breadcrumbs = [
+        {'nombre': 'Dashboard', 'url': reverse('core:inicio')},
+        {'nombre': 'Proveedores', 'url': reverse('usuarios:lista_proveedores')},
+        {'nombre': 'Crear proveedor', 'url': None},
+    ]
+    return render(request, 'usuarios/form_proveedor.html', {'form': form, 'titulo': 'Crear proveedor', 'breadcrumbs': breadcrumbs})
 
 
 @login_requerido
@@ -231,7 +289,14 @@ def editar_proveedor(request, id):
             return redirect('usuarios:detalle_proveedor', id=proveedor.id)
     else:
         form = ProveedorForm(instance=proveedor)
-    return render(request, 'usuarios/form_proveedor.html', {'form': form, 'titulo': 'Editar proveedor'})
+    nombre_proveedor = proveedor.razon_social if proveedor.tipo_identificacion == 'NIT' else f'{proveedor.nombres} {proveedor.apellidos}'
+    breadcrumbs = [
+        {'nombre': 'Dashboard', 'url': reverse('core:inicio')},
+        {'nombre': 'Proveedores', 'url': reverse('usuarios:lista_proveedores')},
+        {'nombre': nombre_proveedor, 'url': reverse('usuarios:detalle_proveedor', args=[proveedor.id])},
+        {'nombre': 'Editar', 'url': None},
+    ]
+    return render(request, 'usuarios/form_proveedor.html', {'form': form, 'titulo': 'Editar proveedor', 'breadcrumbs': breadcrumbs})
 
 
 @admin_requerido
