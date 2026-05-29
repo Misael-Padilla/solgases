@@ -90,6 +90,7 @@
                     <button type="button"
                             class="btn-tabla {% if producto.estado == 'ACTIVO' %}btn-desactivar{% else %}btn-activar{% endif %}"
                             aria-label="{% if producto.estado == 'ACTIVO' %}Desactivar{% else %}Activar{% endif %} {{ producto.nombre }}"
+                            title="{% if producto.estado == 'ACTIVO' %}Desactivar{% else %}Activar{% endif %}"
                             data-bs-toggle="modal"
                             data-bs-target="#modal-cambiar-estado"
                             data-nombre="{{ producto.nombre }}"
