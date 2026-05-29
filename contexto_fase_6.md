@@ -2,7 +2,7 @@
 
 > **Última actualización:** 29 de mayo de 2026
 > **Rama:** `main`
-> **Último commit:** `cierre-ventas` (se actualiza tras el commit de cierre)
+> **Último commit:** `132b459` (se actualiza tras el commit de cierre)
 
 ---
 
@@ -23,7 +23,7 @@
 | `productos` | ✅ Aprobado — 2026-05-29 | `9295480` (cierre) |
 | `insumos` | ✅ Aprobado — 2026-05-29 | `670218d` (cierre) |
 | `compras` | ✅ Aprobado — 2026-05-29 | `840fb04` (cierre) |
-| `ventas` | ✅ Aprobado — 2026-05-29 | `cierre-ventas` (cierre) |
+| `ventas` | ✅ Aprobado — 2026-05-29 | `132b459` (cierre) |
 | `backup` | ⏳ Pendiente | — |
 
 ---

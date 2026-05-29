@@ -19,7 +19,7 @@
 | 3 | `productos` | ✅ Aprobado | 2026-05-29 | `9295480` |
 | 4 | `insumos` | ✅ Aprobado | 2026-05-29 | `670218d` |
 | 5 | `compras` | ✅ Aprobado | 2026-05-29 | `840fb04` |
-| 6 | `ventas` | ✅ Aprobado | 2026-05-29 | `cierre-ventas` |
+| 6 | `ventas` | ✅ Aprobado | 2026-05-29 | `132b459` |
 | 7 | `backup` | ⏳ Pendiente | — | — |
 
 ---
