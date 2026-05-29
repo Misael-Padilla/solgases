@@ -68,6 +68,48 @@
                 </table>
             </div>
 
+            <p class="detalle-seccion-titulo">Productos</p>
+            <div class="tabla-contenedor mb-3">
+                <table class="tabla-sistema tabla-sistema-sm">
+                    <thead>
+                        <tr>
+                            <th scope="col">Acción</th>
+                            <th scope="col" class="text-center">ADMIN</th>
+                            <th scope="col" class="text-center">EMP</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Ver lista de productos</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
+                        <tr><td>Ver detalle de producto</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
+                        <tr><td>Crear producto</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
+                        <tr><td>Editar producto</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
+                        <tr><td>Activar / Desactivar producto</td><td class="text-center text-success">✔</td><td class="text-center text-danger">✘</td></tr>
+                        <tr><td>Modificar stock manualmente</td><td class="text-center text-success">✔</td><td class="text-center text-danger">✘</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p class="detalle-seccion-titulo">Insumos</p>
+            <div class="tabla-contenedor mb-3">
+                <table class="tabla-sistema tabla-sistema-sm">
+                    <thead>
+                        <tr>
+                            <th scope="col">Acción</th>
+                            <th scope="col" class="text-center">ADMIN</th>
+                            <th scope="col" class="text-center">EMP</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Ver lista de insumos</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
+                        <tr><td>Ver detalle de insumo</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
+                        <tr><td>Crear insumo</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
+                        <tr><td>Editar insumo</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
+                        <tr><td>Activar / Desactivar insumo</td><td class="text-center text-success">✔</td><td class="text-center text-danger">✘</td></tr>
+                        <tr><td>Modificar stock manualmente</td><td class="text-center text-success">✔</td><td class="text-center text-danger">✘</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
             <p class="detalle-seccion-titulo">Otras secciones</p>
             <div class="tabla-contenedor">
                 <table class="tabla-sistema tabla-sistema-sm">
@@ -80,7 +122,6 @@
                     </thead>
                     <tbody>
                         <tr><td>Dashboard</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
-                        <tr><td>Productos e Insumos</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
                         <tr><td>Compras</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
                         <tr><td>Ventas</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
                         <tr><td>Backup</td><td class="text-center text-success">✔</td><td class="text-center text-danger">✘</td></tr>
@@ -104,15 +145,96 @@
             </p>
         </div>
 
-        <!-- Sección Productos e Insumos -->
+        <!-- Sección Productos -->
         <div class="card-detalle mb-3">
             <h6 class="fw-bold mb-2">
-                <i class="bi bi-box-seam icono-acento"></i> Productos e Insumos
+                <i class="bi bi-box-seam icono-acento"></i> Productos
             </h6>
+            <p class="texto-descripcion mb-3">
+                Catálogo de dotación y elementos de protección personal (EPP) que la empresa
+                compra y vende. Cada producto tiene código único, categoría (Dotación / EPP),
+                género, talla opcional, precio de compra y precio de venta.
+            </p>
+
+            <p class="detalle-seccion-titulo">Niveles de stock</p>
+            <p class="texto-descripcion mb-3">
+                Cada producto tiene un stock mínimo y un stock máximo. El sistema calcula
+                automáticamente el nivel de inventario y lo muestra como indicador visual:
+            </p>
+            <div class="tabla-contenedor mb-3">
+                <table class="tabla-sistema tabla-sistema-sm">
+                    <thead>
+                        <tr>
+                            <th scope="col">Nivel</th>
+                            <th scope="col">Condición</th>
+                            <th scope="col">Acción recomendada</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><span class="badge-nivel badge-nivel-bajo">BAJO</span></td><td>Stock actual ≤ stock mínimo</td><td>Reabastecer — aparece alerta en el Dashboard</td></tr>
+                        <tr><td><span class="badge-nivel badge-nivel-normal">NORMAL</span></td><td>Stock entre mínimo y máximo</td><td>Inventario en rango óptimo</td></tr>
+                        <tr><td><span class="badge-nivel badge-nivel-alto">ALTO</span></td><td>Stock actual ≥ stock máximo</td><td>Sobrestock — aparece alerta en el Dashboard</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p class="detalle-seccion-titulo">Modificar stock</p>
+            <p class="texto-descripcion mb-3">
+                En operación normal, el stock se actualiza automáticamente al registrar
+                compras y ventas. Si se requiere una corrección excepcional (ajuste de
+                inventario físico, pérdida, etc.), solo el <strong>ADMIN</strong> puede
+                modificar el stock desde el detalle del producto usando el botón
+                <strong>"Modificar stock"</strong>. El sistema exige ingresar un motivo
+                obligatorio que queda registrado en el historial de stock del producto.
+            </p>
+
+            <p class="detalle-seccion-titulo">Activar / Desactivar</p>
             <p class="texto-descripcion">
-                El stock se actualiza automáticamente al registrar compras y ventas.
-                No se modifica manualmente en operación normal. Cada producto e insumo
-                tiene un stock mínimo y máximo que define el rango óptimo de inventario.
+                Solo el <strong>ADMIN</strong> puede activar o desactivar un producto.
+                Al hacerlo, el sistema muestra un cuadro de confirmación donde es obligatorio
+                escribir una observación que explique el motivo. Los productos inactivos no
+                aparecen disponibles para nuevas ventas, pero su historial se conserva.
+            </p>
+        </div>
+
+        <!-- Sección Insumos -->
+        <div class="card-detalle mb-3">
+            <h6 class="fw-bold mb-2">
+                <i class="bi bi-droplet icono-acento"></i> Insumos
+            </h6>
+            <p class="texto-descripcion mb-3">
+                Catálogo de gases industriales y productos químicos que la empresa adquiere
+                para sus operaciones. Cada insumo tiene código único, subcategoría (Gas /
+                Químico), unidad de medida (Litros, Kilos, Unidades), precio de compra y
+                un proveedor principal de referencia.
+            </p>
+
+            <p class="detalle-seccion-titulo">Niveles de stock</p>
+            <p class="texto-descripcion mb-3">
+                Mismo sistema de umbrales que los productos (BAJO / NORMAL / ALTO).
+                Las alertas de stock bajo y sobrestock de insumos también se muestran en el Dashboard.
+            </p>
+
+            <p class="detalle-seccion-titulo">Proveedor principal</p>
+            <p class="texto-descripcion mb-3">
+                Cada insumo tiene asignado un proveedor principal. Este dato sirve de
+                referencia para saber a quién contactar cuando el stock esté bajo.
+                En el desplegable solo aparecen los proveedores con estado <strong>Activo</strong>.
+            </p>
+
+            <p class="detalle-seccion-titulo">Modificar stock</p>
+            <p class="texto-descripcion mb-3">
+                Igual que en productos: el stock se actualiza automáticamente con las compras.
+                Para correcciones manuales, solo el <strong>ADMIN</strong> puede modificar
+                el stock desde el detalle del insumo. El motivo es obligatorio y queda
+                registrado en el historial de stock.
+            </p>
+
+            <p class="detalle-seccion-titulo">Activar / Desactivar</p>
+            <p class="texto-descripcion">
+                Solo el <strong>ADMIN</strong> puede cambiar el estado de un insumo.
+                Se requiere observación obligatoria. Los insumos inactivos no están
+                disponibles para nuevas compras, pero su historial se conserva.
             </p>
         </div>
 
