@@ -72,5 +72,11 @@ document.getElementById('formset-contenedor').addEventListener('input', function
     }
 });
 
+// Event delegation para eliminar ítems — evita onclick inline bloqueado por CSP
+document.getElementById('formset-contenedor').addEventListener('click', function (e) {
+    const btn = e.target.closest('.btn-eliminar-item');
+    if (btn) eliminarFila(btn);
+});
+
 // Agrega una fila vacia automaticamente al cargar la pagina
 document.getElementById('btn-agregar-item').click();
