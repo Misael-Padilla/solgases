@@ -110,6 +110,46 @@
                 </table>
             </div>
 
+            <p class="detalle-seccion-titulo">Compras</p>
+            <div class="tabla-contenedor mb-3">
+                <table class="tabla-sistema tabla-sistema-sm">
+                    <thead>
+                        <tr>
+                            <th scope="col">Acción</th>
+                            <th scope="col" class="text-center">ADMIN</th>
+                            <th scope="col" class="text-center">EMP</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Ver lista de facturas de compra</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
+                        <tr><td>Ver detalle de factura</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
+                        <tr><td>Registrar factura de compra</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
+                        <tr><td>Exportar Excel de compras</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
+                        <tr><td>Activar / Desactivar factura</td><td class="text-center text-success">✔</td><td class="text-center text-danger">✘</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p class="detalle-seccion-titulo">Ventas</p>
+            <div class="tabla-contenedor mb-3">
+                <table class="tabla-sistema tabla-sistema-sm">
+                    <thead>
+                        <tr>
+                            <th scope="col">Acción</th>
+                            <th scope="col" class="text-center">ADMIN</th>
+                            <th scope="col" class="text-center">EMP</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Ver lista de facturas de venta</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
+                        <tr><td>Ver detalle de factura</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
+                        <tr><td>Registrar factura de venta</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
+                        <tr><td>Exportar Excel de ventas</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
+                        <tr><td>Activar / Desactivar factura</td><td class="text-center text-success">✔</td><td class="text-center text-danger">✘</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
             <p class="detalle-seccion-titulo">Otras secciones</p>
             <div class="tabla-contenedor">
                 <table class="tabla-sistema tabla-sistema-sm">
@@ -122,8 +162,6 @@
                     </thead>
                     <tbody>
                         <tr><td>Dashboard</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
-                        <tr><td>Compras</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
-                        <tr><td>Ventas</td><td class="text-center text-success">✔</td><td class="text-center text-success">✔</td></tr>
                         <tr><td>Backup</td><td class="text-center text-success">✔</td><td class="text-center text-danger">✘</td></tr>
                     </tbody>
                 </table>
@@ -243,10 +281,30 @@
             <h6 class="fw-bold mb-2">
                 <i class="bi bi-cart icono-acento"></i> Compras
             </h6>
+            <p class="texto-descripcion mb-3">
+                Registro de facturas de compra a proveedores. Cada factura puede incluir
+                múltiples ítems (productos e insumos). Al guardar, el stock de cada ítem
+                se incrementa automáticamente. Si el código de un ítem no existe en el
+                sistema, se crea automáticamente con valores por defecto.
+            </p>
+
+            <p class="detalle-seccion-titulo">Cálculo de valores</p>
+            <p class="texto-descripcion mb-3">
+                Los campos <strong>Subtotal</strong>, <strong>IVA</strong> y
+                <strong>Total</strong> se calculan automáticamente mientras se agregan
+                ítems. El porcentaje de IVA predeterminado es 19% pero puede modificarse.
+                Los valores calculados no son editables directamente — el sistema los
+                recalcula al cambiar cantidades, precios o el porcentaje de IVA.
+            </p>
+
+            <p class="detalle-seccion-titulo">Activar / Desactivar factura</p>
             <p class="texto-descripcion">
-                Al registrar una factura de compra, el stock de los productos e insumos
-                incluidos en los detalles se incrementa automáticamente. Si el código
-                de un ítem no existe en el sistema, se crea automáticamente.
+                Solo el <strong>ADMIN</strong> puede cambiar el estado de una factura de
+                compra. Se requiere observación obligatoria. Al <strong>desactivar</strong>
+                una factura, el stock de todos los ítems se revierte (se restan las
+                cantidades recibidas). Al <strong>activar</strong> una factura inactiva,
+                el stock se restaura (se vuelven a sumar). Este mecanismo garantiza la
+                coherencia del inventario cuando se anula una compra registrada por error.
             </p>
         </div>
 
@@ -255,10 +313,37 @@
             <h6 class="fw-bold mb-2">
                 <i class="bi bi-receipt icono-acento"></i> Ventas
             </h6>
+            <p class="texto-descripcion mb-3">
+                Registro de facturas de venta a clientes. Cada factura puede incluir
+                múltiples ítems (productos e insumos). Al guardar, el stock de cada ítem
+                se descuenta automáticamente. El sistema valida que haya stock suficiente
+                antes de registrar cada ítem — si el stock es insuficiente, la factura
+                completa no se guarda y se muestra un mensaje de error.
+            </p>
+
+            <p class="detalle-seccion-titulo">Métodos de pago</p>
+            <p class="texto-descripcion mb-3">
+                El sistema acepta dos métodos de pago: <strong>Efectivo</strong> y
+                <strong>Transferencia Bancaria</strong>. Se puede registrar el nombre de
+                la persona que recibe el pago en el campo <em>Recibido por</em>.
+            </p>
+
+            <p class="detalle-seccion-titulo">Cálculo de valores</p>
+            <p class="texto-descripcion mb-3">
+                Mismo mecanismo que en compras. Los campos <strong>IVA</strong> y
+                <strong>Total</strong> se calculan automáticamente. El porcentaje de IVA
+                predeterminado es 19%.
+            </p>
+
+            <p class="detalle-seccion-titulo">Activar / Desactivar factura</p>
             <p class="texto-descripcion">
-                Al registrar una factura de venta, el stock se descuenta automáticamente.
-                El sistema valida que haya stock suficiente antes de registrar la venta.
-                Solo se aceptan pagos en efectivo o transferencia bancaria.
+                Solo el <strong>ADMIN</strong> puede cambiar el estado de una factura de
+                venta. Se requiere observación obligatoria. Al <strong>desactivar</strong>
+                una factura, el stock se restaura (se devuelven las cantidades vendidas).
+                Al <strong>activar</strong> una factura inactiva, el sistema verifica
+                primero que haya stock suficiente — si no lo hay, muestra un mensaje de
+                error y la factura permanece inactiva. Si hay stock disponible, el descuento
+                se re-aplica automáticamente.
             </p>
         </div>
 
