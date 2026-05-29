@@ -1,6 +1,10 @@
+from io import BytesIO
+from datetime import datetime
+
 from django.core.paginator import Paginator
 from django.db import transaction
 from django.db.models import Q
+from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.urls import reverse
@@ -12,6 +16,10 @@ from apps.productos.models import Producto, HistorialStock
 from apps.insumos.models import Insumo, HistorialStockInsumo
 from apps.usuarios.decoradores import login_requerido, admin_requerido
 from apps.usuarios.models import HistorialCambio
+from apps.usuarios.views import (
+    _estilo_excel, _ajustar_columnas,
+    _nombre_usuario, _formato_fecha, _insertar_encabezado,
+)
 
 _POR_PAGINA = 15
 
@@ -168,3 +176,74 @@ def cambiar_estado_compra(request, id):
     verb = 'desactivada' if accion == 'DESACTIVAR' else 'activada'
     messages.success(request, f'Factura {compra.numero_factura} {verb}. Stock {msg_stock}.')
     return redirect('compras:lista_compras')
+
+
+@login_requerido
+def exportar_compras_excel(request):
+    """Genera y descarga el reporte Excel de facturas de compra."""
+    import openpyxl
+    from openpyxl.styles import Alignment
+
+    compras = FacturaCompra.objects.select_related(
+        'proveedor', 'registrado_por'
+    ).order_by('-fecha_registro')
+
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = 'Compras'
+
+    cabecera, dato, borde, _ = _estilo_excel(wb)
+
+    encabezados = [
+        'N° Factura', 'Proveedor', 'Registrado por',
+        'Fecha factura', 'Fecha registro',
+        'Subtotal', 'IVA (%)', 'IVA ($)', 'Total',
+        'Estado', 'Observaciones',
+    ]
+    fila_enc = _insertar_encabezado(
+        ws, 'REPORTE DE COMPRAS', _nombre_usuario(request.user), len(encabezados)
+    )
+    ws.freeze_panes = f'A{fila_enc + 1}'
+
+    for i, enc in enumerate(encabezados, 1):
+        cell = ws.cell(row=fila_enc, column=i, value=enc)
+        cell.style = cabecera
+    ws.row_dimensions[fila_enc].height = 30
+
+    data_row = fila_enc + 1
+    for c in compras:
+        row_data = [
+            c.numero_factura,
+            str(c.proveedor),
+            _nombre_usuario(c.registrado_por),
+            _formato_fecha(c.fecha_factura),
+            _formato_fecha(c.fecha_registro),
+            float(c.subtotal),
+            float(c.iva_porcentaje),
+            float(c.iva),
+            float(c.total),
+            c.estado,
+            c.observaciones or '—',
+        ]
+        for col, val in enumerate(row_data, 1):
+            cell = ws.cell(row=data_row, column=col, value=val)
+            cell.border = borde
+            cell.alignment = Alignment(vertical='center')
+        data_row += 1
+
+    _ajustar_columnas(ws)
+    wb.properties.title   = 'Reporte de Compras — SOLGASES'
+    wb.properties.creator = _nombre_usuario(request.user)
+
+    output = BytesIO()
+    wb.save(output)
+    output.seek(0)
+
+    nombre_archivo = f'compras_{datetime.now().strftime("%Y%m%d_%H%M%S")}.xlsx'
+    response = HttpResponse(
+        output.getvalue(),
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+    response['Content-Disposition'] = f'attachment; filename="{nombre_archivo}"'
+    response['Cache-Control'] = 'no-cache, no-store, must-revalidate, private'
+    return response
