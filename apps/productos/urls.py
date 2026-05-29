@@ -20,4 +20,7 @@ urlpatterns = [
     # Modificar stock manualmente — solo ADMIN
     path('<int:id>/stock/', views.modificar_stock, name='modificar_stock'),
 
+    # Exportar Excel
+    path('exportar/', views.exportar_productos_excel, name='exportar_productos'),
+
 ]

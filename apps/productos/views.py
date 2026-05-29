@@ -1,5 +1,9 @@
+from io import BytesIO
+from datetime import datetime
+
 from django.core.paginator import Paginator
 from django.db.models import Q
+from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.urls import reverse
@@ -9,6 +13,10 @@ from apps.productos.models import Producto, HistorialStock
 from apps.productos.forms import ProductoForm, StockForm
 from apps.usuarios.decoradores import login_requerido, admin_requerido
 from apps.usuarios.models import HistorialCambio
+from apps.usuarios.views import (
+    _estilo_excel, _ajustar_columnas,
+    _nombre_usuario, _formato_fecha, _insertar_encabezado,
+)
 
 _POR_PAGINA = 15
 
@@ -133,6 +141,83 @@ def cambiar_estado_producto(request, id):
         realizado_por=request.user,
     )
     return redirect('productos:lista_productos')
+
+
+@login_requerido
+def exportar_productos_excel(request):
+    """Genera y descarga el reporte Excel de productos."""
+    import openpyxl
+    from openpyxl.styles import Alignment
+
+    productos = Producto.objects.select_related(
+        'creado_por', 'modificado_por'
+    ).order_by('codigo')
+
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = 'Productos'
+
+    cabecera, dato, borde, _ = _estilo_excel(wb)
+
+    encabezados = [
+        'Código', 'Nombre', 'Categoría', 'Género', 'Talla',
+        'Precio compra', 'Precio venta',
+        'Stock', 'Stock mínimo', 'Stock máximo', 'Nivel stock',
+        'Estado', 'Fecha registro',
+        'Creado por', 'Modificado por', 'Última modificación',
+    ]
+    fila_enc = _insertar_encabezado(
+        ws, 'REPORTE DE PRODUCTOS', _nombre_usuario(request.user), len(encabezados)
+    )
+    ws.freeze_panes = f'A{fila_enc + 1}'
+
+    for i, enc in enumerate(encabezados, 1):
+        cell = ws.cell(row=fila_enc, column=i, value=enc)
+        cell.style = cabecera
+    ws.row_dimensions[fila_enc].height = 30
+
+    data_row = fila_enc + 1
+    for p in productos:
+        row_data = [
+            p.codigo,
+            p.nombre,
+            p.get_categoria_display(),
+            p.genero,
+            p.talla or '—',
+            float(p.precio_compra),
+            float(p.precio_venta),
+            p.stock,
+            p.stock_minimo,
+            p.stock_maximo,
+            p.nivel_stock,
+            p.estado,
+            _formato_fecha(p.fecha_creacion),
+            _nombre_usuario(p.creado_por),
+            _nombre_usuario(p.modificado_por),
+            _formato_fecha(p.modificado_en),
+        ]
+        for col, val in enumerate(row_data, 1):
+            c = ws.cell(row=data_row, column=col, value=val)
+            c.border = borde
+            c.alignment = Alignment(vertical='center')
+        data_row += 1
+
+    _ajustar_columnas(ws)
+    wb.properties.title   = 'Reporte de Productos — SOLGASES'
+    wb.properties.creator = _nombre_usuario(request.user)
+
+    output = BytesIO()
+    wb.save(output)
+    output.seek(0)
+
+    nombre_archivo = f'productos_{datetime.now().strftime("%Y%m%d_%H%M%S")}.xlsx'
+    response = HttpResponse(
+        output.getvalue(),
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+    response['Content-Disposition'] = f'attachment; filename="{nombre_archivo}"'
+    response['Cache-Control'] = 'no-cache, no-store, must-revalidate, private'
+    return response
 
 
 @admin_requerido

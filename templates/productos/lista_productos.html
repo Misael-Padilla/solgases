@@ -7,10 +7,16 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h5 class="fw-bold mb-0">Listado de productos</h5>
-    <a href="{% url 'productos:crear_producto' %}" class="btn-accion"
-       data-bs-toggle="tooltip" data-bs-placement="top" title="Nuevo producto">
-        <i class="bi bi-plus-lg"></i> Nuevo producto
-    </a>
+    <div class="d-flex gap-2">
+        <a href="{% url 'productos:exportar_productos' %}" class="btn-exportar"
+           data-bs-toggle="tooltip" data-bs-placement="top" title="Exportar a Excel">
+            <i class="bi bi-file-earmark-excel"></i> Exportar Excel
+        </a>
+        <a href="{% url 'productos:crear_producto' %}" class="btn-accion"
+           data-bs-toggle="tooltip" data-bs-placement="top" title="Nuevo producto">
+            <i class="bi bi-plus-lg"></i> Nuevo producto
+        </a>
+    </div>
 </div>
 
 <!-- Barra de búsqueda -->
