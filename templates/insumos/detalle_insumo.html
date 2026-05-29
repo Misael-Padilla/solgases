@@ -35,7 +35,10 @@
             </div>
             {% endif %}
             <p class="fw-bold mb-1">{{ insumo.codigo }}</p>
-            <span class="badge-estado badge-{{ insumo.estado|lower }}">{{ insumo.estado }}</span>
+            <span class="badge-estado badge-{{ insumo.estado|lower }}">
+                <i class="bi bi-{% if insumo.estado == 'ACTIVO' %}check-circle-fill{% else %}x-circle-fill{% endif %}"></i>
+                {{ insumo.estado }}
+            </span>
             <div class="mt-2">
                 <span class="badge-nivel badge-nivel-{{ insumo.nivel_stock|lower }}">
                     Stock {{ insumo.nivel_stock }}
@@ -60,7 +63,7 @@
                 </div>
                 <div class="col-6">
                     <p class="detalle-label">Subcategoría</p>
-                    <p class="detalle-valor">{{ insumo.subcategoria }}</p>
+                    <p class="detalle-valor">{{ insumo.get_subcategoria_display }}</p>
                 </div>
                 <div class="col-6">
                     <p class="detalle-label">Unidad de medida</p>
@@ -103,18 +106,58 @@
             <p class="detalle-seccion-titulo">Observaciones</p>
             <div class="row g-3 mb-4">
                 <div class="col-12">
-                    <p class="detalle-valor">{{ insumo.observaciones }}</p>
+                    <p class="detalle-valor">{{ insumo.observaciones|linebreaksbr }}</p>
                 </div>
             </div>
             {% endif %}
 
             <p class="detalle-seccion-titulo">Metadatos</p>
-            <div class="row g-3">
+            <div class="row g-3 mb-4">
                 <div class="col-6">
                     <p class="detalle-label">Fecha de registro</p>
                     <p class="detalle-valor">{{ insumo.fecha_creacion|date:"d/m/Y H:i" }}</p>
                 </div>
+                {% if insumo.creado_por %}
+                <div class="col-6">
+                    <p class="detalle-label">Creado por</p>
+                    <p class="detalle-valor">{{ insumo.creado_por.nombres }} {{ insumo.creado_por.apellidos }}</p>
+                </div>
+                {% endif %}
+                {% if insumo.modificado_por %}
+                <div class="col-6">
+                    <p class="detalle-label">Última modificación</p>
+                    <p class="detalle-valor">{{ insumo.modificado_por.nombres }} {{ insumo.modificado_por.apellidos }} — {{ insumo.modificado_en|date:"d/m/Y H:i" }}</p>
+                </div>
+                {% endif %}
             </div>
+
+            {% if historial %}
+            <p class="detalle-seccion-titulo">Historial de stock</p>
+            <div class="tabla-contenedor">
+                <table class="tabla-sistema tabla-sistema-sm">
+                    <thead>
+                        <tr>
+                            <th scope="col">Fecha</th>
+                            <th scope="col">Anterior</th>
+                            <th scope="col">Nuevo</th>
+                            <th scope="col">Motivo</th>
+                            <th scope="col">Realizado por</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for h in historial %}
+                        <tr>
+                            <td>{{ h.fecha|date:"d/m/Y H:i" }}</td>
+                            <td>{{ h.stock_anterior }}</td>
+                            <td>{{ h.stock_nuevo }}</td>
+                            <td>{{ h.motivo }}</td>
+                            <td>{% if h.realizado_por %}{{ h.realizado_por.nombres }} {{ h.realizado_por.apellidos }}{% else %}—{% endif %}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
 
         </div>
     </div>
