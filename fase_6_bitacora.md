@@ -18,7 +18,7 @@
 | 2 | `usuarios` | ✅ Aprobado | 2026-05-29 | `88d74b4` |
 | 3 | `productos` | ✅ Aprobado | 2026-05-29 | `9295480` |
 | 4 | `insumos` | ✅ Aprobado | 2026-05-29 | `670218d` |
-| 5 | `compras` | ⏳ Pendiente | — | — |
+| 5 | `compras` | ✅ Aprobado | 2026-05-29 | `cierre-compras` |
 | 6 | `ventas` | ⏳ Pendiente | — | — |
 | 7 | `backup` | ⏳ Pendiente | — | — |
 
@@ -576,4 +576,113 @@ Transversales: Búsqueda ✅ | Breadcrumbs ✅ | Paginación ✅
 
 ---
 
-*Bitácora actualizada el 29 de mayo de 2026 — módulo insumos.*
+---
+
+## Módulo: `compras` — ✅ Aprobado
+
+### Capas verificadas
+
+| Capa | Estado | Observaciones |
+|---|---|---|
+| 1 — Modelo | ✅ Verificada | `HistorialCambio` con `'COMPRA'`, sin migración requerida |
+| 2 — Formulario | ✅ Verificada | Queryset proveedores activos, labels con tildes, validación monetaria existente |
+| 3 — Vistas | ✅ Verificada | `@require_POST`, reversión de stock al desactivar (Pendiente Fase 5 resuelto), `HistorialCambio`, paginación, búsqueda, breadcrumbs |
+| 4 — Templates | ✅ Verificada | POST modal estado, sin `onclick` inline (CSP), sin mensajes duplicados, `get_tipo_item_display`, `linebreaksbr`, `scope="col"`, badges con ícono, exportar Excel |
+| 5 — Integración | ✅ Verificada | I-01 sidebar ✅ I-02 stock actualizado por `DetalleCompra.save()` ✅ I-03 FK Proveedor PROTECT ✅ I-04 dashboard últimas compras ✅ |
+
+### Incidencias detectadas y corregidas
+
+| Código | Severidad | Descripción | Commit | Estado |
+|---|---|---|---|---|
+| INC-C01 | **Alta** | `cambiar_estado_compra` acepta GET — CSRF | `9fa2349` | ✅ Corregido |
+| INC-C02 | **Alta** | `onclick="eliminarFila(this)"` — viola CSP activa | `8e77213` | ✅ Corregido |
+| INC-C03 | **Alta** | `<a href>` toggle en `detalle_compra.html` — GET | `3665d42` | ✅ Corregido |
+| INC-C04 | Media | `HistorialCambio.MODELO_CHOICES` sin `'COMPRA'` | `0073de1` | ✅ Corregido |
+| INC-C05 | Media | Sin observación obligatoria en cambiar estado | `9fa2349` | ✅ Corregido |
+| INC-C06 | Media | Sin reversión de stock al desactivar (Pendiente Fase 5) | `d58430b` | ✅ Corregido |
+| INC-C07 | Media | Sin `HistorialCambio` al cambiar estado | `d58430b` | ✅ Corregido |
+| INC-C08 | Media | Sin paginación en lista | `d58430b` | ✅ Corregido |
+| INC-C09 | Media | Sin búsqueda en lista | `d58430b` | ✅ Corregido |
+| INC-C10 | Media | Sin breadcrumbs en 3 vistas | `d58430b` | ✅ Corregido |
+| INC-C11 | Media | Mensajes flash duplicados en lista y form | `0fc6f27` + `8f255aa` | ✅ Corregido |
+| INC-C12 | Media | Sin `aria-label` en botones — WCAG 4.1.2 | `0fc6f27` | ✅ Corregido |
+| INC-C13 | Media | `get_tipo_item_display` no usado | `3665d42` | ✅ Corregido |
+| INC-C14 | Media | `{{ compra.observaciones }}` sin `\|linebreaksbr` | `3665d42` | ✅ Corregido |
+| INC-C15 | Media | `proveedor` queryset sin filtrar | `ce1b55c` | ✅ Corregido |
+| INC-C16 | Baja | Sin `scope="col"` en `<th>` — WCAG 1.3.1 | `0fc6f27` + `3665d42` | ✅ Corregido |
+| INC-C17 | Baja | Badges de estado sin ícono — WCAG 1.4.1 | `0fc6f27` + `3665d42` | ✅ Corregido |
+| INC-C18 | Baja | Estilo inline en `detalle_compra.html` | `e4cdbb8` | ✅ Corregido (verificación) |
+| INC-C19 | Baja | Labels sin tildes en formulario | `ce1b55c` | ✅ Corregido |
+
+### Solicitudes de cambio
+
+| Código | Tipo | Descripción | Commit | Estado |
+|---|---|---|---|---|
+| SC-C01 | Agregar | Reversión de stock al desactivar (Pendiente Fase 5) | `d58430b` | ✅ Implementado |
+| SC-C02 | Agregar | Event delegation para `.btn-eliminar-item` (CSP) | `8e77213` | ✅ Implementado |
+| SC-C03 | Agregar | Paginación + búsqueda + breadcrumbs | `d58430b` | ✅ Implementado |
+| SC-C04 | Agregar | Modal confirmación con observación obligatoria | `0fc6f27` + `3665d42` | ✅ Implementado |
+| SC-C05 | Agregar | Exportación Excel de facturas de compra | `af023f5` | ✅ Implementado |
+| SC-C06 | Diferido | PDF de factura de compra | — | ⏳ Diferido a Ventas |
+
+### Decisiones tomadas en módulo `compras`
+
+| Decisión | Justificación |
+|---|---|
+| Reversión de stock con `max(0, stock - cantidad)` | Evita stock negativo si el stock fue modificado después de la compra |
+| Reactivación restaura stock (`stock + cantidad`) | Simetría con la desactivación |
+| `HistorialStock`/`HistorialStockInsumo` creados en la reversión | Trazabilidad completa de cada movimiento de stock |
+| PDF diferido | Se implementará junto con ventas para consistencia de layout |
+| Event delegation en JS en vez de `onclick` | CSP bloquea `script-src 'unsafe-inline'`; event delegation es el patrón correcto |
+
+---
+
+## Resumen de commits — módulo `compras`
+
+| Hash | Descripción | Fecha |
+|---|---|---|
+| `0073de1` | feat(usuarios): agregar COMPRA a HistorialCambio.MODELO_CHOICES | 2026-05-29 |
+| `8e77213` | fix(compras): event delegation btn-eliminar-item — previene violacion CSP | 2026-05-29 |
+| `ce1b55c` | fix(compras): FacturaCompraForm — queryset proveedores activos y labels | 2026-05-29 |
+| `9fa2349` | fix(compras): cambiar_estado requiere POST — previene CSRF | 2026-05-29 |
+| `d58430b` | feat(compras): reversion stock, HistorialCambio, paginacion, busqueda, breadcrumbs | 2026-05-29 |
+| `0fc6f27` | fix(compras): lista — POST estado, aria-label, scope, badges, busqueda, paginacion | 2026-05-29 |
+| `3665d42` | fix(compras): detalle — modal estado, tipo_item display, linebreaksbr, scope, badges | 2026-05-29 |
+| `8f255aa` | fix(compras): form — eliminar mensajes duplicados y atributo onclick | 2026-05-29 |
+| `1f053f6` | feat(productos): exportacion Excel de productos | 2026-05-29 |
+| `44c2ac9` | feat(insumos): exportacion Excel de insumos | 2026-05-29 |
+| `af023f5` | feat(compras): exportacion Excel de facturas de compra | 2026-05-29 |
+| `e4cdbb8` | fix(compras): eliminar style inline en boton toggle del detalle | 2026-05-29 |
+
+---
+
+## Resumen de cierre — `compras`
+
+```
+## Módulo: compras — APROBADO ✅
+
+- Fecha de inicio de revisión: 2026-05-29
+- Fecha de aprobación: 2026-05-29
+- Commits del módulo:
+    0073de1 — feat(usuarios): COMPRA en HistorialCambio.MODELO_CHOICES
+    8e77213 — fix(compras): event delegation btn-eliminar-item — CSP
+    ce1b55c — fix(compras): FacturaCompraForm — queryset activos y labels
+    9fa2349 — fix(compras): cambiar_estado requiere POST — previene CSRF
+    d58430b — feat(compras): reversion stock, HistorialCambio, paginacion, busqueda
+    0fc6f27 — fix(compras): lista completa
+    3665d42 — fix(compras): detalle completo
+    8f255aa — fix(compras): form limpiado
+    1f053f6 — feat(productos): exportacion Excel
+    44c2ac9 — feat(insumos): exportacion Excel
+    af023f5 — feat(compras): exportacion Excel
+    e4cdbb8 — fix(compras): style inline eliminado
+
+Incidencias: 19 detectadas, 19 corregidas (18 análisis + 1 verificación)
+Solicitudes de cambio: 5 implementadas, 1 diferida (PDF)
+Pendientes Fase 5 resueltos: Reversión de stock al desactivar ✅
+Transversales: Búsqueda ✅ | Breadcrumbs ✅ | Paginación ✅ | Excel ✅
+```
+
+---
+
+*Bitácora actualizada el 29 de mayo de 2026 — módulo compras.*
