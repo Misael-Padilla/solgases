@@ -7,24 +7,52 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h5 class="fw-bold mb-0">Listado de insumos</h5>
-    <a href="{% url 'insumos:crear_insumo' %}" class="btn-accion">
+    <a href="{% url 'insumos:crear_insumo' %}" class="btn-accion"
+       data-bs-toggle="tooltip" data-bs-placement="top" title="Nuevo insumo">
         <i class="bi bi-plus-lg"></i> Nuevo insumo
     </a>
 </div>
 
-<div class="tabla-contenedor">
+<!-- Barra de búsqueda -->
+<form method="get" role="search" class="barra-busqueda mb-3">
+    <div class="busqueda-grupo">
+        <i class="bi bi-search busqueda-icono"></i>
+        <input type="search" name="q" value="{{ q }}" class="busqueda-input"
+               placeholder="Buscar por código, nombre, subcategoría o proveedor..."
+               aria-label="Buscar insumos">
+        <a href="{% url 'insumos:lista_insumos' %}"
+           class="busqueda-limpiar {% if not q %}d-none{% endif %}"
+           aria-label="Limpiar búsqueda">
+            <i class="bi bi-x-lg"></i>
+        </a>
+    </div>
+</form>
+
+<div id="resultados-container">
+{% if q %}
+<p class="busqueda-resultado" aria-live="polite">
+    {% with total=page_obj.paginator.count %}
+        {% if total == 0 %}Sin resultados para <strong>"{{ q }}"</strong>.
+        {% elif total == 1 %}1 resultado para <strong>"{{ q }}"</strong>.
+        {% else %}{{ total }} resultado{{ total|pluralize:"s" }} para <strong>"{{ q }}"</strong>.
+        {% endif %}
+    {% endwith %}
+</p>
+{% endif %}
+
+<div class="tabla-contenedor" aria-live="polite" aria-atomic="false">
     <table class="tabla-sistema">
         <thead>
             <tr>
-                <th>Código</th>
-                <th>Nombre</th>
-                <th>Subcategoría</th>
-                <th>Unidad</th>
-                <th>Stock</th>
-                <th>Nivel</th>
-                <th>Proveedor</th>
-                <th>Estado</th>
-                <th>Acciones</th>
+                <th scope="col">Código</th>
+                <th scope="col">Nombre</th>
+                <th scope="col">Subcategoría</th>
+                <th scope="col">Unidad</th>
+                <th scope="col">Stock</th>
+                <th scope="col">Nivel</th>
+                <th scope="col">Proveedor</th>
+                <th scope="col">Estado</th>
+                <th scope="col">Acciones</th>
             </tr>
         </thead>
         <tbody>
@@ -32,7 +60,7 @@
             <tr>
                 <td>{{ insumo.codigo }}</td>
                 <td>{{ insumo.nombre }}</td>
-                <td>{{ insumo.subcategoria }}</td>
+                <td>{{ insumo.get_subcategoria_display }}</td>
                 <td>{{ insumo.unidad_medida }}</td>
                 <td>{{ insumo.stock }}</td>
                 <td>
@@ -43,20 +71,35 @@
                 <td>{{ insumo.proveedor }}</td>
                 <td>
                     <span class="badge-estado badge-{{ insumo.estado|lower }}">
+                        <i class="bi bi-{% if insumo.estado == 'ACTIVO' %}check-circle-fill{% else %}x-circle-fill{% endif %}"></i>
                         {{ insumo.estado }}
                     </span>
                 </td>
                 <td class="acciones">
-                    <a href="{% url 'insumos:detalle_insumo' insumo.id %}" class="btn-tabla btn-ver">
+                    <a href="{% url 'insumos:detalle_insumo' insumo.id %}"
+                       class="btn-tabla btn-ver"
+                       aria-label="Ver {{ insumo.nombre }}"
+                       data-bs-toggle="tooltip" data-bs-placement="top" title="Ver detalle">
                         <i class="bi bi-eye"></i>
                     </a>
-                    <a href="{% url 'insumos:editar_insumo' insumo.id %}" class="btn-tabla btn-editar">
+                    <a href="{% url 'insumos:editar_insumo' insumo.id %}"
+                       class="btn-tabla btn-editar"
+                       aria-label="Editar {{ insumo.nombre }}"
+                       data-bs-toggle="tooltip" data-bs-placement="top" title="Editar">
                         <i class="bi bi-pencil"></i>
                     </a>
                     {% if request.user.rol == 'ADMIN' %}
-                    <a href="{% url 'insumos:cambiar_estado_insumo' insumo.id %}" class="btn-tabla {% if insumo.estado == 'ACTIVO' %}btn-desactivar{% else %}btn-activar{% endif %}">
+                    <button type="button"
+                            class="btn-tabla {% if insumo.estado == 'ACTIVO' %}btn-desactivar{% else %}btn-activar{% endif %}"
+                            aria-label="{% if insumo.estado == 'ACTIVO' %}Desactivar{% else %}Activar{% endif %} {{ insumo.nombre }}"
+                            title="{% if insumo.estado == 'ACTIVO' %}Desactivar{% else %}Activar{% endif %}"
+                            data-bs-toggle="modal"
+                            data-bs-target="#modal-cambiar-estado"
+                            data-nombre="{{ insumo.nombre }}"
+                            data-accion="{% if insumo.estado == 'ACTIVO' %}desactivar{% else %}activar{% endif %}"
+                            data-url="{% url 'insumos:cambiar_estado_insumo' insumo.id %}">
                         <i class="bi {% if insumo.estado == 'ACTIVO' %}bi-toggle-on{% else %}bi-toggle-off{% endif %}"></i>
-                    </a>
+                    </button>
                     {% endif %}
                 </td>
             </tr>
@@ -67,6 +110,47 @@
             {% endfor %}
         </tbody>
     </table>
+</div>
+
+{% include 'partials/paginacion.html' %}
+</div><!-- fin resultados-container -->
+
+<!-- Modal confirmación cambio de estado -->
+<div class="modal fade" id="modal-cambiar-estado" tabindex="-1"
+     aria-labelledby="modal-estado-titulo" aria-modal="true" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-estado-titulo">Confirmar acción</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <form id="modal-form-toggle" method="post" action="">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <p class="mb-3">
+                        ¿Está seguro que desea <strong id="modal-accion-texto"></strong> el insumo
+                        <strong id="modal-nombre-objeto"></strong>?
+                    </p>
+                    <div class="campo-form mb-0">
+                        <label class="form-label" for="modal-observacion">
+                            Observación <span class="campo-requerido">*</span>
+                        </label>
+                        <textarea id="modal-observacion" name="observacion"
+                                  class="form-control" rows="3" maxlength="500"
+                                  aria-required="true"
+                                  placeholder="Ej: Proveedor suspendido, insumo fuera de uso..."></textarea>
+                        <div class="invalid-feedback">La observación es obligatoria.</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secundario" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn-accion">
+                        <i class="bi bi-check-lg"></i> Confirmar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 {% endblock %}
