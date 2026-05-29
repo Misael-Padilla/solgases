@@ -2,14 +2,14 @@
 
 > **Última actualización:** 29 de mayo de 2026
 > **Rama:** `main`
-> **Último commit:** `840fb04` (se actualiza tras el commit de cierre)
+> **Último commit:** `cierre-ventas` (se actualiza tras el commit de cierre)
 
 ---
 
 ## Estado general
 
 - **Fase actual:** 6 — Pruebas y Verificación
-- **Módulo en progreso:** `ventas` (siguiente)
+- **Módulo en progreso:** `backup` (siguiente — último módulo)
 - **Protocolo activo:** Protocolo de Veracidad — Fase 6 v1.1
 
 ---
@@ -23,24 +23,25 @@
 | `productos` | ✅ Aprobado — 2026-05-29 | `9295480` (cierre) |
 | `insumos` | ✅ Aprobado — 2026-05-29 | `670218d` (cierre) |
 | `compras` | ✅ Aprobado — 2026-05-29 | `840fb04` (cierre) |
-| `ventas` | ⏳ Pendiente | — |
+| `ventas` | ✅ Aprobado — 2026-05-29 | `cierre-ventas` (cierre) |
 | `backup` | ⏳ Pendiente | — |
 
 ---
 
-## Módulo `compras` — resumen de lo hecho
+## Módulo `ventas` — resumen de lo hecho
 
-- `'COMPRA'` agregado a `HistorialCambio.MODELO_CHOICES`
-- Event delegation para `.btn-eliminar-item` — corrige violación CSP
-- `FacturaCompraForm`: queryset proveedores activos + labels con tildes
-- `@require_POST` + observación obligatoria en `cambiar_estado_compra`
-- **Reversión de stock al desactivar** (Pendiente Fase 5 resuelto): al desactivar una factura se restan las cantidades de Productos/Insumos con `HistorialStock`/`HistorialStockInsumo`; al reactivar se suman
+- `'VENTA'` agregado a `HistorialCambio.MODELO_CHOICES`
+- `FacturaVentaForm`: queryset clientes activos + labels con tildes
+- `@require_POST` + observación obligatoria en `cambiar_estado_venta`
+- **Restauración de stock al desactivar** (Pendiente Fase 5 resuelto): suma de vuelta las cantidades con `HistorialStock`/`HistorialStockInsumo`
+- **Validación de stock al reactivar** (diferencia clave vs compras): verifica disponibilidad ANTES de la transacción; si insuficiente, muestra error sin modificar nada
 - `HistorialCambio` registra cada cambio de estado
-- Paginación 15 registros, búsqueda por N° factura/proveedor, breadcrumbs en 3 vistas
-- Modal confirmación con advertencia sobre reversión de stock
-- Exportación Excel de facturas (cabecera, no detalles)
-- **PDF diferido junto con ventas** — usar `xhtml2pdf` cuando llegue el momento
-- Exportación Excel también agregada a `productos` e `insumos`
+- Paginación 15 registros, búsqueda por N° factura/cliente, breadcrumbs en 3 vistas
+- Modal confirmación con advertencia de stock
+- `get_metodo_pago_display` y `get_tipo_item_display`
+- Exportación Excel de facturas
+- **PDF diferido junto con compras** — usar `xhtml2pdf` cuando llegue el momento
+- Botón Activar/Desactivar en detalle usa `btn-accion`/`btn-secundario` (no `btn-tabla`)
 
 ---
 
@@ -49,19 +50,18 @@
 | Decisión | Razón |
 |----------|-------|
 | `AXES_LOCKOUT_PARAMETERS = ['username']` sin ip_address | Sistema interno |
-| `'unsafe-inline'` solo en `style-src`, NO en `script-src` | CSP: Bootstrap CSS lo necesita, JS no |
-| **JS personalizado siempre en archivo externo** | CSP bloquea `onclick="..."` e `<script>` inline |
-| `data-bs-toggle="modal"` sin onclick | Bootstrap nativo no requiere JS inline |
-| **Event delegation para formset** (no `onclick`) | CSP bloquea inline handlers |
-| PDF diferido a `ventas` | Implementar junto con ventas para consistencia |
-| `openpyxl` + `zoneinfo` para Excel | Sin `pytz` — Python 3.9+ tiene `zoneinfo` nativo |
+| `'unsafe-inline'` solo en `style-src`, NO en `script-src` | CSP |
+| JS personalizado siempre en archivo externo | CSP bloquea inline handlers |
+| Event delegation para formset (no `onclick`) | CSP |
+| PDF diferido a implementación conjunta compras+ventas | Consistencia de layout |
+| `openpyxl` + `zoneinfo` para Excel | Sin `pytz` |
 | Auditoría manual (sin `django-simple-history`) | Overkill para sistema interno |
-| `HistorialCambio` para trazabilidad de estado | Observación obligatoria en activar/desactivar |
-| `HistorialStock` / `HistorialStockInsumo` como modelos dedicados | Datos consultables; cada módulo tiene su propio modelo |
-| `stock` solo editable en creación de productos/insumos | Edición via modificar_stock con motivo obligatorio |
-| `max(0, stock - cantidad)` en reversión de compras | Evita stock negativo si el stock fue modificado después |
-| Queryset `proveedor` filtrado a activos | No asignar insumos/compras a proveedores inactivos |
-| Funciones Excel `_estilo_excel`, `_nombre_usuario`, etc. en `usuarios.views` | Reutilizadas via import en productos, insumos, compras |
+| `HistorialCambio` para trazabilidad de estado | Observación obligatoria |
+| `HistorialStock` / `HistorialStockInsumo` como modelos dedicados | Datos consultables |
+| `stock` solo editable en creación de productos/insumos | Via modificar_stock con motivo |
+| Validación stock ANTES de transacción al reactivar ventas | Evita partial-update en BD |
+| `btn-accion`/`btn-secundario` para botones con texto en detalle | `btn-tabla` es para íconos |
+| Funciones Excel `_estilo_excel`, etc. en `usuarios.views` | Reutilizadas via import |
 
 ---
 
@@ -71,12 +71,12 @@
 |---------|-----------|
 | `static/js/busqueda.js` | Búsqueda en tiempo real debounce 350ms |
 | `static/js/modal_estado.js` | Modal confirmación activar/desactivar |
-| `static/js/formset_dinamico.js` | Gestión dinámica de filas de formset (compras/ventas) |
+| `static/js/formset_dinamico.js` | Gestión dinámica de filas (compras/ventas) — event delegation para delete |
 | `static/js/calculo_iva.js` | Cálculo automático de IVA y Total |
 
 ---
 
-## Pendiente al final de Fase 6
+## Pendientes al final de Fase 6
 
 - **SC-A01**: Widget de accesibilidad (tamaño de letra, alto contraste)
 - **PDF facturas**: `xhtml2pdf` para compras y ventas juntos

@@ -19,7 +19,7 @@
 | 3 | `productos` | ✅ Aprobado | 2026-05-29 | `9295480` |
 | 4 | `insumos` | ✅ Aprobado | 2026-05-29 | `670218d` |
 | 5 | `compras` | ✅ Aprobado | 2026-05-29 | `840fb04` |
-| 6 | `ventas` | ⏳ Pendiente | — | — |
+| 6 | `ventas` | ✅ Aprobado | 2026-05-29 | `cierre-ventas` |
 | 7 | `backup` | ⏳ Pendiente | — | — |
 
 ---
@@ -685,4 +685,96 @@ Transversales: Búsqueda ✅ | Breadcrumbs ✅ | Paginación ✅ | Excel ✅
 
 ---
 
-*Bitácora actualizada el 29 de mayo de 2026 — módulo compras.*
+---
+
+## Módulo: `ventas` — ✅ Aprobado
+
+### Capas verificadas
+
+| Capa | Estado | Observaciones |
+|---|---|---|
+| 1 — Modelo | ✅ Verificada | `HistorialCambio` con `'VENTA'`, sin migración requerida |
+| 2 — Formulario | ✅ Verificada | Queryset clientes activos, labels con tildes, validación monetaria existente |
+| 3 — Vistas | ✅ Verificada | `@require_POST`, restauración de stock al desactivar, validación de stock al reactivar (Pendiente Fase 5 resuelto), `HistorialCambio`, paginación, búsqueda, breadcrumbs, exportar Excel |
+| 4 — Templates | ✅ Verificada | POST modal estado, sin `onclick` (CSP), sin mensajes duplicados, `get_tipo_item_display`, `get_metodo_pago_display`, `linebreaksbr`, `scope="col"`, badges con ícono, botón detalle con `btn-accion` |
+| 5 — Integración | ✅ Verificada | I-01 sidebar ✅ I-02 stock descontado por `DetalleVenta.save()` con validación ✅ I-04 dashboard ventas del mes ✅ |
+
+### Incidencias detectadas y corregidas
+
+| Código | Severidad | Descripción | Commit | Estado |
+|---|---|---|---|---|
+| INC-V01 | **Alta** | `cambiar_estado_venta` acepta GET — CSRF | `2f254de` | ✅ Corregido |
+| INC-V02 | **Alta** | `onclick="eliminarFila(this)"` — viola CSP | `a3ca513` | ✅ Corregido |
+| INC-V03 | **Alta** | `<a href>` toggle en `detalle_venta.html` — GET | `a3b0f62` | ✅ Corregido |
+| INC-V04 | Media | `HistorialCambio.MODELO_CHOICES` sin `'VENTA'` | `63c2323` | ✅ Corregido |
+| INC-V05 | Media | Sin observación obligatoria en cambiar estado | `2f254de` | ✅ Corregido |
+| INC-V06 | Media | Sin restauración de stock al desactivar (Pendiente Fase 5) | `493fa7a` | ✅ Corregido |
+| INC-V07 | Media | Sin validación de stock al reactivar | `493fa7a` | ✅ Corregido |
+| INC-V08 | Media | Sin `HistorialCambio` al cambiar estado | `2f254de` | ✅ Corregido |
+| INC-V09 | Media | Sin paginación | `493fa7a` | ✅ Corregido |
+| INC-V10 | Media | Sin búsqueda | `493fa7a` | ✅ Corregido |
+| INC-V11 | Media | Sin breadcrumbs | `493fa7a` | ✅ Corregido |
+| INC-V12 | Media | Mensajes duplicados en lista y form | `1e2012e` + `a3ca513` | ✅ Corregido |
+| INC-V13 | Media | Sin `aria-label` en botones — WCAG 4.1.2 | `1e2012e` | ✅ Corregido |
+| INC-V14 | Media | `get_tipo_item_display` no usado | `a3b0f62` | ✅ Corregido |
+| INC-V15 | Media | `get_metodo_pago_display` no usado | `1e2012e` + `a3b0f62` | ✅ Corregido |
+| INC-V16 | Media | `{{ venta.observaciones }}` sin `\|linebreaksbr` | `a3b0f62` | ✅ Corregido |
+| INC-V17 | Media | `cliente` queryset sin filtrar | `3c1c777` | ✅ Corregido |
+| INC-V18 | Baja | Sin `scope="col"` en `<th>` — WCAG 1.3.1 | `1e2012e` + `a3b0f62` | ✅ Corregido |
+| INC-V19 | Baja | Badges de estado sin ícono — WCAG 1.4.1 | `1e2012e` + `a3b0f62` | ✅ Corregido |
+| INC-V20 | Baja | Estilo inline + `btn-tabla` para botón con texto en detalle | `be50530` | ✅ Corregido (verificación) |
+
+### Solicitudes de cambio
+
+| Código | Tipo | Descripción | Commit | Estado |
+|---|---|---|---|---|
+| SC-V01 | Agregar | Restauración de stock al desactivar + validación al reactivar (Pendiente Fase 5) | `493fa7a` | ✅ Implementado |
+| SC-V02 | Agregar | Paginación + búsqueda + breadcrumbs | `493fa7a` | ✅ Implementado |
+| SC-V03 | Agregar | Modal confirmación con observación obligatoria | `1e2012e` + `a3b0f62` | ✅ Implementado |
+| SC-V04 | Agregar | Exportación Excel de facturas de venta | `493fa7a` | ✅ Implementado |
+| SC-V05 | Diferido | PDF de factura de venta | — | ⏳ Diferido (junto con compras) |
+
+### Decisiones tomadas en módulo `ventas`
+
+| Decisión | Justificación |
+|---|---|
+| Validación de stock ANTES de la transacción al reactivar | Evita partial-update: si falla la validación, no se modifica nada en BD |
+| `max(0, stock + cantidad)` al restaurar (desactivar) | Por simetría con compras; evita stock negativo en casos extremos |
+| `btn-accion` / `btn-secundario` en botón del detalle | `btn-tabla` es para íconos pequeños; el detalle muestra texto + ícono |
+| PDF diferido junto con compras | Implementar los dos juntos para consistencia de layout |
+
+---
+
+## Resumen de commits — módulo `ventas`
+
+| Hash | Descripción | Fecha |
+|---|---|---|
+| `63c2323` | feat(usuarios): agregar VENTA a HistorialCambio.MODELO_CHOICES | 2026-05-29 |
+| `3c1c777` | fix(ventas): FacturaVentaForm — queryset clientes activos y labels | 2026-05-29 |
+| `2f254de` | fix(ventas): cambiar_estado requiere POST — previene CSRF | 2026-05-29 |
+| `493fa7a` | feat(ventas): reversion stock con validacion, HistorialCambio, paginacion, busqueda, breadcrumbs y Excel | 2026-05-29 |
+| `1e2012e` | fix(ventas): lista completa | 2026-05-29 |
+| `a3b0f62` | fix(ventas): detalle completo | 2026-05-29 |
+| `a3ca513` | fix(ventas): form — mensajes duplicados y onclick | 2026-05-29 |
+| `be50530` | fix(ventas,compras): boton activar/desactivar en detalle usa btn-accion/btn-secundario | 2026-05-29 |
+
+---
+
+## Resumen de cierre — `ventas`
+
+```
+## Módulo: ventas — APROBADO ✅
+
+- Fecha de inicio de revisión: 2026-05-29
+- Fecha de aprobación: 2026-05-29
+- Commits del módulo: (ver tabla de commits arriba)
+
+Incidencias: 20 detectadas, 20 corregidas (19 análisis + 1 verificación)
+Solicitudes de cambio: 4 implementadas, 1 diferida (PDF)
+Pendientes Fase 5 resueltos: Restauración stock al desactivar + validación al reactivar ✅
+Transversales: Búsqueda ✅ | Breadcrumbs ✅ | Paginación ✅ | Excel ✅
+```
+
+---
+
+*Bitácora actualizada el 29 de mayo de 2026 — módulo ventas.*
