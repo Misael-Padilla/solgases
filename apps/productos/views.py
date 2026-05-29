@@ -1,9 +1,10 @@
-from django.utils import timezone
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
+from django.views.decorators.http import require_POST
 from apps.productos.models import Producto
 from apps.productos.forms import ProductoForm, StockForm
 from apps.usuarios.decoradores import login_requerido, admin_requerido
+from apps.usuarios.models import HistorialCambio
 
 
 @login_requerido
@@ -50,16 +51,32 @@ def editar_producto(request, id):
 
 
 @admin_requerido
+@require_POST
 def cambiar_estado_producto(request, id):
-    """Activa o desactiva un producto — solo ADMIN. Sin eliminación física."""
+    """Activa o desactiva un producto — solo ADMIN. Requiere observación."""
     producto = get_object_or_404(Producto, id=id)
+    observacion = request.POST.get('observacion', '').strip()
+    if not observacion:
+        messages.error(request, 'La observación es obligatoria para cambiar el estado.')
+        return redirect('productos:lista_productos')
     if producto.estado == 'ACTIVO':
         producto.estado = 'INACTIVO'
+        accion = 'DESACTIVAR'
         messages.success(request, f'Producto {producto.nombre} desactivado.')
     else:
         producto.estado = 'ACTIVO'
+        accion = 'ACTIVAR'
         messages.success(request, f'Producto {producto.nombre} activado.')
+    producto.modificado_por = request.user
     producto.save()
+    HistorialCambio.objects.create(
+        modelo='PRODUCTO',
+        objeto_id=producto.id,
+        objeto_nombre=producto.nombre,
+        accion=accion,
+        observacion=observacion,
+        realizado_por=request.user,
+    )
     return redirect('productos:lista_productos')
 
 
