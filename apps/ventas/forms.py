@@ -5,10 +5,6 @@ from apps.ventas.models import FacturaVenta, DetalleVenta
 
 
 class FacturaVentaForm(forms.ModelForm):
-    """
-    Formulario para la cabecera de la factura de venta.
-    El campo registrado_por se asigna automáticamente desde la vista.
-    """
 
     class Meta:
         model = FacturaVenta
@@ -18,6 +14,14 @@ class FacturaVentaForm(forms.ModelForm):
             'subtotal', 'iva_porcentaje', 'iva', 'total',
             'estado', 'observaciones',
         ]
+        labels = {
+            'numero_factura': 'Número de factura',
+            'fecha_factura':  'Fecha de la factura',
+            'metodo_pago':    'Método de pago',
+            'iva_porcentaje': 'IVA (%)',
+            'recibido_por':   'Recibido por',
+            'observaciones':  'Observaciones',
+        }
         widgets = {
             'fecha_factura': forms.DateTimeInput(
                 attrs={'type': 'datetime-local'},
@@ -30,16 +34,18 @@ class FacturaVentaForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        from apps.usuarios.models import Cliente
+        # Solo clientes activos en el desplegable
+        self.fields['cliente'].queryset = Cliente.objects.filter(
+            estado='ACTIVO'
+        ).order_by('razon_social', 'nombres')
         self.fields['fecha_factura'].input_formats = ['%Y-%m-%dT%H:%M']
-
-        # Valor inicial del IVA (%) — solo para formularios nuevos
         if not self.instance.pk:
             self.fields['iva_porcentaje'].initial = Decimal('19.00')
 
     def clean(self):
         """
-        Validación cruzada de valores monetarios.
-        Verifica que iva y total sean consistentes con el porcentaje aplicado:
+        Validación cruzada de valores monetarios:
         - iva = subtotal × (iva_porcentaje / 100)
         - total = subtotal + iva
         """
@@ -65,10 +71,6 @@ class FacturaVentaForm(forms.ModelForm):
 
 
 class DetalleVentaForm(forms.ModelForm):
-    """
-    Formulario para cada ítem de la factura de venta.
-    Se usa dentro de un formset para manejar múltiples ítems.
-    """
 
     class Meta:
         model = DetalleVenta
