@@ -2,7 +2,7 @@
 
 > **Última actualización:** 29 de mayo de 2026
 > **Rama:** `main`
-> **Último commit:** `test(productos): verificacion Fase 6 completada`
+> **Último commit:** `9295480`
 
 ---
 
@@ -20,7 +20,7 @@
 |--------|--------|---------------|
 | `core` | ✅ Aprobado — 2026-05-26 | `0604f36`, `d1e6771`, `429bd50`, `39bfcc5` |
 | `usuarios` | ✅ Aprobado — 2026-05-29 | `88d74b4` (cierre) |
-| `productos` | ✅ Aprobado — 2026-05-29 | `test(productos)` (cierre) |
+| `productos` | ✅ Aprobado — 2026-05-29 | `9295480` (cierre) |
 | `insumos` | ⏳ Pendiente | — |
 | `compras` | ⏳ Pendiente | — |
 | `ventas` | ⏳ Pendiente | — |

@@ -16,7 +16,7 @@
 |---|---|---|---|---|
 | 1 | `core` | ✅ Aprobado | 2026-05-26 | `39bfcc5` |
 | 2 | `usuarios` | ✅ Aprobado | 2026-05-29 | `88d74b4` |
-| 3 | `productos` | ✅ Aprobado | 2026-05-29 | `test-productos` |
+| 3 | `productos` | ✅ Aprobado | 2026-05-29 | `9295480` |
 | 4 | `insumos` | ⏳ Pendiente | — | — |
 | 5 | `compras` | ⏳ Pendiente | — | — |
 | 6 | `ventas` | ⏳ Pendiente | — | — |
