@@ -5,25 +5,55 @@
 
 {% block contenido %}
 
+{% include 'partials/breadcrumbs.html' %}
+
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h5 class="fw-bold mb-0">Listado de productos</h5>
-    <a href="{% url 'productos:crear_producto' %}" class="btn-accion">
+    <a href="{% url 'productos:crear_producto' %}" class="btn-accion"
+       data-bs-toggle="tooltip" data-bs-placement="top" title="Nuevo producto">
         <i class="bi bi-plus-lg"></i> Nuevo producto
     </a>
 </div>
 
-<div class="tabla-contenedor">
+<!-- Barra de búsqueda -->
+<form method="get" role="search" class="barra-busqueda mb-3">
+    <div class="busqueda-grupo">
+        <i class="bi bi-search busqueda-icono"></i>
+        <input type="search" name="q" value="{{ q }}" class="busqueda-input"
+               placeholder="Buscar por código, nombre o categoría..."
+               aria-label="Buscar productos">
+        <a href="{% url 'productos:lista_productos' %}"
+           class="busqueda-limpiar {% if not q %}d-none{% endif %}"
+           aria-label="Limpiar búsqueda">
+            <i class="bi bi-x-lg"></i>
+        </a>
+    </div>
+</form>
+
+<div id="resultados-container">
+{% if q %}
+<p class="busqueda-resultado" aria-live="polite">
+    {% with total=page_obj.paginator.count %}
+        {% if total == 0 %}Sin resultados para <strong>"{{ q }}"</strong>.
+        {% elif total == 1 %}1 resultado para <strong>"{{ q }}"</strong>.
+        {% else %}{{ total }} resultado{{ total|pluralize:"s" }} para <strong>"{{ q }}"</strong>.
+        {% endif %}
+    {% endwith %}
+</p>
+{% endif %}
+
+<div class="tabla-contenedor" aria-live="polite" aria-atomic="false">
     <table class="tabla-sistema">
         <thead>
             <tr>
-                <th>Código</th>
-                <th>Nombre</th>
-                <th>Categoría</th>
-                <th>Stock</th>
-                <th>Nivel</th>
-                <th>Precio venta</th>
-                <th>Estado</th>
-                <th>Acciones</th>
+                <th scope="col">Código</th>
+                <th scope="col">Nombre</th>
+                <th scope="col">Categoría</th>
+                <th scope="col">Stock</th>
+                <th scope="col">Nivel</th>
+                <th scope="col">Precio venta</th>
+                <th scope="col">Estado</th>
+                <th scope="col">Acciones</th>
             </tr>
         </thead>
         <tbody>
@@ -31,7 +61,7 @@
             <tr>
                 <td>{{ producto.codigo }}</td>
                 <td>{{ producto.nombre }}</td>
-                <td>{{ producto.categoria }}</td>
+                <td>{{ producto.get_categoria_display }}</td>
                 <td>{{ producto.stock }}</td>
                 <td>
                     <span class="badge-nivel badge-nivel-{{ producto.nivel_stock|lower }}">
@@ -41,20 +71,34 @@
                 <td>${{ producto.precio_venta }}</td>
                 <td>
                     <span class="badge-estado badge-{{ producto.estado|lower }}">
+                        <i class="bi bi-{% if producto.estado == 'ACTIVO' %}check-circle-fill{% else %}x-circle-fill{% endif %}"></i>
                         {{ producto.estado }}
                     </span>
                 </td>
                 <td class="acciones">
-                    <a href="{% url 'productos:detalle_producto' producto.id %}" class="btn-tabla btn-ver">
+                    <a href="{% url 'productos:detalle_producto' producto.id %}"
+                       class="btn-tabla btn-ver"
+                       aria-label="Ver {{ producto.nombre }}"
+                       data-bs-toggle="tooltip" data-bs-placement="top" title="Ver detalle">
                         <i class="bi bi-eye"></i>
                     </a>
-                    <a href="{% url 'productos:editar_producto' producto.id %}" class="btn-tabla btn-editar">
+                    <a href="{% url 'productos:editar_producto' producto.id %}"
+                       class="btn-tabla btn-editar"
+                       aria-label="Editar {{ producto.nombre }}"
+                       data-bs-toggle="tooltip" data-bs-placement="top" title="Editar">
                         <i class="bi bi-pencil"></i>
                     </a>
                     {% if request.user.rol == 'ADMIN' %}
-                    <a href="{% url 'productos:cambiar_estado_producto' producto.id %}" class="btn-tabla {% if producto.estado == 'ACTIVO' %}btn-desactivar{% else %}btn-activar{% endif %}">
+                    <button type="button"
+                            class="btn-tabla {% if producto.estado == 'ACTIVO' %}btn-desactivar{% else %}btn-activar{% endif %}"
+                            aria-label="{% if producto.estado == 'ACTIVO' %}Desactivar{% else %}Activar{% endif %} {{ producto.nombre }}"
+                            data-bs-toggle="modal"
+                            data-bs-target="#modal-cambiar-estado"
+                            data-nombre="{{ producto.nombre }}"
+                            data-accion="{% if producto.estado == 'ACTIVO' %}desactivar{% else %}activar{% endif %}"
+                            data-url="{% url 'productos:cambiar_estado_producto' producto.id %}">
                         <i class="bi {% if producto.estado == 'ACTIVO' %}bi-toggle-on{% else %}bi-toggle-off{% endif %}"></i>
-                    </a>
+                    </button>
                     {% endif %}
                 </td>
             </tr>
@@ -65,6 +109,47 @@
             {% endfor %}
         </tbody>
     </table>
+</div>
+
+{% include 'partials/paginacion.html' %}
+</div><!-- fin resultados-container -->
+
+<!-- Modal confirmación cambio de estado -->
+<div class="modal fade" id="modal-cambiar-estado" tabindex="-1"
+     aria-labelledby="modal-estado-titulo" aria-modal="true" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-estado-titulo">Confirmar acción</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <form id="modal-form-toggle" method="post" action="">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <p class="mb-3">
+                        ¿Está seguro que desea <strong id="modal-accion-texto"></strong> el producto
+                        <strong id="modal-nombre-objeto"></strong>?
+                    </p>
+                    <div class="campo-form mb-0">
+                        <label class="form-label" for="modal-observacion">
+                            Observación <span class="campo-requerido">*</span>
+                        </label>
+                        <textarea id="modal-observacion" name="observacion"
+                                  class="form-control" rows="3" maxlength="500"
+                                  aria-required="true"
+                                  placeholder="Ej: Producto discontinuado por proveedor, fuera de temporada..."></textarea>
+                        <div class="invalid-feedback">La observación es obligatoria.</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secundario" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn-accion">
+                        <i class="bi bi-check-lg"></i> Confirmar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 {% endblock %}
