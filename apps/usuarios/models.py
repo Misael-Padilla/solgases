@@ -225,6 +225,7 @@ class HistorialCambio(models.Model):
         ('USUARIO',   'Usuario'),
         ('CLIENTE',   'Cliente'),
         ('PROVEEDOR', 'Proveedor'),
+        ('PRODUCTO',  'Producto'),
     ]
     ACCION_CHOICES = [
         ('EDITAR',      'Editar'),
