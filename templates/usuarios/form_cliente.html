@@ -87,6 +87,24 @@
                     </div>
                 </div>
 
+                <!-- Observación del cambio (solo en edición) -->
+                {% if es_edicion %}
+                <p class="detalle-seccion-titulo">Auditoría</p>
+                <div class="row g-3 mb-4">
+                    <div class="col-12">
+                        <div class="campo-form">
+                            <label class="form-label" for="observacion_cambio">
+                                Observación del cambio
+                                <span class="texto-descripcion">(opcional — quedará registrada en el historial)</span>
+                            </label>
+                            <textarea id="observacion_cambio" name="observacion_cambio"
+                                      class="form-control" rows="2" maxlength="500"
+                                      placeholder="Ej: Actualización de datos de contacto, cambio de representante..."></textarea>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
                 <!-- Botones -->
                 <div class="d-flex justify-content-end gap-2">
                     <a href="{% url 'usuarios:lista_clientes' %}" class="btn-secundario">

@@ -13,7 +13,7 @@ from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
 from openpyxl.drawing.image import Image as XlImage
 
-from apps.usuarios.models import Usuario, Cliente, Proveedor
+from apps.usuarios.models import Usuario, Cliente, Proveedor, HistorialCambio
 from apps.usuarios.decoradores import login_requerido, admin_requerido
 
 
@@ -44,12 +44,17 @@ def lista_usuarios(request):
 def detalle_usuario(request, id):
     """Muestra el detalle de un usuario específico."""
     usuario = get_object_or_404(Usuario, id=id)
+    historial = HistorialCambio.objects.filter(
+        modelo='USUARIO', objeto_id=usuario.id
+    ).select_related('realizado_por')[:10]
     breadcrumbs = [
         {'nombre': 'Dashboard', 'url': reverse('core:inicio')},
         {'nombre': 'Usuarios', 'url': reverse('usuarios:lista_usuarios')},
         {'nombre': f'{usuario.nombres} {usuario.apellidos}', 'url': None},
     ]
-    return render(request, 'usuarios/detalle_usuario.html', {'usuario': usuario, 'breadcrumbs': breadcrumbs})
+    return render(request, 'usuarios/detalle_usuario.html', {
+        'usuario': usuario, 'historial': historial, 'breadcrumbs': breadcrumbs
+    })
 
 
 @admin_requerido
@@ -86,6 +91,16 @@ def editar_usuario(request, id):
             u = form.save(commit=False)
             u.modificado_por = request.user
             u.save()
+            observacion_cambio = request.POST.get('observacion_cambio', '').strip()
+            if observacion_cambio:
+                HistorialCambio.objects.create(
+                    modelo='USUARIO',
+                    objeto_id=u.id,
+                    objeto_nombre=f'{u.nombres} {u.apellidos}',
+                    accion='EDITAR',
+                    observacion=observacion_cambio,
+                    realizado_por=request.user,
+                )
             messages.success(request, 'Usuario actualizado correctamente.')
             return redirect('usuarios:detalle_usuario', id=usuario.id)
     else:
@@ -96,21 +111,37 @@ def editar_usuario(request, id):
         {'nombre': f'{usuario.nombres} {usuario.apellidos}', 'url': reverse('usuarios:detalle_usuario', args=[usuario.id])},
         {'nombre': 'Editar', 'url': None},
     ]
-    return render(request, 'usuarios/form_usuario.html', {'form': form, 'titulo': 'Editar usuario', 'breadcrumbs': breadcrumbs})
+    return render(request, 'usuarios/form_usuario.html', {
+        'form': form, 'titulo': 'Editar usuario', 'es_edicion': True, 'breadcrumbs': breadcrumbs
+    })
 
 
 @admin_requerido
 @require_POST
 def cambiar_estado_usuario(request, id):
-    """Activa o desactiva un usuario — solo ADMIN. Sin eliminación física."""
+    """Activa o desactiva un usuario — solo ADMIN. Requiere observación."""
     usuario = get_object_or_404(Usuario, id=id)
+    observacion = request.POST.get('observacion', '').strip()
+    if not observacion:
+        messages.error(request, 'La observación es obligatoria para cambiar el estado.')
+        return redirect('usuarios:lista_usuarios')
     if usuario.estado == 'ACTIVO':
         usuario.estado = 'INACTIVO'
+        accion = 'DESACTIVAR'
         messages.success(request, f'Usuario {usuario.nombres} desactivado.')
     else:
         usuario.estado = 'ACTIVO'
+        accion = 'ACTIVAR'
         messages.success(request, f'Usuario {usuario.nombres} activado.')
     usuario.save()
+    HistorialCambio.objects.create(
+        modelo='USUARIO',
+        objeto_id=usuario.id,
+        objeto_nombre=f'{usuario.nombres} {usuario.apellidos}',
+        accion=accion,
+        observacion=observacion,
+        realizado_por=request.user,
+    )
     return redirect('usuarios:lista_usuarios')
 
 
@@ -144,12 +175,17 @@ def detalle_cliente(request, id):
     """Muestra el detalle de un cliente específico."""
     cliente = get_object_or_404(Cliente, id=id)
     nombre_cliente = cliente.razon_social if cliente.tipo_identificacion == 'NIT' else f'{cliente.nombres} {cliente.apellidos}'
+    historial = HistorialCambio.objects.filter(
+        modelo='CLIENTE', objeto_id=cliente.id
+    ).select_related('realizado_por')[:10]
     breadcrumbs = [
         {'nombre': 'Dashboard', 'url': reverse('core:inicio')},
         {'nombre': 'Clientes', 'url': reverse('usuarios:lista_clientes')},
         {'nombre': nombre_cliente, 'url': None},
     ]
-    return render(request, 'usuarios/detalle_cliente.html', {'cliente': cliente, 'breadcrumbs': breadcrumbs})
+    return render(request, 'usuarios/detalle_cliente.html', {
+        'cliente': cliente, 'historial': historial, 'breadcrumbs': breadcrumbs
+    })
 
 
 @login_requerido
@@ -185,6 +221,17 @@ def editar_cliente(request, id):
             c = form.save(commit=False)
             c.modificado_por = request.user
             c.save()
+            observacion_cambio = request.POST.get('observacion_cambio', '').strip()
+            nombre_obj = c.razon_social if c.tipo_identificacion == 'NIT' else f'{c.nombres} {c.apellidos}'
+            if observacion_cambio:
+                HistorialCambio.objects.create(
+                    modelo='CLIENTE',
+                    objeto_id=c.id,
+                    objeto_nombre=nombre_obj,
+                    accion='EDITAR',
+                    observacion=observacion_cambio,
+                    realizado_por=request.user,
+                )
             messages.success(request, 'Cliente actualizado correctamente.')
             return redirect('usuarios:detalle_cliente', id=cliente.id)
     else:
@@ -196,21 +243,38 @@ def editar_cliente(request, id):
         {'nombre': nombre_cliente, 'url': reverse('usuarios:detalle_cliente', args=[cliente.id])},
         {'nombre': 'Editar', 'url': None},
     ]
-    return render(request, 'usuarios/form_cliente.html', {'form': form, 'titulo': 'Editar cliente', 'breadcrumbs': breadcrumbs})
+    return render(request, 'usuarios/form_cliente.html', {
+        'form': form, 'titulo': 'Editar cliente', 'es_edicion': True, 'breadcrumbs': breadcrumbs
+    })
 
 
 @admin_requerido
 @require_POST
 def cambiar_estado_cliente(request, id):
-    """Activa o desactiva un cliente — solo ADMIN."""
+    """Activa o desactiva un cliente — solo ADMIN. Requiere observación."""
     cliente = get_object_or_404(Cliente, id=id)
+    observacion = request.POST.get('observacion', '').strip()
+    if not observacion:
+        messages.error(request, 'La observación es obligatoria para cambiar el estado.')
+        return redirect('usuarios:lista_clientes')
+    nombre_obj = cliente.razon_social if cliente.tipo_identificacion == 'NIT' else f'{cliente.nombres} {cliente.apellidos}'
     if cliente.estado == 'ACTIVO':
         cliente.estado = 'INACTIVO'
-        messages.success(request, f'Cliente desactivado.')
+        accion = 'DESACTIVAR'
+        messages.success(request, 'Cliente desactivado.')
     else:
         cliente.estado = 'ACTIVO'
-        messages.success(request, f'Cliente activado.')
+        accion = 'ACTIVAR'
+        messages.success(request, 'Cliente activado.')
     cliente.save()
+    HistorialCambio.objects.create(
+        modelo='CLIENTE',
+        objeto_id=cliente.id,
+        objeto_nombre=nombre_obj,
+        accion=accion,
+        observacion=observacion,
+        realizado_por=request.user,
+    )
     return redirect('usuarios:lista_clientes')
 
 
@@ -244,12 +308,17 @@ def detalle_proveedor(request, id):
     """Muestra el detalle de un proveedor específico."""
     proveedor = get_object_or_404(Proveedor, id=id)
     nombre_proveedor = proveedor.razon_social if proveedor.tipo_identificacion == 'NIT' else f'{proveedor.nombres} {proveedor.apellidos}'
+    historial = HistorialCambio.objects.filter(
+        modelo='PROVEEDOR', objeto_id=proveedor.id
+    ).select_related('realizado_por')[:10]
     breadcrumbs = [
         {'nombre': 'Dashboard', 'url': reverse('core:inicio')},
         {'nombre': 'Proveedores', 'url': reverse('usuarios:lista_proveedores')},
         {'nombre': nombre_proveedor, 'url': None},
     ]
-    return render(request, 'usuarios/detalle_proveedor.html', {'proveedor': proveedor, 'breadcrumbs': breadcrumbs})
+    return render(request, 'usuarios/detalle_proveedor.html', {
+        'proveedor': proveedor, 'historial': historial, 'breadcrumbs': breadcrumbs
+    })
 
 
 @login_requerido
@@ -285,6 +354,17 @@ def editar_proveedor(request, id):
             p = form.save(commit=False)
             p.modificado_por = request.user
             p.save()
+            observacion_cambio = request.POST.get('observacion_cambio', '').strip()
+            nombre_obj = p.razon_social if p.tipo_identificacion == 'NIT' else f'{p.nombres} {p.apellidos}'
+            if observacion_cambio:
+                HistorialCambio.objects.create(
+                    modelo='PROVEEDOR',
+                    objeto_id=p.id,
+                    objeto_nombre=nombre_obj,
+                    accion='EDITAR',
+                    observacion=observacion_cambio,
+                    realizado_por=request.user,
+                )
             messages.success(request, 'Proveedor actualizado correctamente.')
             return redirect('usuarios:detalle_proveedor', id=proveedor.id)
     else:
@@ -296,21 +376,38 @@ def editar_proveedor(request, id):
         {'nombre': nombre_proveedor, 'url': reverse('usuarios:detalle_proveedor', args=[proveedor.id])},
         {'nombre': 'Editar', 'url': None},
     ]
-    return render(request, 'usuarios/form_proveedor.html', {'form': form, 'titulo': 'Editar proveedor', 'breadcrumbs': breadcrumbs})
+    return render(request, 'usuarios/form_proveedor.html', {
+        'form': form, 'titulo': 'Editar proveedor', 'es_edicion': True, 'breadcrumbs': breadcrumbs
+    })
 
 
 @admin_requerido
 @require_POST
 def cambiar_estado_proveedor(request, id):
-    """Activa o desactiva un proveedor — solo ADMIN."""
+    """Activa o desactiva un proveedor — solo ADMIN. Requiere observación."""
     proveedor = get_object_or_404(Proveedor, id=id)
+    observacion = request.POST.get('observacion', '').strip()
+    if not observacion:
+        messages.error(request, 'La observación es obligatoria para cambiar el estado.')
+        return redirect('usuarios:lista_proveedores')
+    nombre_obj = proveedor.razon_social if proveedor.tipo_identificacion == 'NIT' else f'{proveedor.nombres} {proveedor.apellidos}'
     if proveedor.estado == 'ACTIVO':
         proveedor.estado = 'INACTIVO'
-        messages.success(request, f'Proveedor desactivado.')
+        accion = 'DESACTIVAR'
+        messages.success(request, 'Proveedor desactivado.')
     else:
         proveedor.estado = 'ACTIVO'
-        messages.success(request, f'Proveedor activado.')
+        accion = 'ACTIVAR'
+        messages.success(request, 'Proveedor activado.')
     proveedor.save()
+    HistorialCambio.objects.create(
+        modelo='PROVEEDOR',
+        objeto_id=proveedor.id,
+        objeto_nombre=nombre_obj,
+        accion=accion,
+        observacion=observacion,
+        realizado_por=request.user,
+    )
     return redirect('usuarios:lista_proveedores')
 
 

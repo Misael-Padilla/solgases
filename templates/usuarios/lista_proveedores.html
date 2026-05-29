@@ -85,13 +85,17 @@
                         <i class="bi bi-pencil"></i>
                     </a>
                     {% if request.user.rol == 'ADMIN' %}
-                    <form method="post" action="{% url 'usuarios:cambiar_estado_proveedor' proveedor.id %}" class="d-inline">
-                        {% csrf_token %}
-                        <button type="submit" class="btn-tabla {% if proveedor.estado == 'ACTIVO' %}btn-desactivar{% else %}btn-activar{% endif %}" aria-label="{% if proveedor.estado == 'ACTIVO' %}Desactivar{% else %}Activar{% endif %} {{ proveedor }}"
-                                data-bs-toggle="tooltip" data-bs-placement="top" title="{% if proveedor.estado == 'ACTIVO' %}Desactivar{% else %}Activar{% endif %}">
-                            <i class="bi {% if proveedor.estado == 'ACTIVO' %}bi-toggle-on{% else %}bi-toggle-off{% endif %}"></i>
-                        </button>
-                    </form>
+                    <button type="button"
+                            class="btn-tabla {% if proveedor.estado == 'ACTIVO' %}btn-desactivar{% else %}btn-activar{% endif %}"
+                            aria-label="{% if proveedor.estado == 'ACTIVO' %}Desactivar{% else %}Activar{% endif %} {{ proveedor }}"
+                            title="{% if proveedor.estado == 'ACTIVO' %}Desactivar{% else %}Activar{% endif %}"
+                            data-bs-toggle="modal"
+                            data-bs-target="#modal-cambiar-estado"
+                            data-nombre="{% if proveedor.tipo_identificacion == 'NIT' %}{{ proveedor.razon_social }}{% else %}{{ proveedor.nombres }} {{ proveedor.apellidos }}{% endif %}"
+                            data-accion="{% if proveedor.estado == 'ACTIVO' %}desactivar{% else %}activar{% endif %}"
+                            data-url="{% url 'usuarios:cambiar_estado_proveedor' proveedor.id %}">
+                        <i class="bi {% if proveedor.estado == 'ACTIVO' %}bi-toggle-on{% else %}bi-toggle-off{% endif %}"></i>
+                    </button>
                     {% endif %}
                 </td>
             </tr>
@@ -105,4 +109,44 @@
 </div>
 </div><!-- fin resultados-container -->
 
+<!-- Modal confirmación cambio de estado -->
+<div class="modal fade" id="modal-cambiar-estado" tabindex="-1"
+     aria-labelledby="modal-estado-titulo" aria-modal="true" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-estado-titulo">Confirmar acción</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <form id="modal-form-toggle" method="post" action="">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <p class="mb-3">
+                        ¿Está seguro que desea <strong id="modal-accion-texto"></strong> a
+                        <strong id="modal-nombre-objeto"></strong>?
+                    </p>
+                    <div class="campo-form mb-0">
+                        <label class="form-label" for="modal-observacion">
+                            Observación <span class="campo-requerido">*</span>
+                        </label>
+                        <textarea id="modal-observacion" name="observacion"
+                                  class="form-control" rows="3" maxlength="500"
+                                  aria-required="true"
+                                  placeholder="Ej: Proveedor no cumple plazos de entrega, en negociación con..."></textarea>
+                        <div class="invalid-feedback">La observación es obligatoria.</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secundario" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn-accion">
+                        <i class="bi bi-check-lg"></i> Confirmar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
+
+{% block scripts_extra %}{% endblock %}

@@ -211,3 +211,43 @@ class Proveedor(models.Model):
         if self.tipo_identificacion == 'NIT':
             return f'{self.razon_social} ({self.identificacion})'
         return f'{self.nombres} {self.apellidos} ({self.identificacion})'
+
+
+# --- HISTORIAL DE CAMBIOS ---
+
+class HistorialCambio(models.Model):
+    """
+    Registra cada acción significativa sobre usuarios, clientes y proveedores,
+    junto con la observación que justifica el cambio.
+    """
+
+    MODELO_CHOICES = [
+        ('USUARIO',   'Usuario'),
+        ('CLIENTE',   'Cliente'),
+        ('PROVEEDOR', 'Proveedor'),
+    ]
+    ACCION_CHOICES = [
+        ('EDITAR',      'Editar'),
+        ('ACTIVAR',     'Activar'),
+        ('DESACTIVAR',  'Desactivar'),
+    ]
+
+    modelo        = models.CharField(max_length=20, choices=MODELO_CHOICES)
+    objeto_id     = models.IntegerField()
+    objeto_nombre = models.CharField(max_length=200)
+    accion        = models.CharField(max_length=20, choices=ACCION_CHOICES)
+    observacion   = models.TextField()
+    realizado_por = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, blank=True,
+        on_delete=models.SET_NULL, related_name='historial_cambios'
+    )
+    fecha         = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table           = 'historial_cambio'
+        ordering           = ['-fecha']
+        verbose_name       = 'Historial de cambio'
+        verbose_name_plural = 'Historial de cambios'
+
+    def __str__(self):
+        return f'{self.get_accion_display()} — {self.objeto_nombre} ({self.fecha:%d/%m/%Y})'

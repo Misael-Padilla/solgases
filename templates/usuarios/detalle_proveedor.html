@@ -115,4 +115,40 @@
 
 </div>
 
+{% if historial %}
+<div class="card-detalle mt-4">
+    <p class="detalle-seccion-titulo">Historial de cambios</p>
+    <div class="tabla-contenedor">
+        <table class="tabla-sistema tabla-sistema-sm">
+            <thead>
+                <tr>
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Acción</th>
+                    <th scope="col">Observación</th>
+                    <th scope="col">Realizado por</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for h in historial %}
+                <tr>
+                    <td>{{ h.fecha|date:"d/m/Y H:i" }}</td>
+                    <td>
+                        <span class="badge-estado {% if h.accion == 'ACTIVAR' %}badge-activo{% elif h.accion == 'DESACTIVAR' %}badge-inactivo{% else %}badge-emp{% endif %}">
+                            {{ h.get_accion_display }}
+                        </span>
+                    </td>
+                    <td>{{ h.observacion }}</td>
+                    <td>
+                        {% if h.realizado_por %}
+                            {{ h.realizado_por.nombres }} {{ h.realizado_por.apellidos }}
+                        {% else %}—{% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
 {% endblock %}
