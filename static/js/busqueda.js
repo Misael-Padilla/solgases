@@ -39,7 +39,12 @@
                 const html = await res.text();
                 const doc = new DOMParser().parseFromString(html, 'text/html');
                 const nuevo = doc.getElementById('resultados-container');
-                if (nuevo) contenedor.innerHTML = nuevo.innerHTML;
+                if (nuevo) {
+                    contenedor.innerHTML = nuevo.innerHTML;
+                    contenedor.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function (el) {
+                        new bootstrap.Tooltip(el);
+                    });
+                }
                 history.pushState({}, '', url.toString());
             } catch (_) {
                 // Fallback: el formulario GET sigue funcionando sin JS

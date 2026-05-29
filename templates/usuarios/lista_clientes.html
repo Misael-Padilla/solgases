@@ -8,10 +8,12 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h5 class="fw-bold mb-0">Listado de clientes</h5>
     <div class="d-flex gap-2">
-        <a href="{% url 'usuarios:exportar_clientes' %}" class="btn-exportar">
+        <a href="{% url 'usuarios:exportar_clientes' %}" class="btn-exportar"
+           data-bs-toggle="tooltip" data-bs-placement="top" title="Exportar a Excel">
             <i class="bi bi-file-earmark-excel"></i> Exportar Excel
         </a>
-        <a href="{% url 'usuarios:crear_cliente' %}" class="btn-accion">
+        <a href="{% url 'usuarios:crear_cliente' %}" class="btn-accion"
+           data-bs-toggle="tooltip" data-bs-placement="top" title="Nuevo cliente">
             <i class="bi bi-plus-lg"></i> Nuevo cliente
         </a>
     </div>
@@ -74,16 +76,19 @@
                     </span>
                 </td>
                 <td class="acciones">
-                    <a href="{% url 'usuarios:detalle_cliente' cliente.id %}" class="btn-tabla btn-ver" aria-label="Ver {{ cliente }}">
+                    <a href="{% url 'usuarios:detalle_cliente' cliente.id %}" class="btn-tabla btn-ver" aria-label="Ver {{ cliente }}"
+                       data-bs-toggle="tooltip" data-bs-placement="top" title="Ver detalle">
                         <i class="bi bi-eye"></i>
                     </a>
-                    <a href="{% url 'usuarios:editar_cliente' cliente.id %}" class="btn-tabla btn-editar" aria-label="Editar {{ cliente }}">
+                    <a href="{% url 'usuarios:editar_cliente' cliente.id %}" class="btn-tabla btn-editar" aria-label="Editar {{ cliente }}"
+                       data-bs-toggle="tooltip" data-bs-placement="top" title="Editar">
                         <i class="bi bi-pencil"></i>
                     </a>
                     {% if request.user.rol == 'ADMIN' %}
                     <form method="post" action="{% url 'usuarios:cambiar_estado_cliente' cliente.id %}" class="d-inline">
                         {% csrf_token %}
-                        <button type="submit" class="btn-tabla {% if cliente.estado == 'ACTIVO' %}btn-desactivar{% else %}btn-activar{% endif %}" aria-label="{% if cliente.estado == 'ACTIVO' %}Desactivar{% else %}Activar{% endif %} {{ cliente }}">
+                        <button type="submit" class="btn-tabla {% if cliente.estado == 'ACTIVO' %}btn-desactivar{% else %}btn-activar{% endif %}" aria-label="{% if cliente.estado == 'ACTIVO' %}Desactivar{% else %}Activar{% endif %} {{ cliente }}"
+                                data-bs-toggle="tooltip" data-bs-placement="top" title="{% if cliente.estado == 'ACTIVO' %}Desactivar{% else %}Activar{% endif %}">
                             <i class="bi {% if cliente.estado == 'ACTIVO' %}bi-toggle-on{% else %}bi-toggle-off{% endif %}"></i>
                         </button>
                     </form>
