@@ -1,9 +1,11 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.db import transaction
+from django.views.decorators.http import require_POST
 from apps.ventas.models import FacturaVenta
 from apps.ventas.forms import FacturaVentaForm, DetalleVentaFormSet
 from apps.usuarios.decoradores import login_requerido, admin_requerido
+from apps.usuarios.models import HistorialCambio
 
 
 @login_requerido
@@ -62,14 +64,29 @@ def crear_venta(request):
 
 
 @admin_requerido
+@require_POST
 def cambiar_estado_venta(request, id):
-    """Desactiva una factura de venta — solo ADMIN. Sin eliminación física."""
+    """Activa o desactiva una factura — solo ADMIN. Requiere observación."""
     venta = get_object_or_404(FacturaVenta, id=id)
+    observacion = request.POST.get('observacion', '').strip()
+    if not observacion:
+        messages.error(request, 'La observación es obligatoria para cambiar el estado.')
+        return redirect('ventas:lista_ventas')
     if venta.estado == 'ACTIVO':
         venta.estado = 'INACTIVO'
+        accion = 'DESACTIVAR'
         messages.success(request, f'Factura {venta.numero_factura} desactivada.')
     else:
         venta.estado = 'ACTIVO'
+        accion = 'ACTIVAR'
         messages.success(request, f'Factura {venta.numero_factura} activada.')
     venta.save()
+    HistorialCambio.objects.create(
+        modelo='VENTA',
+        objeto_id=venta.id,
+        objeto_nombre=venta.numero_factura,
+        accion=accion,
+        observacion=observacion,
+        realizado_por=request.user,
+    )
     return redirect('ventas:lista_ventas')
