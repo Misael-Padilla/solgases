@@ -12,13 +12,18 @@
             <i class="bi bi-arrow-left"></i> Volver
         </a>
         {% if request.user.rol == 'ADMIN' %}
-        <a href="{% url 'ventas:cambiar_estado_venta' venta.id %}" class="btn-tabla {% if venta.estado == 'ACTIVO' %}btn-desactivar{% else %}btn-activar{% endif %}" style="width:auto; padding: 8px 16px;">
-            {% if venta.estado == 'ACTIVO' %}
-            <i class="bi bi-toggle-on"></i> Desactivar
-            {% else %}
-            <i class="bi bi-toggle-off"></i> Activar
-            {% endif %}
-        </a>
+        <button type="button"
+                class="btn-tabla {% if venta.estado == 'ACTIVO' %}btn-desactivar{% else %}btn-activar{% endif %}"
+                aria-label="{% if venta.estado == 'ACTIVO' %}Desactivar{% else %}Activar{% endif %} factura {{ venta.numero_factura }}"
+                title="{% if venta.estado == 'ACTIVO' %}Desactivar{% else %}Activar{% endif %}"
+                data-bs-toggle="modal"
+                data-bs-target="#modal-cambiar-estado"
+                data-nombre="{{ venta.numero_factura }}"
+                data-accion="{% if venta.estado == 'ACTIVO' %}desactivar{% else %}activar{% endif %}"
+                data-url="{% url 'ventas:cambiar_estado_venta' venta.id %}">
+            <i class="bi {% if venta.estado == 'ACTIVO' %}bi-toggle-on{% else %}bi-toggle-off{% endif %}"></i>
+            {% if venta.estado == 'ACTIVO' %}Desactivar{% else %}Activar{% endif %}
+        </button>
         {% endif %}
     </div>
 </div>
@@ -49,12 +54,15 @@
                 <div class="col-6 col-md-3">
                     <p class="detalle-label">Estado</p>
                     <p class="detalle-valor">
-                        <span class="badge-estado badge-{{ venta.estado|lower }}">{{ venta.estado }}</span>
+                        <span class="badge-estado badge-{{ venta.estado|lower }}">
+                            <i class="bi bi-{% if venta.estado == 'ACTIVO' %}check-circle-fill{% else %}x-circle-fill{% endif %}"></i>
+                            {{ venta.estado }}
+                        </span>
                     </p>
                 </div>
                 <div class="col-6 col-md-3">
                     <p class="detalle-label">Método de pago</p>
-                    <p class="detalle-valor">{{ venta.metodo_pago }}</p>
+                    <p class="detalle-valor">{{ venta.get_metodo_pago_display }}</p>
                 </div>
                 <div class="col-6 col-md-3">
                     <p class="detalle-label">Fecha factura</p>
@@ -83,7 +91,7 @@
                 {% if venta.observaciones %}
                 <div class="col-12">
                     <p class="detalle-label">Observaciones</p>
-                    <p class="detalle-valor">{{ venta.observaciones }}</p>
+                    <p class="detalle-valor">{{ venta.observaciones|linebreaksbr }}</p>
                 </div>
                 {% endif %}
             </div>
@@ -98,18 +106,18 @@
                 <table class="tabla-sistema">
                     <thead>
                         <tr>
-                            <th>Tipo</th>
-                            <th>Código</th>
-                            <th>Descripción</th>
-                            <th>Cantidad</th>
-                            <th>Precio unitario</th>
-                            <th>Subtotal</th>
+                            <th scope="col">Tipo</th>
+                            <th scope="col">Código</th>
+                            <th scope="col">Descripción</th>
+                            <th scope="col">Cantidad</th>
+                            <th scope="col">Precio unitario</th>
+                            <th scope="col">Subtotal</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for detalle in venta.detalles.all %}
                         <tr>
-                            <td>{{ detalle.tipo_item }}</td>
+                            <td>{{ detalle.get_tipo_item_display }}</td>
                             <td>{{ detalle.codigo_item }}</td>
                             <td>{{ detalle.descripcion }}</td>
                             <td>{{ detalle.cantidad }}</td>
@@ -127,6 +135,48 @@
         </div>
     </div>
 
+</div>
+
+<!-- Modal confirmación cambio de estado -->
+<div class="modal fade" id="modal-cambiar-estado" tabindex="-1"
+     aria-labelledby="modal-estado-titulo" aria-modal="true" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-estado-titulo">Confirmar acción</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <form id="modal-form-toggle" method="post" action="">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <p class="mb-3">
+                        ¿Está seguro que desea <strong id="modal-accion-texto"></strong> la factura
+                        <strong id="modal-nombre-objeto"></strong>?
+                    </p>
+                    <p class="texto-descripcion mb-3">
+                        <i class="bi bi-exclamation-triangle text-warning"></i>
+                        Al desactivar se restaurará el stock de todos los ítems. Al activar se descontará de nuevo (requiere stock disponible).
+                    </p>
+                    <div class="campo-form mb-0">
+                        <label class="form-label" for="modal-observacion">
+                            Observación <span class="campo-requerido">*</span>
+                        </label>
+                        <textarea id="modal-observacion" name="observacion"
+                                  class="form-control" rows="3" maxlength="500"
+                                  aria-required="true"
+                                  placeholder="Ej: Factura duplicada, error en el cliente..."></textarea>
+                        <div class="invalid-feedback">La observación es obligatoria.</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secundario" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn-accion">
+                        <i class="bi bi-check-lg"></i> Confirmar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 {% endblock %}
