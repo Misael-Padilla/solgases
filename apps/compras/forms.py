@@ -5,10 +5,6 @@ from apps.compras.models import FacturaCompra, DetalleCompra
 
 
 class FacturaCompraForm(forms.ModelForm):
-    """
-    Formulario para la cabecera de la factura de compra.
-    El campo registrado_por se asigna automáticamente desde la vista.
-    """
 
     class Meta:
         model = FacturaCompra
@@ -17,6 +13,12 @@ class FacturaCompraForm(forms.ModelForm):
             'subtotal', 'iva_porcentaje', 'iva', 'total',
             'estado', 'observaciones',
         ]
+        labels = {
+            'numero_factura': 'Número de factura',
+            'fecha_factura':  'Fecha de la factura',
+            'iva_porcentaje': 'IVA (%)',
+            'observaciones':  'Observaciones',
+        }
         widgets = {
             'fecha_factura': forms.DateTimeInput(
                 attrs={'type': 'datetime-local'},
@@ -30,16 +32,18 @@ class FacturaCompraForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        from apps.usuarios.models import Proveedor
+        # Solo proveedores activos en el desplegable
+        self.fields['proveedor'].queryset = Proveedor.objects.filter(
+            estado='ACTIVO'
+        ).order_by('razon_social', 'nombres')
         self.fields['fecha_factura'].input_formats = ['%Y-%m-%dT%H:%M']
-
-        # Valor inicial del IVA (%) — solo para formularios nuevos
         if not self.instance.pk:
             self.fields['iva_porcentaje'].initial = Decimal('19.00')
 
     def clean(self):
         """
-        Validación cruzada de valores monetarios.
-        Verifica que iva y total sean consistentes con el porcentaje aplicado:
+        Validación cruzada de valores monetarios:
         - iva = subtotal × (iva_porcentaje / 100)
         - total = subtotal + iva
         """
@@ -65,10 +69,6 @@ class FacturaCompraForm(forms.ModelForm):
 
 
 class DetalleCompraForm(forms.ModelForm):
-    """
-    Formulario para cada ítem de la factura de compra.
-    Se usa dentro de un formset para manejar múltiples ítems.
-    """
 
     class Meta:
         model = DetalleCompra
