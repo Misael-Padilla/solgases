@@ -7,31 +7,50 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h5 class="fw-bold mb-0">Facturas de compra</h5>
-    <a href="{% url 'compras:crear_compra' %}" class="btn-accion">
+    <a href="{% url 'compras:crear_compra' %}" class="btn-accion"
+       data-bs-toggle="tooltip" data-bs-placement="top" title="Nueva factura">
         <i class="bi bi-plus-lg"></i> Nueva factura
     </a>
 </div>
 
-<!-- Mensajes flash -->
-{% if messages %}
-{% for message in messages %}
-<div class="alerta-{{ message.tags }} mb-3">
-    <i class="bi bi-info-circle"></i> {{ message }}
-</div>
-{% endfor %}
+<!-- Barra de búsqueda -->
+<form method="get" role="search" class="barra-busqueda mb-3">
+    <div class="busqueda-grupo">
+        <i class="bi bi-search busqueda-icono"></i>
+        <input type="search" name="q" value="{{ q }}" class="busqueda-input"
+               placeholder="Buscar por número de factura o proveedor..."
+               aria-label="Buscar compras">
+        <a href="{% url 'compras:lista_compras' %}"
+           class="busqueda-limpiar {% if not q %}d-none{% endif %}"
+           aria-label="Limpiar búsqueda">
+            <i class="bi bi-x-lg"></i>
+        </a>
+    </div>
+</form>
+
+<div id="resultados-container">
+{% if q %}
+<p class="busqueda-resultado" aria-live="polite">
+    {% with total=page_obj.paginator.count %}
+        {% if total == 0 %}Sin resultados para <strong>"{{ q }}"</strong>.
+        {% elif total == 1 %}1 resultado para <strong>"{{ q }}"</strong>.
+        {% else %}{{ total }} resultado{{ total|pluralize:"s" }} para <strong>"{{ q }}"</strong>.
+        {% endif %}
+    {% endwith %}
+</p>
 {% endif %}
 
-<div class="tabla-contenedor">
+<div class="tabla-contenedor" aria-live="polite" aria-atomic="false">
     <table class="tabla-sistema">
         <thead>
             <tr>
-                <th>N° Factura</th>
-                <th>Proveedor</th>
-                <th>Registrado por</th>
-                <th>Fecha factura</th>
-                <th>Total</th>
-                <th>Estado</th>
-                <th>Acciones</th>
+                <th scope="col">N° Factura</th>
+                <th scope="col">Proveedor</th>
+                <th scope="col">Registrado por</th>
+                <th scope="col">Fecha factura</th>
+                <th scope="col">Total</th>
+                <th scope="col">Estado</th>
+                <th scope="col">Acciones</th>
             </tr>
         </thead>
         <tbody>
@@ -44,17 +63,29 @@
                 <td>${{ compra.total }}</td>
                 <td>
                     <span class="badge-estado badge-{{ compra.estado|lower }}">
+                        <i class="bi bi-{% if compra.estado == 'ACTIVO' %}check-circle-fill{% else %}x-circle-fill{% endif %}"></i>
                         {{ compra.estado }}
                     </span>
                 </td>
                 <td class="acciones">
-                    <a href="{% url 'compras:detalle_compra' compra.id %}" class="btn-tabla btn-ver">
+                    <a href="{% url 'compras:detalle_compra' compra.id %}"
+                       class="btn-tabla btn-ver"
+                       aria-label="Ver factura {{ compra.numero_factura }}"
+                       data-bs-toggle="tooltip" data-bs-placement="top" title="Ver detalle">
                         <i class="bi bi-eye"></i>
                     </a>
                     {% if request.user.rol == 'ADMIN' %}
-                    <a href="{% url 'compras:cambiar_estado_compra' compra.id %}" class="btn-tabla {% if compra.estado == 'ACTIVO' %}btn-desactivar{% else %}btn-activar{% endif %}">
+                    <button type="button"
+                            class="btn-tabla {% if compra.estado == 'ACTIVO' %}btn-desactivar{% else %}btn-activar{% endif %}"
+                            aria-label="{% if compra.estado == 'ACTIVO' %}Desactivar{% else %}Activar{% endif %} factura {{ compra.numero_factura }}"
+                            title="{% if compra.estado == 'ACTIVO' %}Desactivar{% else %}Activar{% endif %}"
+                            data-bs-toggle="modal"
+                            data-bs-target="#modal-cambiar-estado"
+                            data-nombre="{{ compra.numero_factura }}"
+                            data-accion="{% if compra.estado == 'ACTIVO' %}desactivar{% else %}activar{% endif %}"
+                            data-url="{% url 'compras:cambiar_estado_compra' compra.id %}">
                         <i class="bi {% if compra.estado == 'ACTIVO' %}bi-toggle-on{% else %}bi-toggle-off{% endif %}"></i>
-                    </a>
+                    </button>
                     {% endif %}
                 </td>
             </tr>
@@ -65,6 +96,51 @@
             {% endfor %}
         </tbody>
     </table>
+</div>
+
+{% include 'partials/paginacion.html' %}
+</div><!-- fin resultados-container -->
+
+<!-- Modal confirmación cambio de estado -->
+<div class="modal fade" id="modal-cambiar-estado" tabindex="-1"
+     aria-labelledby="modal-estado-titulo" aria-modal="true" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-estado-titulo">Confirmar acción</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <form id="modal-form-toggle" method="post" action="">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <p class="mb-3">
+                        ¿Está seguro que desea <strong id="modal-accion-texto"></strong> la factura
+                        <strong id="modal-nombre-objeto"></strong>?
+                    </p>
+                    <p class="texto-descripcion mb-3">
+                        <i class="bi bi-exclamation-triangle text-warning"></i>
+                        Al desactivar se revertirá el stock de todos los ítems. Al activar se restaurará.
+                    </p>
+                    <div class="campo-form mb-0">
+                        <label class="form-label" for="modal-observacion">
+                            Observación <span class="campo-requerido">*</span>
+                        </label>
+                        <textarea id="modal-observacion" name="observacion"
+                                  class="form-control" rows="3" maxlength="500"
+                                  aria-required="true"
+                                  placeholder="Ej: Factura duplicada, error en los valores..."></textarea>
+                        <div class="invalid-feedback">La observación es obligatoria.</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secundario" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn-accion">
+                        <i class="bi bi-check-lg"></i> Confirmar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 {% endblock %}
