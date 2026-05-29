@@ -13,9 +13,8 @@
         </a>
         {% if request.user.rol == 'ADMIN' %}
         <button type="button"
-                class="btn-tabla {% if compra.estado == 'ACTIVO' %}btn-desactivar{% else %}btn-activar{% endif %}"
+                class="{% if compra.estado == 'ACTIVO' %}btn-accion{% else %}btn-secundario{% endif %}"
                 aria-label="{% if compra.estado == 'ACTIVO' %}Desactivar{% else %}Activar{% endif %} factura {{ compra.numero_factura }}"
-                title="{% if compra.estado == 'ACTIVO' %}Desactivar{% else %}Activar{% endif %}"
                 data-bs-toggle="modal"
                 data-bs-target="#modal-cambiar-estado"
                 data-nombre="{{ compra.numero_factura }}"
