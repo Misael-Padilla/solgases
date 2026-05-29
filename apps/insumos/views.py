@@ -1,9 +1,10 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.utils import timezone
 from django.contrib import messages
+from django.views.decorators.http import require_POST
 from apps.insumos.models import Insumo
 from apps.insumos.forms import InsumoForm, StockInsumoForm
 from apps.usuarios.decoradores import login_requerido, admin_requerido
+from apps.usuarios.models import HistorialCambio
 
 
 @login_requerido
@@ -50,16 +51,32 @@ def editar_insumo(request, id):
 
 
 @admin_requerido
+@require_POST
 def cambiar_estado_insumo(request, id):
-    """Activa o desactiva un insumo — solo ADMIN. Sin eliminación física."""
+    """Activa o desactiva un insumo — solo ADMIN. Requiere observación."""
     insumo = get_object_or_404(Insumo, id=id)
+    observacion = request.POST.get('observacion', '').strip()
+    if not observacion:
+        messages.error(request, 'La observación es obligatoria para cambiar el estado.')
+        return redirect('insumos:lista_insumos')
     if insumo.estado == 'ACTIVO':
         insumo.estado = 'INACTIVO'
+        accion = 'DESACTIVAR'
         messages.success(request, f'Insumo {insumo.nombre} desactivado.')
     else:
         insumo.estado = 'ACTIVO'
+        accion = 'ACTIVAR'
         messages.success(request, f'Insumo {insumo.nombre} activado.')
+    insumo.modificado_por = request.user
     insumo.save()
+    HistorialCambio.objects.create(
+        modelo='INSUMO',
+        objeto_id=insumo.id,
+        objeto_nombre=insumo.nombre,
+        accion=accion,
+        observacion=observacion,
+        realizado_por=request.user,
+    )
     return redirect('insumos:lista_insumos')
 
 
