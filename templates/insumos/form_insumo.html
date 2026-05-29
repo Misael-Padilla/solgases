@@ -55,13 +55,15 @@
                 <!-- Sección — Inventario -->
                 <p class="detalle-seccion-titulo">Inventario</p>
                 <div class="row g-3 mb-4">
+                    {% if form.stock %}
                     <div class="col-4">
                         {% include 'partials/campo_form.html' with campo=form.stock %}
                     </div>
-                    <div class="col-4">
+                    {% endif %}
+                    <div class="col-{% if form.stock %}4{% else %}6{% endif %}">
                         {% include 'partials/campo_form.html' with campo=form.stock_minimo %}
                     </div>
-                    <div class="col-4">
+                    <div class="col-{% if form.stock %}4{% else %}6{% endif %}">
                         {% include 'partials/campo_form.html' with campo=form.stock_maximo %}
                     </div>
                 </div>
