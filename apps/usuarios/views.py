@@ -1,6 +1,7 @@
 from io import BytesIO
 from datetime import datetime
 
+from django.conf import settings
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
@@ -9,6 +10,7 @@ from django.db.models import Q
 import openpyxl
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
+from openpyxl.drawing.image import Image as XlImage
 
 from apps.usuarios.models import Usuario, Cliente, Proveedor
 from apps.usuarios.decoradores import login_requerido, admin_requerido
@@ -303,6 +305,42 @@ def _formato_fecha(dt):
     return '—'
 
 
+def _insertar_encabezado(ws, titulo, exportado_por, num_columnas):
+    """Inserta logo, título del reporte y metadatos en las filas 1-4."""
+    from zoneinfo import ZoneInfo
+    ultima_col = get_column_letter(num_columnas)
+
+    # Fila 1: Logo
+    ws.row_dimensions[1].height = 55
+    logo_path = settings.BASE_DIR / 'static' / 'img' / 'logo_solgases.png'
+    if logo_path.exists():
+        img = XlImage(str(logo_path))
+        img.width = 180
+        img.height = 65
+        ws.add_image(img, 'A1')
+
+    # Fila 2: Título
+    ws.merge_cells(f'A2:{ultima_col}2')
+    ws['A2'] = titulo
+    ws['A2'].font = Font(bold=True, size=14, color='1A1A1A')
+    ws['A2'].alignment = Alignment(horizontal='center', vertical='center')
+    ws.row_dimensions[2].height = 22
+
+    # Fila 3: Metadatos (fecha y usuario que exportó)
+    ws.merge_cells(f'A3:{ultima_col}3')
+    ahora = datetime.now(ZoneInfo('America/Bogota')).strftime('%d/%m/%Y %H:%M')
+    ws['A3'] = f'Generado: {ahora}  |  Exportado por: {exportado_por}'
+    ws['A3'].font = Font(size=9, color='666666', italic=True)
+    ws['A3'].alignment = Alignment(horizontal='center', vertical='center')
+    ws.row_dimensions[3].height = 16
+
+    # Fila 4: Separador visual
+    ws['A4'] = ''
+    ws.row_dimensions[4].height = 6
+
+    return 5  # Fila donde van los encabezados de columna
+
+
 @login_requerido
 def exportar_usuarios_excel(request):
     """Genera y descarga el reporte Excel de usuarios con auditoría."""
@@ -311,7 +349,6 @@ def exportar_usuarios_excel(request):
     wb = openpyxl.Workbook()
     ws = wb.active
     ws.title = 'Usuarios'
-    ws.freeze_panes = 'A2'
 
     cabecera, dato, borde, _ = _estilo_excel(wb)
 
@@ -319,13 +356,17 @@ def exportar_usuarios_excel(request):
         'Identificación', 'Nombre', 'Correo', 'Rol', 'Estado',
         'Creado por', 'Fecha creación', 'Modificado por', 'Última modificación'
     ]
-    ws.append(encabezados)
-    for cell in ws[1]:
-        cell.style = cabecera
+    fila_enc = _insertar_encabezado(ws, 'REPORTE DE USUARIOS', _nombre_usuario(request.user), len(encabezados))
+    ws.freeze_panes = f'A{fila_enc + 1}'
 
-    tz_bogota = 'America/Bogota'
+    for i, enc in enumerate(encabezados, 1):
+        cell = ws.cell(row=fila_enc, column=i, value=enc)
+        cell.style = cabecera
+    ws.row_dimensions[fila_enc].height = 30
+
+    data_row = fila_enc + 1
     for u in usuarios:
-        ws.append([
+        row_data = [
             f'{u.tipo_identificacion} {u.identificacion}',
             f'{u.nombres} {u.apellidos}',
             u.correo_electronico,
@@ -335,15 +376,14 @@ def exportar_usuarios_excel(request):
             _formato_fecha(u.fecha_creacion),
             _nombre_usuario(u.modificado_por),
             _formato_fecha(u.modificado_en),
-        ])
-
-    for row in ws.iter_rows(min_row=2):
-        for cell in row:
-            cell.border = borde
-            cell.alignment = Alignment(vertical='center')
+        ]
+        for col, val in enumerate(row_data, 1):
+            c = ws.cell(row=data_row, column=col, value=val)
+            c.border = borde
+            c.alignment = Alignment(vertical='center')
+        data_row += 1
 
     _ajustar_columnas(ws)
-    ws.row_dimensions[1].height = 30
 
     wb.properties.title   = 'Reporte de Usuarios — SOLGASES'
     wb.properties.creator = _nombre_usuario(request.user)
@@ -370,7 +410,6 @@ def exportar_clientes_excel(request):
     wb = openpyxl.Workbook()
     ws = wb.active
     ws.title = 'Clientes'
-    ws.freeze_panes = 'A2'
 
     cabecera, dato, borde, _ = _estilo_excel(wb)
 
@@ -378,13 +417,18 @@ def exportar_clientes_excel(request):
         'Identificación', 'Nombre / Razón social', 'Teléfono', 'Ciudad',
         'Estado', 'Creado por', 'Fecha creación', 'Modificado por', 'Última modificación'
     ]
-    ws.append(encabezados)
-    for cell in ws[1]:
-        cell.style = cabecera
+    fila_enc = _insertar_encabezado(ws, 'REPORTE DE CLIENTES', _nombre_usuario(request.user), len(encabezados))
+    ws.freeze_panes = f'A{fila_enc + 1}'
 
+    for i, enc in enumerate(encabezados, 1):
+        cell = ws.cell(row=fila_enc, column=i, value=enc)
+        cell.style = cabecera
+    ws.row_dimensions[fila_enc].height = 30
+
+    data_row = fila_enc + 1
     for c in clientes:
         nombre = c.razon_social if c.tipo_identificacion == 'NIT' else f'{c.nombres} {c.apellidos}'
-        ws.append([
+        row_data = [
             f'{c.tipo_identificacion} {c.identificacion}',
             nombre,
             c.telefono,
@@ -394,15 +438,14 @@ def exportar_clientes_excel(request):
             _formato_fecha(c.fecha_creacion),
             _nombre_usuario(c.modificado_por),
             _formato_fecha(c.modificado_en),
-        ])
-
-    for row in ws.iter_rows(min_row=2):
-        for cell in row:
+        ]
+        for col, val in enumerate(row_data, 1):
+            cell = ws.cell(row=data_row, column=col, value=val)
             cell.border = borde
             cell.alignment = Alignment(vertical='center')
+        data_row += 1
 
     _ajustar_columnas(ws)
-    ws.row_dimensions[1].height = 30
 
     wb.properties.title   = 'Reporte de Clientes — SOLGASES'
     wb.properties.creator = _nombre_usuario(request.user)
@@ -429,7 +472,6 @@ def exportar_proveedores_excel(request):
     wb = openpyxl.Workbook()
     ws = wb.active
     ws.title = 'Proveedores'
-    ws.freeze_panes = 'A2'
 
     cabecera, dato, borde, _ = _estilo_excel(wb)
 
@@ -437,13 +479,18 @@ def exportar_proveedores_excel(request):
         'Identificación', 'Nombre / Razón social', 'Teléfono', 'Ciudad',
         'Estado', 'Creado por', 'Fecha creación', 'Modificado por', 'Última modificación'
     ]
-    ws.append(encabezados)
-    for cell in ws[1]:
-        cell.style = cabecera
+    fila_enc = _insertar_encabezado(ws, 'REPORTE DE PROVEEDORES', _nombre_usuario(request.user), len(encabezados))
+    ws.freeze_panes = f'A{fila_enc + 1}'
 
+    for i, enc in enumerate(encabezados, 1):
+        cell = ws.cell(row=fila_enc, column=i, value=enc)
+        cell.style = cabecera
+    ws.row_dimensions[fila_enc].height = 30
+
+    data_row = fila_enc + 1
     for p in proveedores:
         nombre = p.razon_social if p.tipo_identificacion == 'NIT' else f'{p.nombres} {p.apellidos}'
-        ws.append([
+        row_data = [
             f'{p.tipo_identificacion} {p.identificacion}',
             nombre,
             p.telefono,
@@ -453,15 +500,14 @@ def exportar_proveedores_excel(request):
             _formato_fecha(p.fecha_creacion),
             _nombre_usuario(p.modificado_por),
             _formato_fecha(p.modificado_en),
-        ])
-
-    for row in ws.iter_rows(min_row=2):
-        for cell in row:
+        ]
+        for col, val in enumerate(row_data, 1):
+            cell = ws.cell(row=data_row, column=col, value=val)
             cell.border = borde
             cell.alignment = Alignment(vertical='center')
+        data_row += 1
 
     _ajustar_columnas(ws)
-    ws.row_dimensions[1].height = 30
 
     wb.properties.title   = 'Reporte de Proveedores — SOLGASES'
     wb.properties.creator = _nombre_usuario(request.user)
