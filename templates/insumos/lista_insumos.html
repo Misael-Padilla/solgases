@@ -7,10 +7,16 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h5 class="fw-bold mb-0">Listado de insumos</h5>
-    <a href="{% url 'insumos:crear_insumo' %}" class="btn-accion"
-       data-bs-toggle="tooltip" data-bs-placement="top" title="Nuevo insumo">
-        <i class="bi bi-plus-lg"></i> Nuevo insumo
-    </a>
+    <div class="d-flex gap-2">
+        <a href="{% url 'insumos:exportar_insumos' %}" class="btn-exportar"
+           data-bs-toggle="tooltip" data-bs-placement="top" title="Exportar a Excel">
+            <i class="bi bi-file-earmark-excel"></i> Exportar Excel
+        </a>
+        <a href="{% url 'insumos:crear_insumo' %}" class="btn-accion"
+           data-bs-toggle="tooltip" data-bs-placement="top" title="Nuevo insumo">
+            <i class="bi bi-plus-lg"></i> Nuevo insumo
+        </a>
+    </div>
 </div>
 
 <!-- Barra de búsqueda -->
