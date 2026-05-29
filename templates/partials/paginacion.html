@@ -1,0 +1,56 @@
+{% if page_obj.has_other_pages %}
+<nav aria-label="Paginación" class="paginacion-nav">
+    <ul class="pagination justify-content-center mb-0">
+
+        {% if page_obj.has_previous %}
+        <li class="page-item">
+            <a class="page-link"
+               href="?page={{ page_obj.previous_page_number }}{% if q %}&q={{ q|urlencode }}{% endif %}"
+               aria-label="Página anterior">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <span class="page-link" aria-hidden="true">&laquo;</span>
+        </li>
+        {% endif %}
+
+        {% for num in page_range %}
+            {% if num == paginator_ellipsis %}
+            <li class="page-item disabled" aria-hidden="true">
+                <span class="page-link">…</span>
+            </li>
+            {% elif page_obj.number == num %}
+            <li class="page-item active" aria-current="page">
+                <span class="page-link">{{ num }}</span>
+            </li>
+            {% else %}
+            <li class="page-item">
+                <a class="page-link"
+                   href="?page={{ num }}{% if q %}&q={{ q|urlencode }}{% endif %}">{{ num }}</a>
+            </li>
+            {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+        <li class="page-item">
+            <a class="page-link"
+               href="?page={{ page_obj.next_page_number }}{% if q %}&q={{ q|urlencode }}{% endif %}"
+               aria-label="Página siguiente">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <span class="page-link" aria-hidden="true">&raquo;</span>
+        </li>
+        {% endif %}
+
+    </ul>
+</nav>
+<p class="paginacion-info">
+    Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+    &mdash; {{ page_obj.paginator.count }} registro{{ page_obj.paginator.count|pluralize:"s" }} en total
+</p>
+{% endif %}

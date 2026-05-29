@@ -29,6 +29,7 @@
             } else {
                 url.searchParams.delete('q');
             }
+            url.searchParams.delete('page'); // nueva búsqueda siempre empieza en página 1
 
             contenedor.setAttribute('aria-busy', 'true');
 

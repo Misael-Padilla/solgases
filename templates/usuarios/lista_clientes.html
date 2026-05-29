@@ -35,10 +35,10 @@
 <div id="resultados-container">
 {% if q %}
 <p class="busqueda-resultado" aria-live="polite">
-    {% with total=clientes|length %}
+    {% with total=page_obj.paginator.count %}
         {% if total == 0 %}Sin resultados para <strong>"{{ q }}"</strong>.
         {% elif total == 1 %}1 resultado para <strong>"{{ q }}"</strong>.
-        {% else %}{{ total }} resultados para <strong>"{{ q }}"</strong>.
+        {% else %}{{ total }} resultado{{ total|pluralize:"s" }} para <strong>"{{ q }}"</strong>.
         {% endif %}
     {% endwith %}
 </p>
@@ -107,6 +107,8 @@
         </tbody>
     </table>
 </div>
+
+{% include 'partials/paginacion.html' %}
 </div><!-- fin resultados-container -->
 
 <!-- Modal confirmación cambio de estado -->

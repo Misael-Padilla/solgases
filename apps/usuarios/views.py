@@ -3,8 +3,11 @@ from datetime import datetime
 
 from django.conf import settings
 from django.http import HttpResponse
+from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
+
+_POR_PAGINA = 15
 from django.contrib import messages
 from django.views.decorators.http import require_POST
 from django.db.models import Q
@@ -33,11 +36,20 @@ def lista_usuarios(request):
             Q(apellidos__icontains=q) |
             Q(correo_electronico__icontains=q)
         )
+    paginator = Paginator(usuarios, _POR_PAGINA)
+    page_obj  = paginator.get_page(request.GET.get('page', 1))
     breadcrumbs = [
         {'nombre': 'Dashboard', 'url': reverse('core:inicio')},
         {'nombre': 'Usuarios', 'url': None},
     ]
-    return render(request, 'usuarios/lista_usuarios.html', {'usuarios': usuarios, 'q': q, 'breadcrumbs': breadcrumbs})
+    return render(request, 'usuarios/lista_usuarios.html', {
+        'usuarios': page_obj,
+        'page_obj': page_obj,
+        'page_range': list(paginator.get_elided_page_range(page_obj.number, on_each_side=2, on_ends=1)),
+        'paginator_ellipsis': paginator.ELLIPSIS,
+        'q': q,
+        'breadcrumbs': breadcrumbs,
+    })
 
 
 @login_requerido
@@ -163,11 +175,20 @@ def lista_clientes(request):
             Q(ciudad__icontains=q) |
             Q(telefono__icontains=q)
         )
+    paginator = Paginator(clientes, _POR_PAGINA)
+    page_obj  = paginator.get_page(request.GET.get('page', 1))
     breadcrumbs = [
         {'nombre': 'Dashboard', 'url': reverse('core:inicio')},
         {'nombre': 'Clientes', 'url': None},
     ]
-    return render(request, 'usuarios/lista_clientes.html', {'clientes': clientes, 'q': q, 'breadcrumbs': breadcrumbs})
+    return render(request, 'usuarios/lista_clientes.html', {
+        'clientes': page_obj,
+        'page_obj': page_obj,
+        'page_range': list(paginator.get_elided_page_range(page_obj.number, on_each_side=2, on_ends=1)),
+        'paginator_ellipsis': paginator.ELLIPSIS,
+        'q': q,
+        'breadcrumbs': breadcrumbs,
+    })
 
 
 @login_requerido
@@ -296,11 +317,20 @@ def lista_proveedores(request):
             Q(ciudad__icontains=q) |
             Q(telefono__icontains=q)
         )
+    paginator = Paginator(proveedores, _POR_PAGINA)
+    page_obj  = paginator.get_page(request.GET.get('page', 1))
     breadcrumbs = [
         {'nombre': 'Dashboard', 'url': reverse('core:inicio')},
         {'nombre': 'Proveedores', 'url': None},
     ]
-    return render(request, 'usuarios/lista_proveedores.html', {'proveedores': proveedores, 'q': q, 'breadcrumbs': breadcrumbs})
+    return render(request, 'usuarios/lista_proveedores.html', {
+        'proveedores': page_obj,
+        'page_obj': page_obj,
+        'page_range': list(paginator.get_elided_page_range(page_obj.number, on_each_side=2, on_ends=1)),
+        'paginator_ellipsis': paginator.ELLIPSIS,
+        'q': q,
+        'breadcrumbs': breadcrumbs,
+    })
 
 
 @login_requerido
