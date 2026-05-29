@@ -2,7 +2,7 @@
 
 > **Última actualización:** 29 de mayo de 2026
 > **Rama:** `main`
-> **Último commit:** `cierre-insumos` (se actualiza tras el commit de cierre)
+> **Último commit:** `670218d` (se actualiza tras el commit de cierre)
 
 ---
 
@@ -21,7 +21,7 @@
 | `core` | ✅ Aprobado — 2026-05-26 | `39bfcc5` (cierre) |
 | `usuarios` | ✅ Aprobado — 2026-05-29 | `88d74b4` (cierre) |
 | `productos` | ✅ Aprobado — 2026-05-29 | `9295480` (cierre) |
-| `insumos` | ✅ Aprobado — 2026-05-29 | `cierre-insumos` (cierre) |
+| `insumos` | ✅ Aprobado — 2026-05-29 | `670218d` (cierre) |
 | `compras` | ⏳ Pendiente | — |
 | `ventas` | ⏳ Pendiente | — |
 | `backup` | ⏳ Pendiente | — |

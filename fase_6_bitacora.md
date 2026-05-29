@@ -4,7 +4,7 @@
 > **Fase:** 6 — Pruebas y Verificación Módulo por Módulo
 > **Autor:** Jorge Padilla
 > **Fecha de inicio:** 06 de mayo de 2026
-> **Última actualización:** 29 de mayo de 2026 (insumos)
+> **Última actualización:** 29 de mayo de 2026
 > **Commit de referencia (inicio Fase 6):** `b2a41ed`
 > **Protocolo:** Protocolo de Veracidad — Fase 6 v1.1
 
@@ -17,7 +17,7 @@
 | 1 | `core` | ✅ Aprobado | 2026-05-26 | `39bfcc5` |
 | 2 | `usuarios` | ✅ Aprobado | 2026-05-29 | `88d74b4` |
 | 3 | `productos` | ✅ Aprobado | 2026-05-29 | `9295480` |
-| 4 | `insumos` | ✅ Aprobado | 2026-05-29 | `cierre-insumos` |
+| 4 | `insumos` | ✅ Aprobado | 2026-05-29 | `670218d` |
 | 5 | `compras` | ⏳ Pendiente | — | — |
 | 6 | `ventas` | ⏳ Pendiente | — | — |
 | 7 | `backup` | ⏳ Pendiente | — | — |
