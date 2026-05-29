@@ -1,9 +1,11 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.db import transaction
+from django.views.decorators.http import require_POST
 from apps.compras.models import FacturaCompra
 from apps.compras.forms import FacturaCompraForm, DetalleCompraFormSet
 from apps.usuarios.decoradores import login_requerido, admin_requerido
+from apps.usuarios.models import HistorialCambio
 
 
 @login_requerido
@@ -62,14 +64,29 @@ def crear_compra(request):
 
 
 @admin_requerido
+@require_POST
 def cambiar_estado_compra(request, id):
-    """Desactiva una factura de compra — solo ADMIN. Sin eliminación física."""
+    """Activa o desactiva una factura — solo ADMIN. Requiere observación."""
     compra = get_object_or_404(FacturaCompra, id=id)
+    observacion = request.POST.get('observacion', '').strip()
+    if not observacion:
+        messages.error(request, 'La observación es obligatoria para cambiar el estado.')
+        return redirect('compras:lista_compras')
     if compra.estado == 'ACTIVO':
         compra.estado = 'INACTIVO'
+        accion = 'DESACTIVAR'
         messages.success(request, f'Factura {compra.numero_factura} desactivada.')
     else:
         compra.estado = 'ACTIVO'
+        accion = 'ACTIVAR'
         messages.success(request, f'Factura {compra.numero_factura} activada.')
     compra.save()
+    HistorialCambio.objects.create(
+        modelo='COMPRA',
+        objeto_id=compra.id,
+        objeto_nombre=compra.numero_factura,
+        accion=accion,
+        observacion=observacion,
+        realizado_por=request.user,
+    )
     return redirect('compras:lista_compras')
