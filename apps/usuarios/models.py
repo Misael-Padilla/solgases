@@ -229,11 +229,13 @@ class HistorialCambio(models.Model):
         ('INSUMO',    'Insumo'),
         ('COMPRA',    'Compra'),
         ('VENTA',     'Venta'),
+        ('BACKUP',    'Backup'),
     ]
     ACCION_CHOICES = [
         ('EDITAR',      'Editar'),
         ('ACTIVAR',     'Activar'),
         ('DESACTIVAR',  'Desactivar'),
+        ('RESTAURAR',   'Restaurar'),
     ]
 
     modelo        = models.CharField(max_length=20, choices=MODELO_CHOICES)
