@@ -1146,3 +1146,36 @@ body {
     background-color: transparent;
     border-color: var(--color-borde);
 }
+
+/* ==========================================================
+   21. Manual — índice de navegación
+   ========================================================== */
+.manual-nav-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 16px 8px;
+    background-color: var(--color-contenido-bg);
+    border-radius: 8px;
+    border: 1px solid var(--color-borde);
+    text-decoration: none;
+    color: var(--color-texto-secundario);
+    font-size: 12px;
+    font-weight: 500;
+    text-align: center;
+    transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+    min-height: 72px;
+}
+
+.manual-nav-card:hover {
+    background-color: #fff0f0;
+    border-color: var(--color-acento);
+    color: var(--color-acento);
+}
+
+.manual-nav-icon {
+    font-size: 22px;
+    color: var(--color-acento);
+}
