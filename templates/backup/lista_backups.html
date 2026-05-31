@@ -21,6 +21,11 @@
     </div>
 
     <div class="d-flex gap-2">
+        <a href="{% url 'backup:exportar_backups_excel' %}" class="btn-secundario"
+           data-bs-toggle="tooltip" data-bs-placement="bottom"
+           title="Exportar historial de backups a Excel">
+            <i class="bi bi-file-earmark-excel"></i> Exportar Excel
+        </a>
         <a href="{% url 'backup:configuracion_backup' %}" class="btn-secundario"
            data-bs-toggle="tooltip" data-bs-placement="bottom"
            title="Configurar horario y backups puntuales">

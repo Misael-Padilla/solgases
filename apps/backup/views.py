@@ -2,15 +2,25 @@ import os
 import io
 import logging
 import zoneinfo
+from io import BytesIO
 from datetime import datetime, timedelta
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.conf import settings
 from django.core.management import call_command
 from django.core.paginator import Paginator
+from django.http import HttpResponse
 from django.urls import reverse
 from django.utils import timezone
 from django.views.decorators.http import require_POST
+import openpyxl
+from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
+from openpyxl.utils import get_column_letter
+from openpyxl.drawing.image import Image as XlImage
+from apps.usuarios.views import (
+    _estilo_excel, _ajustar_columnas,
+    _insertar_encabezado, _nombre_usuario, _formato_fecha,
+)
 from apscheduler.triggers.cron import CronTrigger
 from apscheduler.triggers.date import DateTrigger
 from apps.backup.models import Backup, ConfigBackup
@@ -280,3 +290,74 @@ def cancelar_puntual(request):
         messages.error(request, 'El scheduler no está activo.')
 
     return redirect('backup:configuracion_backup')
+
+
+@admin_requerido
+def exportar_backups_excel(request):
+    """Genera y descarga el reporte Excel del historial de backups — solo ADMIN."""
+    backups = Backup.objects.select_related('generado_por').order_by('-fecha_creacion')
+
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = 'Backups'
+
+    cabecera, dato, borde, color_acento = _estilo_excel(wb)
+
+    encabezados = ['N°', 'Nombre del archivo', 'Tipo', 'Peso', 'Generado por', 'Fecha de generación']
+    fila_enc = _insertar_encabezado(
+        ws, 'HISTORIAL DE COPIAS DE SEGURIDAD',
+        _nombre_usuario(request.user), len(encabezados)
+    )
+    ws.freeze_panes = f'A{fila_enc + 1}'
+
+    for i, enc in enumerate(encabezados, 1):
+        cell = ws.cell(row=fila_enc, column=i, value=enc)
+        cell.style = cabecera
+    ws.row_dimensions[fila_enc].height = 30
+
+    data_row = fila_enc + 1
+    for num, b in enumerate(backups, 1):
+        generado_por = _nombre_usuario(b.generado_por) if b.generado_por else 'Automático'
+        row_data = [
+            num,
+            b.nombre_archivo,
+            b.get_tipo_display(),
+            b.peso_archivo,
+            generado_por,
+            _formato_fecha(b.fecha_creacion),
+        ]
+        for col, val in enumerate(row_data, 1):
+            c = ws.cell(row=data_row, column=col, value=val)
+            c.border = borde
+            c.alignment = Alignment(
+                vertical='center',
+                horizontal='center' if col in (1, 3, 4) else 'left'
+            )
+        data_row += 1
+
+    total = backups.count()
+    ws.cell(row=data_row, column=1, value='Total').font = Font(bold=True, size=10)
+    ws.cell(row=data_row, column=1).border = borde
+    ws.cell(row=data_row, column=2, value=total).font = Font(bold=True, size=10)
+    ws.cell(row=data_row, column=2).border = borde
+    ws.cell(row=data_row, column=2).alignment = Alignment(horizontal='center')
+    for col in range(3, len(encabezados) + 1):
+        ws.cell(row=data_row, column=col).border = borde
+
+    _ajustar_columnas(ws)
+
+    wb.properties.title   = 'Historial de Backups — SOLGASES'
+    wb.properties.creator = _nombre_usuario(request.user)
+
+    output = BytesIO()
+    wb.save(output)
+    output.seek(0)
+
+    nombre_archivo = f'backups_{datetime.now().strftime("%Y%m%d_%H%M%S")}.xlsx'
+    response = HttpResponse(
+        output.getvalue(),
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+    response['Content-Disposition'] = f'attachment; filename="{nombre_archivo}"'
+    response['Cache-Control'] = 'no-cache, no-store, must-revalidate, private'
+    return response
