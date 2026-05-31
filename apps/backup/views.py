@@ -57,6 +57,7 @@ def generar_backup(request):
             [sys.executable, 'manage.py', 'dumpdata', '--indent', '2'],
             capture_output=True,
             text=True,
+            encoding='utf-8',
             cwd=settings.BASE_DIR,
         )
 
@@ -115,6 +116,7 @@ def restaurar_backup(request, id):
                 [sys.executable, 'manage.py', 'loaddata', ruta_absoluta],
                 capture_output=True,
                 text=True,
+                encoding='utf-8',
                 cwd=settings.BASE_DIR,
             )
 
