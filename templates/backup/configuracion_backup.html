@@ -1,0 +1,182 @@
+{% extends 'base.html' %}
+
+{% block titulo %}SOLGASES — Configuración de backup{% endblock %}
+{% block titulo_pagina %}Configuración de backup{% endblock %}
+
+{% block contenido %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h5 class="fw-bold mb-0">Configuración de backup automático</h5>
+    <a href="{% url 'backup:lista_backups' %}" class="btn-secundario">
+        <i class="bi bi-arrow-left"></i> Volver
+    </a>
+</div>
+
+<div class="row g-4">
+
+    <!-- CARD 1: Horario diario -->
+    <div class="col-12 col-lg-6">
+        <div class="card-detalle h-100">
+            <h2 class="h6 fw-bold mb-1">
+                <i class="bi bi-clock icono-acento"></i> Horario diario
+            </h2>
+            <p class="texto-descripcion mb-3">
+                El sistema generará un backup automático todos los días a la hora configurada.
+                El cambio se aplica en tiempo real sin reiniciar el servidor.
+            </p>
+
+            <p class="detalle-seccion-titulo">Horario actual</p>
+            <p class="detalle-valor mb-4">
+                <i class="bi bi-calendar-check icono-acento"></i>
+                Todos los días a las
+                <strong>{{ config.hora_diaria|stringformat:"02d" }}:{{ config.minuto_diario|stringformat:"02d" }}</strong>
+                (hora Colombia)
+            </p>
+
+            <form method="post" action="{% url 'backup:configuracion_backup' %}">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="actualizar_horario">
+
+                <div class="row g-3 mb-4">
+                    <div class="col-6">
+                        <label class="form-label" for="hora_diaria">
+                            Hora <span class="campo-requerido">*</span>
+                        </label>
+                        <select name="hora_diaria" id="hora_diaria"
+                                class="form-select form-select-sm" required>
+                            {% for h in horas %}
+                            <option value="{{ h }}"
+                                {% if h == config.hora_diaria %}selected{% endif %}>
+                                {{ h|stringformat:"02d" }}:00
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label" for="minuto_diario">
+                            Minuto <span class="campo-requerido">*</span>
+                        </label>
+                        <select name="minuto_diario" id="minuto_diario"
+                                class="form-select form-select-sm" required>
+                            {% for m in minutos %}
+                            <option value="{{ m }}"
+                                {% if m == config.minuto_diario %}selected{% endif %}>
+                                :{{ m|stringformat:"02d" }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-accion">
+                    <i class="bi bi-check-circle"></i> Guardar horario
+                </button>
+            </form>
+
+            {% if config.modificado_por %}
+            <p class="texto-descripcion mt-3 mb-0">
+                Última modificación: {{ config.modificado_en|date:"d/m/Y H:i" }}
+                por {{ config.modificado_por.nombres }} {{ config.modificado_por.apellidos }}
+            </p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- CARD 2: Backup puntual -->
+    <div class="col-12 col-lg-6">
+        <div class="card-detalle h-100">
+            <h2 class="h6 fw-bold mb-1">
+                <i class="bi bi-calendar-event icono-acento"></i> Backup puntual
+            </h2>
+            <p class="texto-descripcion mb-3">
+                Programa un backup para una fecha y hora específica — útil para festivos,
+                cierres de mes o días sin personal en la empresa.
+            </p>
+
+            <div class="alert alert-warning d-flex gap-2 mb-3" role="alert">
+                <i class="bi bi-info-circle-fill flex-shrink-0 mt-1"></i>
+                <p class="texto-descripcion mb-0">
+                    La fecha y hora deben ser futuras y en horario de Colombia (UTC-5).
+                    El backup se ejecuta una sola vez y queda registrado automáticamente.
+                </p>
+            </div>
+
+            <form method="post" action="{% url 'backup:configuracion_backup' %}">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="programar_puntual">
+
+                <div class="row g-3 mb-4">
+                    <div class="col-7">
+                        <label class="form-label" for="fecha_puntual">
+                            Fecha <span class="campo-requerido">*</span>
+                        </label>
+                        <input type="date" name="fecha_puntual" id="fecha_puntual"
+                               class="form-control form-control-sm" required>
+                    </div>
+                    <div class="col-5">
+                        <label class="form-label" for="hora_puntual">
+                            Hora <span class="campo-requerido">*</span>
+                        </label>
+                        <input type="time" name="hora_puntual" id="hora_puntual"
+                               class="form-control form-control-sm"
+                               step="900" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-accion">
+                    <i class="bi bi-calendar-plus"></i> Programar backup
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- CARD 3: Backups puntuales programados -->
+    <div class="col-12">
+        <div class="card-detalle">
+            <h2 class="h6 fw-bold mb-3">
+                <i class="bi bi-list-check icono-acento"></i> Backups puntuales programados
+            </h2>
+
+            {% if jobs_puntuales %}
+            <div class="tabla-contenedor">
+                <table class="tabla-sistema" aria-label="Backups puntuales programados">
+                    <thead>
+                        <tr>
+                            <th scope="col">Descripción</th>
+                            <th scope="col">Fecha y hora programada</th>
+                            <th scope="col">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for job in jobs_puntuales %}
+                        <tr>
+                            <td>{{ job.name }}</td>
+                            <td>{{ job.next_run_time|date:"d/m/Y H:i" }}</td>
+                            <td class="acciones">
+                                <form method="post" action="{% url 'backup:cancelar_puntual' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="job_id" value="{{ job.id }}">
+                                    <button type="submit"
+                                            class="btn-tabla btn-eliminar"
+                                            aria-label="Cancelar backup puntual {{ job.name }}"
+                                            title="Cancelar este backup puntual">
+                                        <i class="bi bi-x-circle"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="texto-descripcion mb-0">
+                <i class="bi bi-calendar-x"></i> No hay backups puntuales programados.
+            </p>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

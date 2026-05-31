@@ -10,6 +10,18 @@ logger = logging.getLogger(__name__)
 
 RETENTION_DAYS = getattr(settings, 'BACKUP_RETENTION_DAYS', 30)
 
+# Referencia global al scheduler — permite modificarlo desde vistas sin reiniciar
+_scheduler = None
+
+
+def get_scheduler():
+    return _scheduler
+
+
+def set_scheduler(scheduler):
+    global _scheduler
+    _scheduler = scheduler
+
 
 def backup_automatico():
     """

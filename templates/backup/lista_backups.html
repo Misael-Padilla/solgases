@@ -20,12 +20,17 @@
         {% endif %}
     </div>
 
-    <form method="post" action="{% url 'backup:generar_backup' %}">
-        {% csrf_token %}
-        <button type="submit" class="btn-accion">
-            <i class="bi bi-shield-plus"></i> Generar backup
-        </button>
-    </form>
+    <div class="d-flex gap-2">
+        <a href="{% url 'backup:configuracion_backup' %}" class="btn-secundario">
+            <i class="bi bi-gear"></i> Configuración
+        </a>
+        <form method="post" action="{% url 'backup:generar_backup' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn-accion">
+                <i class="bi bi-shield-plus"></i> Generar backup
+            </button>
+        </form>
+    </div>
 </div>
 
 <div class="tabla-contenedor">

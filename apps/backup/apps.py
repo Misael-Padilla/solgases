@@ -11,10 +11,8 @@ class BackupConfig(AppConfig):
         import os
         from django.conf import settings
 
-        # Desarrollo (runserver crea 2 procesos):
-        #   proceso padre (watcher): RUN_MAIN no existe → no iniciar
-        #   proceso hijo (reloader): RUN_MAIN='true'   → iniciar
-        # Producción (DEBUG=False, RUN_MAIN no existe) → iniciar siempre
+        # Desarrollo: solo el proceso hijo (RUN_MAIN='true')
+        # Producción (DEBUG=False): siempre iniciar
         if settings.DEBUG and os.environ.get('RUN_MAIN') != 'true':
             return
 
@@ -22,22 +20,33 @@ class BackupConfig(AppConfig):
             from apscheduler.schedulers.background import BackgroundScheduler
             from apscheduler.triggers.cron import CronTrigger
             from django_apscheduler.jobstores import DjangoJobStore
-            from apps.backup.scheduler import backup_automatico
+            from apps.backup.models import ConfigBackup
+            from apps.backup.scheduler import backup_automatico, set_scheduler
+
+            config, _ = ConfigBackup.objects.get_or_create(
+                pk=1,
+                defaults={'hora_diaria': 2, 'minuto_diario': 0, 'activo': True}
+            )
 
             scheduler = BackgroundScheduler(timezone=settings.TIME_ZONE)
             scheduler.add_jobstore(DjangoJobStore(), 'default')
 
-            scheduler.add_job(
-                backup_automatico,
-                trigger=CronTrigger(hour=2, minute=0),
-                id='backup_automatico_diario',
-                name='Backup automático diario — 02:00 AM',
-                replace_existing=True,
-                misfire_grace_time=3600,  # 1 hora de tolerancia si el servidor estaba apagado
-            )
+            if config.activo:
+                scheduler.add_job(
+                    backup_automatico,
+                    trigger=CronTrigger(hour=config.hora_diaria, minute=config.minuto_diario),
+                    id='backup_automatico_diario',
+                    name=f'Backup automático — {config.hora_diaria:02d}:{config.minuto_diario:02d}',
+                    replace_existing=True,
+                    misfire_grace_time=3600,
+                )
 
             scheduler.start()
-            logger.info('APScheduler iniciado — backup automático programado a las 02:00 AM.')
+            set_scheduler(scheduler)
+            logger.info(
+                'APScheduler iniciado — backup diario a las %02d:%02d.',
+                config.hora_diaria, config.minuto_diario
+            )
 
         except Exception as e:
             logger.error('No se pudo iniciar APScheduler: %s', str(e), exc_info=True)

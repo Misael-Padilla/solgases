@@ -1,15 +1,19 @@
 import os
 import io
 import logging
-from datetime import datetime
+import zoneinfo
+from datetime import datetime, timedelta
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.conf import settings
 from django.core.management import call_command
 from django.core.paginator import Paginator
 from django.urls import reverse
+from django.utils import timezone
 from django.views.decorators.http import require_POST
-from apps.backup.models import Backup
+from apscheduler.triggers.cron import CronTrigger
+from apscheduler.triggers.date import DateTrigger
+from apps.backup.models import Backup, ConfigBackup
 from apps.usuarios.models import HistorialCambio
 from apps.usuarios.decoradores import admin_requerido
 from django_apscheduler.models import DjangoJob
@@ -17,6 +21,7 @@ from django_apscheduler.models import DjangoJob
 logger = logging.getLogger(__name__)
 
 _POR_PAGINA = 15
+_BOGOTA_TZ  = zoneinfo.ZoneInfo('America/Bogota')
 
 
 @admin_requerido
@@ -25,16 +30,17 @@ def lista_backups(request):
     backups_qs  = Backup.objects.all()
     paginator   = Paginator(backups_qs, _POR_PAGINA)
     page_obj    = paginator.get_page(request.GET.get('page', 1))
-    breadcrumbs = [
-        {'nombre': 'Dashboard',           'url': reverse('core:inicio')},
-        {'nombre': 'Copias de seguridad', 'url': None},
-    ]
+
     try:
         job = DjangoJob.objects.get(id='backup_automatico_diario')
         proximo_backup = job.next_run_time
     except DjangoJob.DoesNotExist:
         proximo_backup = None
 
+    breadcrumbs = [
+        {'nombre': 'Dashboard',           'url': reverse('core:inicio')},
+        {'nombre': 'Copias de seguridad', 'url': None},
+    ]
     return render(request, 'backup/lista_backups.html', {
         'backups':            page_obj,
         'page_obj':           page_obj,
@@ -50,8 +56,7 @@ def lista_backups(request):
 def generar_backup(request):
     """
     Genera un backup manual de la base de datos completa.
-    Usa call_command('dumpdata') — sin subprocess para evitar problemas
-    de codificación en Windows con caracteres Unicode (DA-005).
+    Usa call_command('dumpdata') para evitar problemas de encoding en Windows (DA-005).
     """
     try:
         carpeta_backup = os.path.join(settings.BASE_DIR, 'backups')
@@ -103,10 +108,11 @@ def restaurar_backup(request, id):
 
     if request.method == 'POST':
         try:
-            if os.path.isabs(backup.ruta_archivo):
-                ruta_absoluta = backup.ruta_archivo
-            else:
-                ruta_absoluta = os.path.join(settings.BASE_DIR, backup.ruta_archivo)
+            ruta_absoluta = (
+                backup.ruta_archivo
+                if os.path.isabs(backup.ruta_archivo)
+                else os.path.join(settings.BASE_DIR, backup.ruta_archivo)
+            )
 
             if not os.path.exists(ruta_absoluta):
                 raise Exception('El archivo de backup no existe en el servidor.')
@@ -143,3 +149,134 @@ def restaurar_backup(request, id):
         'backup':      backup,
         'breadcrumbs': breadcrumbs,
     })
+
+
+@admin_requerido
+def configuracion_backup(request):
+    """Panel de configuración del backup automático — solo ADMIN."""
+    from apps.backup.scheduler import get_scheduler, backup_automatico
+
+    config, _ = ConfigBackup.objects.get_or_create(
+        pk=1,
+        defaults={'hora_diaria': 2, 'minuto_diario': 0, 'activo': True}
+    )
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
+
+        if action == 'actualizar_horario':
+            try:
+                hora   = int(request.POST.get('hora_diaria', 2))
+                minuto = int(request.POST.get('minuto_diario', 0))
+
+                if not (0 <= hora <= 23 and 0 <= minuto <= 59):
+                    raise ValueError('Hora o minuto fuera de rango.')
+
+                config.hora_diaria    = hora
+                config.minuto_diario  = minuto
+                config.modificado_por = request.user
+                config.save()
+
+                scheduler = get_scheduler()
+                if scheduler:
+                    scheduler.add_job(
+                        backup_automatico,
+                        trigger=CronTrigger(hour=hora, minute=minuto),
+                        id='backup_automatico_diario',
+                        name=f'Backup automático — {hora:02d}:{minuto:02d}',
+                        replace_existing=True,
+                        misfire_grace_time=3600,
+                    )
+                    messages.success(request, f'Horario actualizado: backup diario a las {hora:02d}:{minuto:02d}.')
+                else:
+                    messages.success(request, f'Horario guardado: {hora:02d}:{minuto:02d}. Activo al reiniciar el servidor.')
+
+            except ValueError as e:
+                messages.error(request, str(e))
+            except Exception as e:
+                logger.error('Error actualizando horario backup: %s', str(e), exc_info=True)
+                messages.error(request, 'Error al actualizar el horario.')
+
+        elif action == 'programar_puntual':
+            try:
+                fecha_str = request.POST.get('fecha_puntual', '').strip()
+                hora_str  = request.POST.get('hora_puntual', '').strip()
+
+                if not fecha_str or not hora_str:
+                    raise ValueError('La fecha y la hora son obligatorias.')
+
+                fecha_hora_naive  = datetime.strptime(f'{fecha_str} {hora_str}', '%Y-%m-%d %H:%M')
+                fecha_hora_aware  = fecha_hora_naive.replace(tzinfo=_BOGOTA_TZ)
+
+                if fecha_hora_aware <= timezone.now():
+                    raise ValueError('La fecha y hora deben ser futuras.')
+
+                job_id = f'backup_puntual_{fecha_str.replace("-","")}_{hora_str.replace(":","")}'
+
+                scheduler = get_scheduler()
+                if not scheduler:
+                    raise Exception('El scheduler no está activo. Reinicie el servidor.')
+
+                scheduler.add_job(
+                    backup_automatico,
+                    trigger=DateTrigger(run_date=fecha_hora_aware),
+                    id=job_id,
+                    name=f'Backup puntual — {fecha_str} {hora_str}',
+                    replace_existing=True,
+                    misfire_grace_time=3600,
+                )
+
+                messages.success(request, f'Backup puntual programado para el {fecha_str} a las {hora_str}.')
+
+            except ValueError as e:
+                messages.error(request, str(e))
+            except Exception as e:
+                logger.error('Error programando backup puntual: %s', str(e), exc_info=True)
+                messages.error(request, str(e) if 'scheduler' in str(e) else 'Error al programar el backup puntual.')
+
+        return redirect('backup:configuracion_backup')
+
+    jobs_puntuales = (
+        DjangoJob.objects
+        .exclude(id='backup_automatico_diario')
+        .filter(next_run_time__isnull=False)
+        .order_by('next_run_time')
+    )
+
+    breadcrumbs = [
+        {'nombre': 'Dashboard',           'url': reverse('core:inicio')},
+        {'nombre': 'Copias de seguridad', 'url': reverse('backup:lista_backups')},
+        {'nombre': 'Configuración',       'url': None},
+    ]
+    return render(request, 'backup/configuracion_backup.html', {
+        'config':         config,
+        'horas':          range(24),
+        'minutos':        [0, 15, 30, 45],
+        'jobs_puntuales': jobs_puntuales,
+        'breadcrumbs':    breadcrumbs,
+    })
+
+
+@admin_requerido
+@require_POST
+def cancelar_puntual(request):
+    """Cancela un backup puntual programado — solo ADMIN."""
+    from apps.backup.scheduler import get_scheduler
+
+    job_id = request.POST.get('job_id', '').strip()
+
+    if not job_id.startswith('backup_puntual_'):
+        messages.error(request, 'Identificador de job inválido.')
+        return redirect('backup:configuracion_backup')
+
+    scheduler = get_scheduler()
+    if scheduler:
+        try:
+            scheduler.remove_job(job_id)
+            messages.success(request, 'Backup puntual cancelado correctamente.')
+        except Exception:
+            messages.error(request, 'No se encontró el backup puntual. Puede que ya haya sido ejecutado.')
+    else:
+        messages.error(request, 'El scheduler no está activo.')
+
+    return redirect('backup:configuracion_backup')
