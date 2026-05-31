@@ -1,11 +1,11 @@
 import os
-import sys
+import io
 import logging
-import subprocess
 from datetime import datetime
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.conf import settings
+from django.core.management import call_command
 from django.core.paginator import Paginator
 from django.urls import reverse
 from django.views.decorators.http import require_POST
@@ -42,8 +42,8 @@ def lista_backups(request):
 def generar_backup(request):
     """
     Genera un backup manual de la base de datos completa.
-    Usa dumpdata de Django para exportar todos los datos en formato JSON.
-    Registra el backup en la tabla backup con nombre, peso y ruta relativa (DA-005).
+    Usa call_command('dumpdata') — sin subprocess para evitar problemas
+    de codificación en Windows con caracteres Unicode (DA-005).
     """
     try:
         carpeta_backup = os.path.join(settings.BASE_DIR, 'backups')
@@ -53,19 +53,11 @@ def generar_backup(request):
         ruta_relativa  = os.path.join('backups', nombre_archivo)
         ruta_absoluta  = os.path.join(settings.BASE_DIR, ruta_relativa)
 
-        resultado = subprocess.run(
-            [sys.executable, 'manage.py', 'dumpdata', '--indent', '2'],
-            capture_output=True,
-            text=True,
-            encoding='utf-8',
-            cwd=settings.BASE_DIR,
-        )
-
-        if resultado.returncode != 0:
-            raise Exception(resultado.stderr)
+        output = io.StringIO()
+        call_command('dumpdata', indent=2, stdout=output, verbosity=0)
 
         with open(ruta_absoluta, 'w', encoding='utf-8') as archivo:
-            archivo.write(resultado.stdout)
+            archivo.write(output.getvalue())
 
         peso_bytes = os.path.getsize(ruta_absoluta)
         if peso_bytes < 1024:
@@ -96,14 +88,13 @@ def generar_backup(request):
 def restaurar_backup(request, id):
     """
     Restaura la base de datos desde un archivo de backup.
-    Proceso: vacía las tablas y carga el JSON con loaddata.
-    Solo accesible para ADMIN — operación crítica (DA-005).
+    Usa call_command('loaddata') — sin subprocess (DA-005).
+    Solo accesible para ADMIN — operación crítica.
     """
     backup = get_object_or_404(Backup, id=id)
 
     if request.method == 'POST':
         try:
-            # Soporta rutas relativas (nuevas) y absolutas (registros heredados)
             if os.path.isabs(backup.ruta_archivo):
                 ruta_absoluta = backup.ruta_archivo
             else:
@@ -112,16 +103,7 @@ def restaurar_backup(request, id):
             if not os.path.exists(ruta_absoluta):
                 raise Exception('El archivo de backup no existe en el servidor.')
 
-            resultado = subprocess.run(
-                [sys.executable, 'manage.py', 'loaddata', ruta_absoluta],
-                capture_output=True,
-                text=True,
-                encoding='utf-8',
-                cwd=settings.BASE_DIR,
-            )
-
-            if resultado.returncode != 0:
-                raise Exception(resultado.stderr)
+            call_command('loaddata', ruta_absoluta, verbosity=0)
 
             HistorialCambio.objects.create(
                 modelo        = 'BACKUP',
