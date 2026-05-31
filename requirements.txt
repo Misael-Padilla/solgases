@@ -1,5 +1,7 @@
-﻿asgiref==3.11.1
+﻿APScheduler==3.11.2
+asgiref==3.11.1
 Django==6.0.3
+django-apscheduler==0.7.0
 django-axes==8.3.1
 django-csp==4.0
 django-environ==0.13.0
@@ -10,3 +12,4 @@ packaging==26.2
 pillow==12.2.0
 sqlparse==0.5.5
 tzdata==2025.3
+tzlocal==5.3.1

@@ -45,6 +45,7 @@ INSTALLED_APPS = [
 
     # Apps de terceros
     'axes',
+    'django_apscheduler',
 
     # Apps del proyecto
     'apps.core',
@@ -221,6 +222,13 @@ CONTENT_SECURITY_POLICY = {
         "frame-ancestors": ["'none'"],
     }
 }
+
+# ==============================================================
+# Backup automático — APScheduler (DA-005)
+# ==============================================================
+BACKUP_RETENTION_DAYS    = 30   # días de retención de backups automáticos
+APSCHEDULER_DATETIME_FORMAT = "d/m/Y H:i:s"
+APSCHEDULER_RUN_NOW_TIMEOUT = 25  # segundos máximo para ejecución inmediata
 
 # ==============================================================
 # Seguridad para producción — activar cuando DEBUG=False
