@@ -47,12 +47,16 @@
             </div>
 
             <div class="d-flex justify-content-end gap-2">
-                <a href="{% url 'backup:lista_backups' %}" class="btn-secundario">
+                <a href="{% url 'backup:lista_backups' %}" class="btn-secundario"
+                   data-bs-toggle="tooltip" data-bs-placement="top"
+                   title="Volver sin restaurar">
                     Cancelar
                 </a>
                 <form method="post">
                     {% csrf_token %}
-                    <button type="submit" class="btn-accion">
+                    <button type="submit" class="btn-accion"
+                            data-bs-toggle="tooltip" data-bs-placement="top"
+                            title="Confirmar y restaurar la base de datos">
                         <i class="bi bi-arrow-counterclockwise"></i> Confirmar restauración
                     </button>
                 </form>
