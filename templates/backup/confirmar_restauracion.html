@@ -16,18 +16,16 @@
     <div class="col-12 col-lg-6">
         <div class="card-detalle">
 
-            <!-- Advertencia -->
-            <div class="alerta-error mb-4">
+            <div class="alerta-error mb-4" role="alert" aria-live="assertive">
                 <p class="fw-bold mb-1">
                     <i class="bi bi-exclamation-triangle"></i> Advertencia — Operación crítica
                 </p>
-                <p class="mb-0" style="font-size: 13px;">
+                <p class="texto-descripcion mb-0">
                     Esta acción restaurará la base de datos al estado del backup seleccionado.
                     Los datos actuales serán reemplazados. Esta operación no se puede deshacer.
                 </p>
             </div>
 
-            <!-- Información del backup -->
             <p class="detalle-seccion-titulo">Backup a restaurar</p>
             <div class="row g-3 mb-4">
                 <div class="col-6">
@@ -36,7 +34,7 @@
                 </div>
                 <div class="col-6">
                     <p class="detalle-label">Tipo</p>
-                    <p class="detalle-valor">{{ backup.tipo }}</p>
+                    <p class="detalle-valor">{{ backup.get_tipo_display }}</p>
                 </div>
                 <div class="col-6">
                     <p class="detalle-label">Peso</p>
@@ -48,14 +46,13 @@
                 </div>
             </div>
 
-            <!-- Botones de confirmación -->
             <div class="d-flex justify-content-end gap-2">
                 <a href="{% url 'backup:lista_backups' %}" class="btn-secundario">
                     Cancelar
                 </a>
                 <form method="post">
                     {% csrf_token %}
-                    <button type="submit" class="btn-accion" style="background-color: #cc0000;">
+                    <button type="submit" class="btn-accion">
                         <i class="bi bi-arrow-counterclockwise"></i> Confirmar restauración
                     </button>
                 </form>
