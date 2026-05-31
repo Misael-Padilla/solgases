@@ -4,7 +4,7 @@
 > **Fase:** 6 — Pruebas y Verificación Módulo por Módulo
 > **Autor:** Jorge Padilla
 > **Fecha de inicio:** 06 de mayo de 2026
-> **Última actualización:** 29 de mayo de 2026
+> **Última actualización:** 30 de mayo de 2026
 > **Commit de referencia (inicio Fase 6):** `b2a41ed`
 > **Protocolo:** Protocolo de Veracidad — Fase 6 v1.1
 
@@ -20,7 +20,7 @@
 | 4 | `insumos` | ✅ Aprobado | 2026-05-29 | `670218d` |
 | 5 | `compras` | ✅ Aprobado | 2026-05-29 | `840fb04` |
 | 6 | `ventas` | ✅ Aprobado | 2026-05-29 | `132b459` |
-| 7 | `backup` | ⏳ Pendiente | — | — |
+| 7 | `backup` | 🔄 En revisión | 2026-05-30 | — |
 
 ---
 
@@ -778,3 +778,80 @@ Transversales: Búsqueda ✅ | Breadcrumbs ✅ | Paginación ✅ | Excel ✅
 ---
 
 *Bitácora actualizada el 29 de mayo de 2026 — módulo ventas.*
+
+---
+
+## Módulo: `backup` — 🔄 En revisión
+
+> **Fecha inicio de revisión:** 30 de mayo de 2026
+> **Pendiente Fase 5:** APScheduler para backups automáticos programados
+> **Acceso:** Solo rol ADMIN
+
+### Capas verificadas
+
+| Capa | Estado | Observaciones |
+|---|---|---|
+| 1 — Modelo | ✅ Verificada | INC-B01 (ruta relativa) corregida |
+| 2 — Formulario | ✅ N/A | Módulo sin formularios — correcto |
+| 3 — Vistas | ✅ Verificada | INC-B02 Alta, INC-B03, INC-B04, INC-B08 corregidas |
+| 4 — Templates | ✅ Verificada | INC-B05 a INC-B07, INC-B09 a INC-B15 corregidas |
+| 5 — Integración | ✅ Verificada | Sidebar ✅ decoradores ✅ APScheduler ✅ implementado |
+
+### Incidencias detectadas y corregidas
+
+| Código | Severidad | Descripción | Commit | Estado |
+|---|---|---|---|---|
+| INC-B02 | **Alta** | `generar_backup` sin `@require_POST` — acepta GET (OWASP A01:2021) | `4a1f493` | ✅ Corregido |
+| INC-B03 | Media | Sin `HistorialCambio` en `restaurar_backup` — sin auditoría (OWASP A09:2021) | `4a1f493` | ✅ Corregido |
+| INC-B04 | Media | `lista_backups` sin paginación — inconsistente con demás módulos | `4a1f493` | ✅ Corregido |
+| INC-B01 | Media | `ruta_archivo` almacena ruta absoluta — falla si cambia `BASE_DIR` | `4a1f493` | ✅ Corregido |
+| INC-B05 | Media | Mensajes flash duplicados en `lista_backups.html` (base.html ya los renderiza) | `1b90d5b` | ✅ Corregido |
+| INC-B06 | Media | Sin `aria-label` en botón restaurar — WCAG 2.1 SC 4.1.2 | `1b90d5b` | ✅ Corregido |
+| INC-B07 | Media | Sin breadcrumbs en `lista_backups` | `4a1f493` | ✅ Corregido |
+| INC-B11 | Media | `{{ backup.tipo }}` sin `get_tipo_display` en `confirmar_restauracion.html` | `1b90d5b` | ✅ Corregido |
+| INC-B12 | Media | Sin breadcrumbs en `confirmar_restauracion` | `4a1f493` | ✅ Corregido |
+| INC-B08 | Baja | `str(e)` expuesto en mensajes flash — OWASP A05:2021 | `4a1f493` | ✅ Corregido |
+| INC-B09 | Baja | `style="color: #aaaaaa;"` inline en `lista_backups.html` | `1b90d5b` | ✅ Corregido |
+| INC-B10 | Baja | Sin `scope="col"` en `<th>` — WCAG 2.1 SC 1.3.1 | `1b90d5b` | ✅ Corregido |
+| INC-B13 | Baja | `style="background-color: #cc0000;"` redundante en botón confirmar | `1b90d5b` | ✅ Corregido |
+| INC-B14 | Baja | `style="font-size: 13px;"` inline — usar `.texto-descripcion` | `1b90d5b` | ✅ Corregido |
+| INC-B15 | Baja | Sin `role="alert"` en advertencia crítica — WCAG 2.1 SC 4.1.3 | `1b90d5b` | ✅ Corregido |
+| INC-B16 | **Alta** | `subprocess.run` para `dumpdata`/`loaddata` — en Windows el subprocess usa codificación `charmap` (cp1252) en su propio `stdout`. Falla al serializar caracteres Unicode como `₂`. Corrección real: reemplazar `subprocess` por `call_command()` de Django, que corre en el mismo proceso sin pasar por stdout del SO | `7c6e7d8` | ✅ Corregido |
+
+### Solicitudes de cambio
+
+| Código | Tipo | Descripción | Commit | Estado |
+|---|---|---|---|---|
+| SC-B01 | Agregar | `HistorialCambio` en restauración + `BACKUP`/`RESTAURAR` en choices | `39fc2a5` + `4a1f493` | ✅ Implementado |
+| SC-B02 | Agregar | Paginación 15 registros + breadcrumbs en ambas vistas | `4a1f493` | ✅ Implementado |
+| SC-B03 | Agregar | Ruta relativa en `ruta_archivo` — soporta rutas heredadas absolutas | `4a1f493` | ✅ Implementado |
+| SC-B04 | Agregar | Logger para errores críticos — `logging.getLogger(__name__)` | `4a1f493` | ✅ Implementado |
+| `call_command()` en lugar de `subprocess` para comandos Django — práctica recomendada en docs de Django | `7c6e7d8` | ✅ Implementado |
+| APScheduler en `apps.py ready()` con protección doble-inicio en desarrollo (`DEBUG + RUN_MAIN`) y tolerancia `misfire_grace_time=3600` para cuando el servidor estuvo apagado | `e4baad6` | ✅ Implementado |
+| Retención solo sobre backups `AUTOMATICO` — los manuales se preservan indefinidamente | `e4baad6` | ✅ Implementado |
+| SC-B06 | Modificar | `subprocess` → `call_command()` en `dumpdata` y `loaddata` — corrección real de INC-B16. Elimina `subprocess`, `sys` del módulo | `7c6e7d8` | ✅ Implementado |
+| SC-B05 | Agregar | APScheduler backup automático diario 02:00 AM + retención 30 días (Pendiente Fase 5) | `e4baad6` | ✅ Implementado |
+| SC-B07 | Agregar | Indicador "Próximo backup automático" en lista — consulta `DjangoJob.next_run_time` | `21ba5d7` | ✅ Implementado |
+| SC-B08 | Agregar | Panel `/backup/configuracion/` — cambiar horario diario en tiempo real + programar backups puntuales por fecha/hora específica + cancelar puntuales | `6c00b2c` | ✅ Implementado |
+| SC-B09 | Agregar | Modelo `ConfigBackup` (singleton pk=1) — persiste hora/minuto del backup diario en BD | `6c00b2c` | ✅ Implementado |
+
+### Decisiones tomadas en módulo `backup`
+
+| Decisión | Justificación |
+|---|---|
+| `@require_POST` antes de verificar lógica de backup | Consistente con patrón de todos los módulos — `@admin_requerido` primero, `@require_POST` segundo |
+| `HistorialCambio` para restauración aunque pueda ser sobreescrito | OWASP A09: la auditoría pre-restauración es válida; si se restaura de nuevo, el nuevo log también queda. Limitación conocida y aceptada |
+| `ruta_archivo` relativa + compatibilidad con absolutas heredadas | `os.path.isabs()` detecta el tipo — migración transparente sin afectar registros existentes |
+| `logger.error()` + mensaje genérico al usuario | OWASP A05: detalles del error van al log del servidor, no al usuario. Riesgo bajo (ADMIN-only) pero buena práctica |
+| APScheduler diferido | Funcionalidad nueva (Pendiente Fase 5) — se implementa tras aprobación del módulo |
+
+### Nota de protocolo — commits
+
+> **Aviso:** El commit `4a1f493` agrupa INC-B02 (Alta), SC-B01 parcial, INC-B01/B04/B07/B08/B12 (Media/Baja)
+> por haberse escrito el archivo completo en una sola operación antes del commit.
+> Los cambios son correctos; la granularidad del commit no fue ideal.
+> Registrado para transparencia (Regla 6 — Protocolo de Veracidad).
+
+---
+
+*Bitácora actualizada el 30 de mayo de 2026 — revisión y correcciones módulo backup completadas.*

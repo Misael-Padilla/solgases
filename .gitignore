@@ -24,3 +24,7 @@ staticfiles/
 # Documentación interna de desarrollo (bitácoras y contextos de fase)
 fase_*.md
 contexto_fase_*.md
+
+# Backups de base de datos — contienen datos sensibles, nunca commitear
+# OWASP A02:2021 — Sensitive Data Exposure
+backups/
