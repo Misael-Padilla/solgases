@@ -12,6 +12,7 @@ from django.views.decorators.http import require_POST
 from apps.backup.models import Backup
 from apps.usuarios.models import HistorialCambio
 from apps.usuarios.decoradores import admin_requerido
+from django_apscheduler.models import DjangoJob
 
 logger = logging.getLogger(__name__)
 
@@ -28,12 +29,19 @@ def lista_backups(request):
         {'nombre': 'Dashboard',           'url': reverse('core:inicio')},
         {'nombre': 'Copias de seguridad', 'url': None},
     ]
+    try:
+        job = DjangoJob.objects.get(id='backup_automatico_diario')
+        proximo_backup = job.next_run_time
+    except DjangoJob.DoesNotExist:
+        proximo_backup = None
+
     return render(request, 'backup/lista_backups.html', {
         'backups':            page_obj,
         'page_obj':           page_obj,
         'page_range':         list(paginator.get_elided_page_range(page_obj.number, on_each_side=2, on_ends=1)),
         'paginator_ellipsis': paginator.ELLIPSIS,
         'breadcrumbs':        breadcrumbs,
+        'proximo_backup':     proximo_backup,
     })
 
 
