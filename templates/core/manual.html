@@ -432,10 +432,70 @@
                 <h2 id="titulo-backup" class="h6 fw-bold mb-2">
                     <i class="bi bi-shield-check icono-acento"></i> Backup
                 </h2>
+                <p class="texto-descripcion mb-3">
+                    Solo accesible para el rol <strong>ADMIN</strong>. Gestiona las copias de
+                    seguridad completas de la base de datos — generación manual, programación
+                    automática, configuración de horarios, restauración y exportación del historial.
+                </p>
+
+                <h3 class="detalle-seccion-titulo">Backup manual</h3>
+                <p class="texto-descripcion mb-3">
+                    El botón <strong>Generar backup</strong> crea una copia de seguridad inmediata
+                    de toda la base de datos en formato JSON. El archivo queda registrado en el
+                    historial con nombre, peso, fecha y el usuario que lo generó.
+                    Los backups manuales se conservan indefinidamente.
+                </p>
+
+                <h3 class="detalle-seccion-titulo">Backup automático</h3>
+                <p class="texto-descripcion mb-3">
+                    El sistema genera una copia de seguridad automáticamente todos los días a las
+                    <strong>02:00 AM</strong> (hora Colombia) sin intervención del ADMIN.
+                    Los backups automáticos se conservan durante <strong>30 días</strong> y luego
+                    se eliminan automáticamente para liberar espacio en el servidor.
+                </p>
+
+                <h3 class="detalle-seccion-titulo">Configuración del horario</h3>
+                <p class="texto-descripcion mb-2">
+                    Desde el panel <strong>Configuración</strong> el ADMIN puede:
+                </p>
+                <ul class="texto-descripcion mb-3 ps-3">
+                    <li class="mb-1">
+                        <strong>Cambiar la hora diaria</strong> del backup automático — el cambio
+                        se aplica en tiempo real sin reiniciar el servidor.
+                    </li>
+                    <li class="mb-1">
+                        <strong>Programar un backup puntual</strong> para una fecha y hora
+                        específica — útil para festivos, cierres de mes o días sin personal en
+                        la empresa.
+                    </li>
+                    <li class="mb-1">
+                        <strong>Cancelar backups puntuales</strong> programados que ya no
+                        sean necesarios.
+                    </li>
+                </ul>
+
+                <h3 class="detalle-seccion-titulo">Restaurar backup</h3>
+                <p class="texto-descripcion mb-3">
+                    El ícono <i class="bi bi-arrow-counterclockwise icono-acento"></i> en la lista
+                    lleva a una pantalla de confirmación antes de ejecutar la restauración.
+                    El proceso reemplaza todos los datos actuales con los del backup seleccionado.
+                </p>
+                <div class="alert alert-warning d-flex gap-2 mb-3" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill flex-shrink-0 mt-1"></i>
+                    <div>
+                        <strong>Operación crítica — no se puede deshacer:</strong>
+                        Al confirmar, todos los datos del sistema se reemplazan por los del
+                        backup elegido. Se recomienda generar un backup manual del estado
+                        actual antes de restaurar.
+                    </div>
+                </div>
+
+                <h3 class="detalle-seccion-titulo">Exportar Excel</h3>
                 <p class="texto-descripcion">
-                    Solo accesible para el rol ADMIN. Permite generar copias de seguridad
-                    manuales de la base de datos completa y consultar el historial de backups
-                    generados automáticamente por el sistema.
+                    El botón <strong>Exportar Excel</strong> descarga el historial completo de
+                    backups en formato .xlsx con logo, fecha de exportación y todos los
+                    registros — útil para auditoría y documentación del cumplimiento del
+                    procedimiento de respaldo.
                 </p>
             </div>
         </section>
