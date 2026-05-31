@@ -2,7 +2,7 @@
 
 > **Última actualización:** 30 de mayo de 2026
 > **Rama:** `main`
-> **Último commit:** `6c00b2c`
+> **Último commit:** `c2cdcd1`
 > **Protocolo activo:** Protocolo de Veracidad — Fase 6 v1.1 + Protocolo de Veracidad (10 reglas)
 
 ---
@@ -10,7 +10,7 @@
 ## Estado general
 
 - **Fase actual:** 6 — Pruebas y Verificación
-- **Módulo en progreso:** `backup` — 🔄 Correcciones aplicadas · pendiente aprobación
+- **Módulo en progreso:** `backup` — 🔄 Listo para aprobación
 - **Protocolo activo:** Protocolo de Veracidad — Fase 6 v1.1
 
 ---
@@ -25,7 +25,7 @@
 | `insumos` | ✅ Aprobado — 2026-05-29 | `670218d` (cierre) |
 | `compras` | ✅ Aprobado — 2026-05-29 | `840fb04` (cierre) |
 | `ventas` | ✅ Aprobado — 2026-05-29 | `132b459` (cierre) |
-| `backup` | 🔄 En revisión | `39fc2a5` `4a1f493` `1b90d5b` |
+| `backup` | 🔄 Listo para aprobación | commits: `39fc2a5`→`c2cdcd1` |
 
 ---
 
@@ -34,7 +34,7 @@
 - `a45d107` — Tablas de roles Compras/Ventas + secciones descriptivas completas
 - `b8f2317` — Nivel Avanzado: `<section>` semántico, índice con anclas, h2/h3, aria-label, table-responsive, callouts de stock
 - `6fb7ff2` — Índice visual con grilla de tarjetas (icono + nombre, 3 col desktop / 2 col móvil), estilos `.manual-nav-card` en `solgases.css`
-- Sección **Backup** pendiente de completar tras verificar el módulo backup en Fase 6
+- Sección **Backup** ✅ completada — `c2cdcd1`
 
 ---
 

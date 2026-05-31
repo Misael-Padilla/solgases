@@ -834,6 +834,9 @@ Transversales: Búsqueda ✅ | Breadcrumbs ✅ | Paginación ✅ | Excel ✅
 | SC-B07 | Agregar | Indicador "Próximo backup automático" en lista — consulta `DjangoJob.next_run_time` | `21ba5d7` | ✅ Implementado |
 | SC-B08 | Agregar | Panel `/backup/configuracion/` — cambiar horario diario en tiempo real + programar backups puntuales por fecha/hora específica + cancelar puntuales | `6c00b2c` | ✅ Implementado |
 | SC-B09 | Agregar | Modelo `ConfigBackup` (singleton pk=1) — persiste hora/minuto del backup diario en BD | `6c00b2c` | ✅ Implementado |
+| SC-B10 | Agregar | Exportación Excel historial de backups — logo, formato del sistema, columnas auditables, fila de total | `697f04c` | ✅ Implementado |
+| SC-B11 | Agregar | `btn-configuracion` — nuevo estilo negro `#1a1a1a` en `solgases.css`. Jerarquía visual: verde\|negro\|rojo | `dd740e6` | ✅ Implementado |
+| SC-B12 | Agregar | Manual — sección Backup completa: backup manual, automático, configuración, restauración, Excel | `c2cdcd1` | ✅ Implementado |
 
 ### Decisiones tomadas en módulo `backup`
 
@@ -854,4 +857,4 @@ Transversales: Búsqueda ✅ | Breadcrumbs ✅ | Paginación ✅ | Excel ✅
 
 ---
 
-*Bitácora actualizada el 30 de mayo de 2026 — revisión y correcciones módulo backup completadas.*
+*Bitácora actualizada el 30 de mayo de 2026 — módulo backup listo para cierre.*
