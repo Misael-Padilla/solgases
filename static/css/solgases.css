@@ -1334,25 +1334,25 @@ body {
 }
 
 /* --- Tamaño de letra: Grande --- */
-html.tamanio-grande .texto-descripcion  { font-size: 15px; }
+html.tamanio-grande .texto-descripcion      { font-size: 17px; }
 html.tamanio-grande .tabla-sistema td,
-html.tamanio-grande .tabla-sistema th   { font-size: 14px; }
-html.tamanio-grande .form-label         { font-size: 15px; }
-html.tamanio-grande .detalle-valor      { font-size: 16px; }
-html.tamanio-grande .detalle-label      { font-size: 13px; }
-html.tamanio-grande .detalle-seccion-titulo { font-size: 14px; }
+html.tamanio-grande .tabla-sistema th       { font-size: 16px; }
+html.tamanio-grande .form-label             { font-size: 17px; }
+html.tamanio-grande .detalle-valor          { font-size: 18px; }
+html.tamanio-grande .detalle-label          { font-size: 15px; }
+html.tamanio-grande .detalle-seccion-titulo { font-size: 16px; }
 html.tamanio-grande .breadcrumbs-item,
-html.tamanio-grande .breadcrumbs-link   { font-size: 14px; }
-html.tamanio-grande h5.fw-bold          { font-size: 18px; }
+html.tamanio-grande .breadcrumbs-link       { font-size: 16px; }
+html.tamanio-grande h5.fw-bold              { font-size: 22px; }
 
 /* --- Tamaño de letra: Pequeño --- */
-html.tamanio-pequeno .texto-descripcion { font-size: 11px; }
+html.tamanio-pequeno .texto-descripcion { font-size: 10px; }
 html.tamanio-pequeno .tabla-sistema td,
-html.tamanio-pequeno .tabla-sistema th  { font-size: 11px; }
-html.tamanio-pequeno .form-label        { font-size: 11px; }
-html.tamanio-pequeno .detalle-valor     { font-size: 12px; }
+html.tamanio-pequeno .tabla-sistema th  { font-size: 10px; }
+html.tamanio-pequeno .form-label        { font-size: 10px; }
+html.tamanio-pequeno .detalle-valor     { font-size: 11px; }
 html.tamanio-pequeno .breadcrumbs-item,
-html.tamanio-pequeno .breadcrumbs-link  { font-size: 11px; }
+html.tamanio-pequeno .breadcrumbs-link  { font-size: 10px; }
 
 /* --- Alto contraste (WCAG 1.4.3) --- */
 html.alto-contraste {
