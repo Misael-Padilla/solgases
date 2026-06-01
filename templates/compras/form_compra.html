@@ -8,7 +8,8 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h5 class="fw-bold mb-0">{{ titulo }}</h5>
-    <a href="{% url 'compras:lista_compras' %}" class="btn-secundario">
+    <a href="{% url 'compras:lista_compras' %}" class="btn-secundario"
+       data-bs-toggle="tooltip" data-bs-placement="top" title="Volver al listado">
         <i class="bi bi-arrow-left"></i> Volver
     </a>
 </div>
@@ -106,7 +107,8 @@
             </div>
         </div>
 
-        <button type="button" id="btn-agregar-item" class="btn-secundario mt-2">
+        <button type="button" id="btn-agregar-item" class="btn-secundario mt-2"
+                data-bs-toggle="tooltip" data-bs-placement="top" title="Agregar ítem a la factura">
             <i class="bi bi-plus-lg"></i> Agregar ítem
         </button>
     </div>
@@ -146,10 +148,12 @@
 
     <!-- Botones -->
     <div class="d-flex justify-content-end gap-2">
-        <a href="{% url 'compras:lista_compras' %}" class="btn-secundario">
+        <a href="{% url 'compras:lista_compras' %}" class="btn-secundario"
+           data-bs-toggle="tooltip" data-bs-placement="top" title="Cancelar y volver">
             Cancelar
         </a>
-        <button type="submit" class="btn-accion">
+        <button type="submit" class="btn-accion"
+                data-bs-toggle="tooltip" data-bs-placement="top" title="Registrar factura de compra">
             <i class="bi bi-check-lg"></i> Registrar factura
         </button>
     </div>

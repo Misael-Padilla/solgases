@@ -8,14 +8,17 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h5 class="fw-bold mb-0">{{ producto.nombre }}</h5>
     <div class="d-flex gap-2">
-        <a href="{% url 'productos:lista_productos' %}" class="btn-secundario">
+        <a href="{% url 'productos:lista_productos' %}" class="btn-secundario"
+           data-bs-toggle="tooltip" data-bs-placement="top" title="Volver al listado">
             <i class="bi bi-arrow-left"></i> Volver
         </a>
-        <a href="{% url 'productos:editar_producto' producto.id %}" class="btn-accion">
+        <a href="{% url 'productos:editar_producto' producto.id %}" class="btn-accion"
+           data-bs-toggle="tooltip" data-bs-placement="top" title="Editar producto">
             <i class="bi bi-pencil"></i> Editar
         </a>
         {% if request.user.rol == 'ADMIN' %}
-        <a href="{% url 'productos:modificar_stock' producto.id %}" class="btn-accion">
+        <a href="{% url 'productos:modificar_stock' producto.id %}" class="btn-accion"
+           data-bs-toggle="tooltip" data-bs-placement="top" title="Modificar stock">
             <i class="bi bi-box-seam"></i> Modificar stock
         </a>
         {% endif %}

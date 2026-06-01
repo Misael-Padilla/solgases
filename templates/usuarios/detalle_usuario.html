@@ -8,11 +8,13 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h5 class="fw-bold mb-0">{{ usuario.nombres }} {{ usuario.apellidos }}</h5>
     <div class="d-flex gap-2">
-        <a href="{% url 'usuarios:lista_usuarios' %}" class="btn-secundario">
+        <a href="{% url 'usuarios:lista_usuarios' %}" class="btn-secundario"
+           data-bs-toggle="tooltip" data-bs-placement="top" title="Volver al listado">
             <i class="bi bi-arrow-left"></i> Volver
         </a>
         {% if request.user.rol == 'ADMIN' %}
-        <a href="{% url 'usuarios:editar_usuario' usuario.id %}" class="btn-accion">
+        <a href="{% url 'usuarios:editar_usuario' usuario.id %}" class="btn-accion"
+           data-bs-toggle="tooltip" data-bs-placement="top" title="Editar usuario">
             <i class="bi bi-pencil"></i> Editar
         </a>
         {% endif %}

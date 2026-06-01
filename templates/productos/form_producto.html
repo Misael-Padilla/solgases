@@ -7,7 +7,8 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h5 class="fw-bold mb-0">{{ titulo }}</h5>
-    <a href="{% url 'productos:lista_productos' %}" class="btn-secundario">
+    <a href="{% url 'productos:lista_productos' %}" class="btn-secundario"
+       data-bs-toggle="tooltip" data-bs-placement="top" title="Volver al listado">
         <i class="bi bi-arrow-left"></i> Volver
     </a>
 </div>
@@ -90,10 +91,12 @@
 
                 <!-- Botones -->
                 <div class="d-flex justify-content-end gap-2">
-                    <a href="{% url 'productos:lista_productos' %}" class="btn-secundario">
+                    <a href="{% url 'productos:lista_productos' %}" class="btn-secundario"
+                       data-bs-toggle="tooltip" data-bs-placement="top" title="Cancelar y volver">
                         Cancelar
                     </a>
-                    <button type="submit" class="btn-accion">
+                    <button type="submit" class="btn-accion"
+                            data-bs-toggle="tooltip" data-bs-placement="top" title="Guardar cambios">
                         <i class="bi bi-check-lg"></i> Guardar
                     </button>
                 </div>

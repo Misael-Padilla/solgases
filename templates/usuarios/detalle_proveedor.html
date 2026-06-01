@@ -14,10 +14,12 @@
         {% endif %}
     </h5>
     <div class="d-flex gap-2">
-        <a href="{% url 'usuarios:lista_proveedores' %}" class="btn-secundario">
+        <a href="{% url 'usuarios:lista_proveedores' %}" class="btn-secundario"
+           data-bs-toggle="tooltip" data-bs-placement="top" title="Volver al listado">
             <i class="bi bi-arrow-left"></i> Volver
         </a>
-        <a href="{% url 'usuarios:editar_proveedor' proveedor.id %}" class="btn-accion">
+        <a href="{% url 'usuarios:editar_proveedor' proveedor.id %}" class="btn-accion"
+           data-bs-toggle="tooltip" data-bs-placement="top" title="Editar proveedor">
             <i class="bi bi-pencil"></i> Editar
         </a>
     </div>
