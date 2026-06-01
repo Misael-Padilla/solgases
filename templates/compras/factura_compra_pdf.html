@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+@page {
+    size: A4;
+    margin: 15mm 15mm 22mm 15mm;
+    @bottom-center {
+        content: "Página " counter(page) " de " counter(pages) " · SOLGASES — Sistema de Gestión Empresarial";
+        font-size: 7pt;
+        color: #aaaaaa;
+    }
+}
+* { box-sizing: border-box; }
+body { font-family: Arial, sans-serif; font-size: 10pt; color: #1a1a1a; margin: 0; }
+
+/* Encabezado */
+.header-tabla { width: 100%; border-collapse: collapse; margin-bottom: 6px; }
+.header-logo img { height: 55px; }
+.header-empresa { text-align: right; vertical-align: top; }
+.header-empresa h1 { font-size: 15pt; font-weight: bold; color: #1a1a1a; margin: 0 0 3px 0; }
+.header-empresa p { font-size: 8pt; color: #555555; margin: 1px 0; }
+.divider { border: none; border-top: 2.5px solid #cc0000; margin: 6px 0 10px 0; }
+
+/* Título */
+.titulo-factura { background-color: #1a1a1a; color: #ffffff; padding: 7px 12px;
+    font-size: 12pt; font-weight: bold; margin-bottom: 12px; }
+
+/* Info grid */
+.info-tabla { width: 100%; border-collapse: collapse; margin-bottom: 12px; }
+.info-bloque { border: 1px solid #e0e0e0; padding: 5px 8px; vertical-align: top; }
+.info-label { font-size: 7.5pt; color: #888888; text-transform: uppercase; margin: 0 0 2px 0; }
+.info-valor { font-size: 10pt; font-weight: 500; margin: 0; }
+
+/* Tabla ítems */
+.tabla-items { width: 100%; border-collapse: collapse; margin-bottom: 12px; font-size: 9pt; }
+.tabla-items th { background-color: #1a1a1a; color: #ffffff; padding: 6px 8px;
+    text-align: left; font-size: 8pt; text-transform: uppercase; }
+.tabla-items td { padding: 5px 8px; border-bottom: 1px solid #eeeeee; }
+.tabla-items tr.fila-par td { background-color: #f8f8f8; }
+.text-right { text-align: right; }
+
+/* Totales — tabla outer posiciona a la derecha sin float */
+.totales-outer { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+.totales-tabla { width: 100%; border-collapse: collapse; }
+.totales-tabla td { padding: 4px 8px; font-size: 9pt; border: 1px solid #e0e0e0; }
+.totales-tabla .label { color: #555555; }
+.totales-tabla .valor { text-align: right; }
+.fila-total { background-color: #1a1a1a; color: #ffffff; font-weight: bold; font-size: 10.5pt; }
+.fila-total td { border-color: #1a1a1a; }
+
+/* Estado */
+.estado-activo { color: #1a6f42; font-weight: bold; }
+.estado-inactivo { color: #cc0000; font-weight: bold; }
+
+/* Observaciones */
+.obs-box { border: 1px solid #e0e0e0; padding: 7px 10px; margin-top: 8px; }
+.obs-titulo { font-size: 7.5pt; text-transform: uppercase; color: #888888; margin: 0 0 3px 0; }
+.obs-texto { font-size: 9pt; margin: 0; }
+
+/* Footer */
+.pie { margin-top: 16px; border-top: 1px solid #e0e0e0;
+    padding-top: 6px; font-size: 7pt; color: #aaaaaa; text-align: center; }
+</style>
+</head>
+<body>
+
+<!-- ENCABEZADO -->
+<table class="header-tabla">
+    <tr>
+        <td style="width:40%; vertical-align:middle;">
+            <img src="{% static 'img/logo_solgases.png' %}" alt="SOLGASES">
+        </td>
+        <td class="header-empresa">
+            <h1>SOLGASES</h1>
+            <p>NIT: 901.234.567-8</p>
+            <p>Sogamoso, Boyacá — Colombia</p>
+            <p>Tel: (608) 123-4567 · solgases@empresa.com</p>
+        </td>
+    </tr>
+</table>
+<hr class="divider">
+
+<!-- TÍTULO -->
+<div class="titulo-factura">
+    FACTURA DE COMPRA &nbsp;·&nbsp; N° {{ compra.numero_factura }}
+</div>
+
+<!-- DATOS DE LA FACTURA -->
+<table class="info-tabla">
+    <tr>
+        <td class="info-bloque" style="width:50%;">
+            <p class="info-label">Proveedor</p>
+            <p class="info-valor">{{ compra.proveedor }}</p>
+        </td>
+        <td style="width:2%;"></td>
+        <td class="info-bloque" style="width:23%;">
+            <p class="info-label">Fecha factura</p>
+            <p class="info-valor">{{ compra.fecha_factura|date:"d/m/Y H:i" }}</p>
+        </td>
+        <td style="width:2%;"></td>
+        <td class="info-bloque" style="width:23%;">
+            <p class="info-label">Estado</p>
+            <p class="info-valor {% if compra.estado == 'ACTIVO' %}estado-activo{% else %}estado-inactivo{% endif %}">
+                {{ compra.get_estado_display }}
+            </p>
+        </td>
+    </tr>
+    <tr><td colspan="5" style="height:6px;"></td></tr>
+    <tr>
+        <td class="info-bloque" style="width:50%;">
+            <p class="info-label">Registrado por</p>
+            <p class="info-valor">{{ compra.registrado_por.nombres }} {{ compra.registrado_por.apellidos }}</p>
+        </td>
+        <td style="width:2%;"></td>
+        <td class="info-bloque" style="width:23%;">
+            <p class="info-label">Fecha registro</p>
+            <p class="info-valor">{{ compra.fecha_registro|date:"d/m/Y H:i" }}</p>
+        </td>
+        <td style="width:2%;"></td>
+        <td style="width:23%;"></td>
+    </tr>
+</table>
+
+<!-- TABLA DE ÍTEMS -->
+<table class="tabla-items">
+    <thead>
+        <tr>
+            <th>Tipo</th>
+            <th>Código</th>
+            <th>Descripción</th>
+            <th class="text-right">Cantidad</th>
+            <th class="text-right">Precio unit.</th>
+            <th class="text-right">Subtotal</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for detalle in compra.detalles.all %}
+        <tr{% if forloop.counter|divisibleby:2 %} class="fila-par"{% endif %}>
+            <td>{{ detalle.get_tipo_item_display }}</td>
+            <td>{{ detalle.codigo_item }}</td>
+            <td>{{ detalle.descripcion }}</td>
+            <td class="text-right">{{ detalle.cantidad }}</td>
+            <td class="text-right">${{ detalle.precio_unitario }}</td>
+            <td class="text-right">${{ detalle.subtotal }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="6" style="text-align:center; color:#888888; font-style:italic; padding:12px;">
+                Sin ítems registrados.
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- TOTALES — tabla outer evita float que xhtml2pdf no soporta -->
+<table class="totales-outer">
+    <tr>
+        <td style="width: 62%;"></td>
+        <td style="width: 38%; vertical-align: top;">
+            <table class="totales-tabla">
+                <tr>
+                    <td class="label">Subtotal:</td>
+                    <td class="valor">${{ compra.subtotal }}</td>
+                </tr>
+                <tr>
+                    <td class="label">IVA ({{ compra.iva_porcentaje }}%):</td>
+                    <td class="valor">${{ compra.iva }}</td>
+                </tr>
+                <tr class="fila-total">
+                    <td>TOTAL:</td>
+                    <td class="valor">${{ compra.total }}</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+{% if compra.observaciones %}
+<div class="obs-box">
+    <p class="obs-titulo">Observaciones</p>
+    <p class="obs-texto">{{ compra.observaciones }}</p>
+</div>
+{% endif %}
+
+<div class="pie">
+    Documento generado el {{ fecha_generacion }} &nbsp;·&nbsp;
+    Este documento es una representación imprimible del registro del sistema.
+</div>
+
+</body>
+</html>

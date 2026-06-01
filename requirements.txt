@@ -1,4 +1,5 @@
 ﻿APScheduler==3.11.2
+xhtml2pdf==0.2.17
 asgiref==3.11.1
 Django==6.0.3
 django-apscheduler==0.7.0
