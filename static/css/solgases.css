@@ -1198,3 +1198,191 @@ body {
     font-size: 22px;
     color: var(--color-acento);
 }
+
+
+/* ==========================================================
+   22. Widget de Accesibilidad — SC-A01
+   ========================================================== */
+
+/* --- Panel flotante --- */
+#widget-accesibilidad {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 1050;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+}
+
+.btn-widget-accesibilidad {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background-color: var(--color-acento);
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    transition: background-color 0.2s;
+}
+
+.btn-widget-accesibilidad:hover {
+    background-color: var(--color-acento-hover);
+}
+
+.btn-widget-accesibilidad:focus-visible {
+    outline: 3px solid #ffffff;
+    outline-offset: 2px;
+}
+
+#panel-accesibilidad {
+    background-color: #ffffff;
+    border: 1px solid var(--color-borde);
+    border-radius: 10px;
+    padding: 16px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    min-width: 200px;
+}
+
+.widget-titulo {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--color-texto-primario);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+}
+
+.widget-seccion {
+    margin-bottom: 12px;
+}
+
+.widget-seccion:last-child {
+    margin-bottom: 0;
+}
+
+.widget-label {
+    font-size: 11px;
+    color: var(--color-texto-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-bottom: 6px;
+}
+
+.widget-controles {
+    display: flex;
+    gap: 4px;
+}
+
+.widget-controles button {
+    flex: 1;
+    padding: 6px;
+    border: 1px solid var(--color-borde);
+    border-radius: 6px;
+    background-color: var(--color-contenido-bg);
+    color: var(--color-texto-primario);
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 13px;
+    transition: background-color 0.15s, border-color 0.15s;
+}
+
+.widget-controles button:hover,
+.widget-controles button[aria-pressed="true"] {
+    background-color: var(--color-acento);
+    border-color: var(--color-acento);
+    color: #ffffff;
+}
+
+.widget-controles button:focus-visible {
+    outline: 2px solid var(--color-acento);
+    outline-offset: 2px;
+}
+
+#btn-contraste {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid var(--color-borde);
+    border-radius: 6px;
+    background-color: var(--color-contenido-bg);
+    color: var(--color-texto-primario);
+    cursor: pointer;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: background-color 0.15s, border-color 0.15s;
+}
+
+#btn-contraste:hover,
+#btn-contraste[aria-pressed="true"] {
+    background-color: var(--color-texto-primario);
+    border-color: var(--color-texto-primario);
+    color: #ffffff;
+}
+
+#btn-contraste:focus-visible {
+    outline: 2px solid var(--color-acento);
+    outline-offset: 2px;
+}
+
+/* --- Tamaño de letra: Grande --- */
+html.tamanio-grande .texto-descripcion  { font-size: 15px; }
+html.tamanio-grande .tabla-sistema td,
+html.tamanio-grande .tabla-sistema th   { font-size: 14px; }
+html.tamanio-grande .form-label         { font-size: 15px; }
+html.tamanio-grande .detalle-valor      { font-size: 16px; }
+html.tamanio-grande .detalle-label      { font-size: 13px; }
+html.tamanio-grande .detalle-seccion-titulo { font-size: 14px; }
+html.tamanio-grande .breadcrumbs-item,
+html.tamanio-grande .breadcrumbs-link   { font-size: 14px; }
+html.tamanio-grande h5.fw-bold          { font-size: 18px; }
+
+/* --- Tamaño de letra: Pequeño --- */
+html.tamanio-pequeno .texto-descripcion { font-size: 11px; }
+html.tamanio-pequeno .tabla-sistema td,
+html.tamanio-pequeno .tabla-sistema th  { font-size: 11px; }
+html.tamanio-pequeno .form-label        { font-size: 11px; }
+html.tamanio-pequeno .detalle-valor     { font-size: 12px; }
+html.tamanio-pequeno .breadcrumbs-item,
+html.tamanio-pequeno .breadcrumbs-link  { font-size: 11px; }
+
+/* --- Alto contraste (WCAG 1.4.3) --- */
+html.alto-contraste {
+    --color-header-bg:        #000000;
+    --color-contenido-bg:     #111111;
+    --color-borde:            #ffffff;
+    --color-texto-primario:   #ffffff;
+    --color-texto-secundario: #eeeeee;
+    --color-texto-muted:      #cccccc;
+    --color-texto-light:      #bbbbbb;
+}
+
+html.alto-contraste body             { background-color: #111111; color: #ffffff; }
+html.alto-contraste .card-detalle    { background-color: #1a1a1a; border: 1px solid #ffffff; }
+html.alto-contraste .contenido-principal { background-color: #111111; }
+
+html.alto-contraste .tabla-sistema thead tr          { background-color: #000000; }
+html.alto-contraste .tabla-sistema tbody tr          { background-color: #1a1a1a; }
+html.alto-contraste .tabla-sistema tbody tr:hover    { background-color: #2a2a2a; }
+html.alto-contraste .tabla-sistema td,
+html.alto-contraste .tabla-sistema th                { color: #ffffff; border-color: #555555; }
+
+html.alto-contraste .btn-secundario          { background-color: #333333; color: #ffffff; border-color: #ffffff; }
+html.alto-contraste .btn-secundario:hover    { background-color: #555555; color: #ffffff; }
+html.alto-contraste .form-control,
+html.alto-contraste .form-select             { background-color: #1a1a1a; color: #ffffff; border-color: #ffffff; }
+html.alto-contraste .form-control::placeholder { color: #aaaaaa; }
+html.alto-contraste .alert-warning           { background-color: #2a2000; border-color: #ffcc00; color: #ffcc00; }
+
+html.alto-contraste #panel-accesibilidad     { background-color: #1a1a1a; border-color: #ffffff; }
+html.alto-contraste .widget-titulo           { color: #ffffff; }
+html.alto-contraste .widget-controles button { background-color: #333333; color: #ffffff; border-color: #555555; }
+html.alto-contraste #btn-contraste           { background-color: var(--color-acento); color: #ffffff; border-color: var(--color-acento); }

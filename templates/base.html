@@ -16,6 +16,9 @@
     <link href="{% static 'css/solgases.css' %}" rel="stylesheet">
 
     {% block estilos_extra %}{% endblock %}
+
+    <!-- Widget accesibilidad — carga anticipada para evitar flash de estilo (SC-A01) -->
+    <script src="{% static 'js/accesibilidad.js' %}"></script>
 </head>
 <body>
 
@@ -167,6 +170,53 @@
 
     </div>
     <!-- =================== FIN CONTENIDO PRINCIPAL =================== -->
+
+</div>
+
+<!-- Widget de accesibilidad — SC-A01 (WCAG 2.1) -->
+<div id="widget-accesibilidad" role="toolbar" aria-label="Opciones de accesibilidad">
+
+    <button id="btn-accesibilidad"
+            class="btn-widget-accesibilidad"
+            aria-expanded="false"
+            aria-controls="panel-accesibilidad"
+            aria-label="Abrir opciones de accesibilidad"
+            data-bs-toggle="tooltip"
+            data-bs-placement="left"
+            title="Opciones de accesibilidad">
+        <i class="bi bi-universal-access" aria-hidden="true"></i>
+    </button>
+
+    <div id="panel-accesibilidad" role="group" aria-label="Controles de accesibilidad" hidden>
+        <p class="widget-titulo">Accesibilidad</p>
+
+        <div class="widget-seccion">
+            <p class="widget-label" id="label-fuente">Tamaño de letra</p>
+            <div class="widget-controles" role="group" aria-labelledby="label-fuente">
+                <button id="btn-fuente-pequena"
+                        aria-pressed="false"
+                        aria-label="Letra pequeña"
+                        title="Letra pequeña">A−</button>
+                <button id="btn-fuente-normal"
+                        aria-pressed="true"
+                        aria-label="Letra normal"
+                        title="Letra normal">A</button>
+                <button id="btn-fuente-grande"
+                        aria-pressed="false"
+                        aria-label="Letra grande"
+                        title="Letra grande">A+</button>
+            </div>
+        </div>
+
+        <div class="widget-seccion">
+            <p class="widget-label">Contraste</p>
+            <button id="btn-contraste"
+                    aria-pressed="false"
+                    aria-label="Activar alto contraste">
+                <i class="bi bi-circle-half" aria-hidden="true"></i> Alto contraste
+            </button>
+        </div>
+    </div>
 
 </div>
 
