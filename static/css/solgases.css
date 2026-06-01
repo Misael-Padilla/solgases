@@ -1392,6 +1392,15 @@ html.alto-contraste .tabla-sistema th                { color: #ffffff; border-co
 
 html.alto-contraste .btn-secundario          { background-color: #333333; color: #ffffff; border-color: #ffffff; }
 html.alto-contraste .btn-secundario:hover    { background-color: #555555; color: #ffffff; }
+html.alto-contraste .btn-accion,
+html.alto-contraste .btn-pdf,
+html.alto-contraste .btn-exportar            { border: 2px solid #ffffff; }
+html.alto-contraste .btn-configuracion       { border: 2px solid #ffffff; }
+
+/* Daltonismo — contorno visible en escala de grises (WCAG 1.4.1, 1.4.11) */
+html.escala-grises .btn-accion,
+html.escala-grises .btn-pdf,
+html.escala-grises .btn-exportar             { box-shadow: 0 0 0 2px #1a1a1a; }
 html.alto-contraste .form-control,
 html.alto-contraste .form-select             { background-color: #1a1a1a; color: #ffffff; border-color: #ffffff; }
 html.alto-contraste .form-control::placeholder { color: #aaaaaa; }
