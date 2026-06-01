@@ -11,6 +11,11 @@
         <a href="{% url 'compras:lista_compras' %}" class="btn-secundario">
             <i class="bi bi-arrow-left"></i> Volver
         </a>
+        <a href="{% url 'compras:descargar_pdf_compra' compra.id %}"
+           class="btn-secundario"
+           aria-label="Descargar PDF de factura {{ compra.numero_factura }}">
+            <i class="bi bi-file-earmark-pdf"></i> Descargar PDF
+        </a>
         {% if request.user.rol == 'ADMIN' %}
         <button type="button"
                 class="{% if compra.estado == 'ACTIVO' %}btn-accion{% else %}btn-secundario{% endif %}"
