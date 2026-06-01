@@ -29,6 +29,12 @@
                     </a>
                 </div>
                 <div class="col-6 col-sm-4">
+                    <a href="#usuarios" class="manual-nav-card">
+                        <i class="bi bi-people manual-nav-icon"></i>
+                        <span>Usuarios</span>
+                    </a>
+                </div>
+                <div class="col-6 col-sm-4">
                     <a href="#dashboard" class="manual-nav-card">
                         <i class="bi bi-speedometer2 manual-nav-icon"></i>
                         <span>Dashboard</span>
@@ -62,6 +68,18 @@
                     <a href="#backup" class="manual-nav-card">
                         <i class="bi bi-shield-check manual-nav-icon"></i>
                         <span>Backup</span>
+                    </a>
+                </div>
+                <div class="col-6 col-sm-4">
+                    <a href="#seguridad" class="manual-nav-card">
+                        <i class="bi bi-lock manual-nav-icon"></i>
+                        <span>Seguridad</span>
+                    </a>
+                </div>
+                <div class="col-6 col-sm-4">
+                    <a href="#accesibilidad" class="manual-nav-card">
+                        <i class="bi bi-universal-access manual-nav-icon"></i>
+                        <span>Accesibilidad</span>
                     </a>
                 </div>
             </div>
@@ -225,6 +243,54 @@
             </div>
         </section>
 
+        <!-- Usuarios -->
+        <section id="usuarios" aria-labelledby="titulo-usuarios">
+            <div class="card-detalle mb-3">
+                <h2 id="titulo-usuarios" class="h6 fw-bold mb-2">
+                    <i class="bi bi-people icono-acento"></i> Usuarios
+                </h2>
+                <p class="texto-descripcion mb-3">
+                    El módulo de usuarios gestiona tres tipos de registros: usuarios del sistema,
+                    clientes y proveedores. Cada tipo tiene su propio listado, formulario de
+                    creación y vista de detalle.
+                </p>
+
+                <h3 class="detalle-seccion-titulo">Usuarios del sistema</h3>
+                <p class="texto-descripcion mb-3">
+                    Los usuarios del sistema son las personas que acceden a la plataforma.
+                    Solo el <strong>ADMIN</strong> puede crear, editar, activar o desactivar
+                    usuarios. El campo de autenticación es el <strong>correo electrónico</strong>
+                    (no el nombre de usuario). Cada usuario tiene asignado un rol:
+                    <span class="badge-rol badge-admin">ADMIN</span> o
+                    <span class="badge-rol badge-emp">EMP</span>.
+                </p>
+
+                <h3 class="detalle-seccion-titulo">Historial de cambios</h3>
+                <p class="texto-descripcion mb-3">
+                    Cada vez que el <strong>ADMIN</strong> activa, desactiva o edita un usuario,
+                    el sistema registra automáticamente la acción, la fecha, el motivo ingresado
+                    y quién realizó el cambio. Este historial es visible en el detalle de cada usuario
+                    y no puede ser eliminado.
+                </p>
+
+                <h3 class="detalle-seccion-titulo">Clientes y Proveedores</h3>
+                <p class="texto-descripcion mb-3">
+                    Clientes y proveedores son registros de terceros que participan en las
+                    transacciones del sistema. Pueden ser personas naturales o empresas (NIT).
+                    Ambos pueden ser creados y editados por <strong>ADMIN</strong> y <strong>EMP</strong>.
+                    Solo el <strong>ADMIN</strong> puede activarlos o desactivarlos.
+                    Los proveedores inactivos no aparecen disponibles al registrar insumos.
+                </p>
+
+                <h3 class="detalle-seccion-titulo">Exportar Excel</h3>
+                <p class="texto-descripcion">
+                    El botón <strong>Exportar Excel</strong> en cada listado (usuarios, clientes,
+                    proveedores) descarga un archivo .xlsx con todos los registros, logo de la
+                    empresa, fecha de exportación y el nombre del usuario que realizó la exportación.
+                </p>
+            </div>
+        </section>
+
         <!-- Dashboard -->
         <section id="dashboard" aria-labelledby="titulo-dashboard">
             <div class="card-detalle mb-3">
@@ -366,7 +432,7 @@
                     Solo el <strong>ADMIN</strong> puede cambiar el estado de una factura de
                     compra. Se requiere observación obligatoria.
                 </p>
-                <div class="alert alert-warning d-flex gap-2" role="alert">
+                <div class="alert alert-warning d-flex gap-2 mb-3" role="alert">
                     <i class="bi bi-exclamation-triangle-fill flex-shrink-0 mt-1"></i>
                     <div>
                         <strong>Efecto sobre el inventario:</strong>
@@ -377,6 +443,14 @@
                         inventario cuando se anula una compra registrada por error.
                     </div>
                 </div>
+
+                <h3 class="detalle-seccion-titulo">Exportar Excel y Descargar PDF</h3>
+                <p class="texto-descripcion">
+                    Desde el listado de compras, el botón <strong>Exportar Excel</strong> descarga
+                    todas las facturas en formato .xlsx. Desde el detalle de una factura, el botón
+                    <strong>Descargar PDF</strong> genera un documento PDF de esa factura específica
+                    con los datos del proveedor, ítems, totales e IVA.
+                </p>
             </div>
         </section>
 
@@ -413,7 +487,7 @@
                     Solo el <strong>ADMIN</strong> puede cambiar el estado de una factura de
                     venta. Se requiere observación obligatoria.
                 </p>
-                <div class="alert alert-warning d-flex gap-2" role="alert">
+                <div class="alert alert-warning d-flex gap-2 mb-3" role="alert">
                     <i class="bi bi-exclamation-triangle-fill flex-shrink-0 mt-1"></i>
                     <div>
                         <strong>Efecto sobre el inventario:</strong>
@@ -425,6 +499,14 @@
                         descuento se re-aplica automáticamente.
                     </div>
                 </div>
+
+                <h3 class="detalle-seccion-titulo">Exportar Excel y Descargar PDF</h3>
+                <p class="texto-descripcion">
+                    Desde el listado de ventas, el botón <strong>Exportar Excel</strong> descarga
+                    todas las facturas en formato .xlsx. Desde el detalle de una factura, el botón
+                    <strong>Descargar PDF</strong> genera un documento PDF con los datos del cliente,
+                    método de pago, ítems, totales e IVA.
+                </p>
             </div>
         </section>
 
@@ -498,6 +580,86 @@
                     backups en formato .xlsx con logo, fecha de exportación y todos los
                     registros — útil para auditoría y documentación del cumplimiento del
                     procedimiento de respaldo.
+                </p>
+            </div>
+        </section>
+
+        <!-- Seguridad -->
+        <section id="seguridad" aria-labelledby="titulo-seguridad">
+            <div class="card-detalle mb-3">
+                <h2 id="titulo-seguridad" class="h6 fw-bold mb-2">
+                    <i class="bi bi-lock icono-acento"></i> Seguridad
+                </h2>
+
+                <h3 class="detalle-seccion-titulo">Inicio de sesión</h3>
+                <p class="texto-descripcion mb-3">
+                    El acceso al sistema se realiza con <strong>correo electrónico</strong> y
+                    contraseña. Solo los usuarios con estado <strong>Activo</strong> pueden
+                    ingresar. Los mensajes de error distinguen si el problema es el correo o
+                    la contraseña, sin revelar cuál de los dos es incorrecto al detalle.
+                </p>
+
+                <h3 class="detalle-seccion-titulo">Bloqueo por intentos fallidos</h3>
+                <p class="texto-descripcion mb-3">
+                    Después de <strong>5 intentos fallidos</strong> de inicio de sesión con el
+                    mismo correo, la cuenta queda bloqueada durante <strong>15 minutos</strong>.
+                    Durante ese tiempo, cualquier intento adicional muestra la pantalla de
+                    bloqueo. El ADMIN puede desbloquear la cuenta manualmente desde el panel
+                    de administración de Django (<code>/admin/</code>).
+                </p>
+
+                <h3 class="detalle-seccion-titulo">Recuperación de contraseña</h3>
+                <p class="texto-descripcion mb-3">
+                    En la pantalla de inicio de sesión, el enlace <strong>¿Olvidaste tu contraseña?</strong>
+                    permite solicitar un correo de recuperación. El sistema envía un enlace seguro
+                    de un solo uso al correo registrado. En desarrollo, el enlace aparece en la
+                    consola del servidor. En producción, se envía por Gmail SMTP.
+                </p>
+
+                <h3 class="detalle-seccion-titulo">Cierre de sesión</h3>
+                <p class="texto-descripcion">
+                    La sesión se cierra con el botón <strong>Cerrar sesión</strong> en la barra
+                    superior. Las sesiones expiran automáticamente después de
+                    <strong>1 hora de inactividad</strong> o al cerrar el navegador.
+                </p>
+            </div>
+        </section>
+
+        <!-- Accesibilidad -->
+        <section id="accesibilidad" aria-labelledby="titulo-accesibilidad">
+            <div class="card-detalle mb-3">
+                <h2 id="titulo-accesibilidad" class="h6 fw-bold mb-2">
+                    <i class="bi bi-universal-access icono-acento"></i> Accesibilidad
+                </h2>
+                <p class="texto-descripcion mb-3">
+                    El sistema incluye un widget de accesibilidad en la esquina inferior derecha
+                    de todas las pantallas, identificado con el ícono
+                    <i class="bi bi-universal-access icono-acento"></i>.
+                    Al hacer clic se despliega un panel con tres controles independientes.
+                    Las preferencias se guardan automáticamente y persisten entre sesiones.
+                </p>
+
+                <h3 class="detalle-seccion-titulo">Tamaño de letra</h3>
+                <p class="texto-descripcion mb-3">
+                    Los botones <strong>A−</strong>, <strong>A</strong> y <strong>A+</strong>
+                    ajustan el tamaño del texto de la interfaz entre 8 px y 20 px en pasos de 1 px.
+                    El botón <strong>A</strong> (centro) restablece el tamaño por defecto (14 px).
+                    Los botones se desactivan automáticamente al alcanzar los límites del rango.
+                </p>
+
+                <h3 class="detalle-seccion-titulo">Alto contraste</h3>
+                <p class="texto-descripcion mb-3">
+                    Activa un tema de fondo oscuro con texto blanco de alta legibilidad, útil en
+                    entornos con poca luz o para usuarios con baja visión. Se puede combinar con
+                    el ajuste de tamaño de letra.
+                </p>
+
+                <h3 class="detalle-seccion-titulo">Modo daltonismo</h3>
+                <p class="texto-descripcion">
+                    Aplica un filtro de escala de grises a toda la interfaz, eliminando la
+                    dependencia del color como único indicador visual. Los botones y elementos
+                    interactivos mantienen bordes visibles en este modo para garantizar su
+                    identificación sin color. Cumple con el criterio WCAG 2.1 — SC 1.4.1.
                 </p>
             </div>
         </section>
