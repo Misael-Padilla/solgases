@@ -1,6 +1,10 @@
+import logging
+import os
+import re
 from io import BytesIO
 from datetime import datetime
 
+from django.conf import settings
 from django.core.paginator import Paginator
 from django.db import transaction
 from django.db.models import Q
@@ -9,6 +13,16 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.urls import reverse
 from django.views.decorators.http import require_POST
+
+logger = logging.getLogger(__name__)
+
+
+def _pdf_link_callback(uri, rel):
+    """Resuelve URLs de static files a rutas de disco para xhtml2pdf."""
+    if uri.startswith(settings.STATIC_URL):
+        ruta = settings.BASE_DIR / 'static' / uri[len(settings.STATIC_URL):]
+        return str(ruta)
+    return uri
 
 from apps.ventas.models import FacturaVenta
 from apps.ventas.forms import FacturaVentaForm, DetalleVentaFormSet
@@ -198,6 +212,35 @@ def cambiar_estado_venta(request, id):
     verb = 'desactivada' if accion == 'DESACTIVAR' else 'activada'
     messages.success(request, f'Factura {venta.numero_factura} {verb}. Stock {msg_stock}.')
     return redirect('ventas:lista_ventas')
+
+
+@login_requerido
+def descargar_pdf_venta(request, id):
+    """Genera y descarga el PDF de una factura de venta."""
+    from django.template.loader import render_to_string
+    from xhtml2pdf import pisa
+
+    venta = get_object_or_404(
+        FacturaVenta.objects.select_related('cliente', 'registrado_por').prefetch_related('detalles'),
+        id=id,
+    )
+    html = render_to_string('ventas/factura_venta_pdf.html', {
+        'venta': venta,
+        'fecha_generacion': datetime.now().strftime('%d/%m/%Y %H:%M'),
+    })
+
+    buffer = BytesIO()
+    resultado = pisa.CreatePDF(html, dest=buffer, link_callback=_pdf_link_callback)
+    if resultado.err:
+        logger.error('PDF venta %s — error xhtml2pdf: %s', venta.numero_factura, resultado.err)
+        messages.error(request, 'No se pudo generar el PDF. Intente nuevamente.')
+        return redirect('ventas:detalle_venta', id=id)
+
+    nombre = re.sub(r'[^\w\-]', '_', venta.numero_factura)
+    response = HttpResponse(buffer.getvalue(), content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="factura_venta_{nombre}.pdf"'
+    response['Cache-Control'] = 'no-cache, no-store, must-revalidate, private'
+    return response
 
 
 @login_requerido

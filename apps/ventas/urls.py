@@ -16,6 +16,9 @@ urlpatterns = [
     # Cambiar estado — solo ADMIN
     path('<int:id>/estado/', views.cambiar_estado_venta, name='cambiar_estado_venta'),
 
+    # Descargar PDF
+    path('<int:id>/pdf/', views.descargar_pdf_venta, name='descargar_pdf_venta'),
+
     # Exportar Excel
     path('exportar/', views.exportar_ventas_excel, name='exportar_ventas'),
 
