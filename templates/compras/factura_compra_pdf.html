@@ -6,12 +6,7 @@
 <style>
 @page {
     size: A4;
-    margin: 15mm 15mm 22mm 15mm;
-    @bottom-center {
-        content: "Página " counter(page) " de " counter(pages) " · SOLGASES — Sistema de Gestión Empresarial";
-        font-size: 7pt;
-        color: #aaaaaa;
-    }
+    margin: 15mm 15mm 15mm 15mm;
 }
 * { box-sizing: border-box; }
 body { font-family: Arial, sans-serif; font-size: 10pt; color: #1a1a1a; margin: 0; }
@@ -187,8 +182,9 @@ body { font-family: Arial, sans-serif; font-size: 10pt; color: #1a1a1a; margin: 
 {% endif %}
 
 <div class="pie">
+    Página <pdf:pagenumber> de <pdf:pagecount> &nbsp;·&nbsp;
     Documento generado el {{ fecha_generacion }} &nbsp;·&nbsp;
-    Este documento es una representación imprimible del registro del sistema.
+    SOLGASES — Sistema de Gestión Empresarial
 </div>
 
 </body>
