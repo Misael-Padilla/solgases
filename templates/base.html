@@ -193,19 +193,18 @@
         <div class="widget-seccion">
             <p class="widget-label" id="label-fuente">Tamaño de letra</p>
             <div class="widget-controles" role="group" aria-labelledby="label-fuente">
-                <button id="btn-fuente-pequena"
+                <button id="btn-fuente-menos"
+                        aria-label="Disminuir tamaño de letra"
+                        title="Disminuir (mín. 8px)">A−</button>
+                <button id="btn-fuente-reset"
                         aria-pressed="false"
-                        aria-label="Letra pequeña"
-                        title="Letra pequeña">A−</button>
-                <button id="btn-fuente-normal"
-                        aria-pressed="true"
-                        aria-label="Letra normal"
-                        title="Letra normal">A</button>
-                <button id="btn-fuente-grande"
-                        aria-pressed="false"
-                        aria-label="Letra grande"
-                        title="Letra grande">A+</button>
+                        aria-label="Restablecer tamaño normal"
+                        title="Restablecer tamaño normal">A</button>
+                <button id="btn-fuente-mas"
+                        aria-label="Aumentar tamaño de letra"
+                        title="Aumentar (máx. 20px)">A+</button>
             </div>
+            <p class="widget-fuente-actual" id="fuente-actual-label" aria-live="polite"></p>
         </div>
 
         <div class="widget-seccion">

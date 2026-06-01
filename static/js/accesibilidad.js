@@ -1,65 +1,102 @@
 (function () {
     'use strict';
 
-    var STORAGE_FUENTE    = 'solgases_fuente';
+    var STORAGE_TAMANO   = 'solgases_tamano';
     var STORAGE_CONTRASTE = 'solgases_contraste';
-    var STORAGE_GRISES    = 'solgases_grises';
-    var CLASES_FUENTE    = ['tamanio-grande', 'tamanio-pequeno'];
+    var STORAGE_GRISES   = 'solgases_grises';
+
+    var TAMANO_BASE = 13;
+    var TAMANO_MIN  = 8;
+    var TAMANO_MAX  = 20;
 
     /* -------------------------------------------------------
-       Aplica las preferencias guardadas en localStorage.
-       Se llama antes del DOMContentLoaded para evitar flash.
+       Inyecta un <style> dinámico con los tamaños de letra.
+       delta = tamanoActual - TAMANO_BASE
+    ------------------------------------------------------- */
+    function aplicarTamanoFuente(tamano) {
+        tamano = Math.min(TAMANO_MAX, Math.max(TAMANO_MIN, tamano));
+        var delta = tamano - TAMANO_BASE;
+
+        var estilos = document.getElementById('solgases-fuente-dinamica');
+        if (!estilos) {
+            estilos = document.createElement('style');
+            estilos.id = 'solgases-fuente-dinamica';
+            document.head.appendChild(estilos);
+        }
+
+        if (delta === 0) {
+            estilos.textContent = '';
+            return;
+        }
+
+        /* Aplica el mismo delta a cada elemento, con mínimo 8px */
+        var px = function (base) { return Math.max(8, base + delta) + 'px'; };
+
+        estilos.textContent = [
+            '.texto-descripcion { font-size: '          + px(13) + ' !important; }',
+            '.tabla-sistema td, .tabla-sistema th { font-size: ' + px(12) + ' !important; }',
+            '.form-label { font-size: '                 + px(13) + ' !important; }',
+            '.detalle-valor { font-size: '              + px(14) + ' !important; }',
+            '.detalle-label { font-size: '              + px(11) + ' !important; }',
+            '.detalle-seccion-titulo { font-size: '     + px(13) + ' !important; }',
+            '.breadcrumbs-item, .breadcrumbs-link { font-size: ' + px(12) + ' !important; }',
+            'h5.fw-bold { font-size: '                  + px(14) + ' !important; }'
+        ].join('\n');
+    }
+
+    /* -------------------------------------------------------
+       Aplica preferencias guardadas (antes del render).
     ------------------------------------------------------- */
     function aplicarPreferencias() {
-        var fuente    = localStorage.getItem(STORAGE_FUENTE);
-        var contraste = localStorage.getItem(STORAGE_CONTRASTE);
+        var tamano    = parseInt(localStorage.getItem(STORAGE_TAMANO), 10) || TAMANO_BASE;
+        var contraste = localStorage.getItem(STORAGE_CONTRASTE) === 'true';
+        var grises    = localStorage.getItem(STORAGE_GRISES) === 'true';
 
-        CLASES_FUENTE.forEach(function (c) {
-            document.documentElement.classList.remove(c);
-        });
+        aplicarTamanoFuente(tamano);
 
-        if (fuente) {
-            document.documentElement.classList.add(fuente);
-        }
-
-        if (contraste === 'true') {
-            document.documentElement.classList.add('alto-contraste');
-        }
-
-        if (localStorage.getItem(STORAGE_GRISES) === 'true') {
-            document.documentElement.classList.add('escala-grises');
-        }
+        if (contraste) document.documentElement.classList.add('alto-contraste');
+        if (grises)    document.documentElement.classList.add('escala-grises');
     }
 
     /* -------------------------------------------------------
-       Marca el botón activo de tamaño de fuente.
+       Actualiza botones y etiqueta de tamaño actual.
     ------------------------------------------------------- */
-    function actualizarBotonesFuente(activo) {
-        var mapa = {
-            'tamanio-pequeno': document.getElementById('btn-fuente-pequena'),
-            'normal':          document.getElementById('btn-fuente-normal'),
-            'tamanio-grande':  document.getElementById('btn-fuente-grande')
-        };
-        Object.keys(mapa).forEach(function (clave) {
-            var btn = mapa[clave];
-            if (!btn) return;
-            var estaActivo = clave === activo;
-            btn.setAttribute('aria-pressed', estaActivo ? 'true' : 'false');
-        });
+    function actualizarUIFuente(tamano) {
+        var btnMenos   = document.getElementById('btn-fuente-menos');
+        var btnReset   = document.getElementById('btn-fuente-reset');
+        var btnMas     = document.getElementById('btn-fuente-mas');
+        var etiqueta   = document.getElementById('fuente-actual-label');
+
+        if (btnMenos)  btnMenos.disabled = (tamano <= TAMANO_MIN);
+        if (btnMas)    btnMas.disabled   = (tamano >= TAMANO_MAX);
+
+        if (btnReset) {
+            btnReset.textContent = (tamano === TAMANO_BASE) ? 'A' : tamano + 'px';
+            btnReset.setAttribute('aria-pressed', tamano === TAMANO_BASE ? 'false' : 'true');
+        }
+
+        if (etiqueta) {
+            etiqueta.textContent = tamano === TAMANO_BASE
+                ? ''
+                : tamano + 'px';
+        }
     }
 
     /* -------------------------------------------------------
-       Inicializa el widget una vez que el DOM está listo.
+       Inicializa el widget.
     ------------------------------------------------------- */
     function initWidget() {
-        var btnToggle   = document.getElementById('btn-accesibilidad');
-        var panel       = document.getElementById('panel-accesibilidad');
-        var btnPequena  = document.getElementById('btn-fuente-pequena');
-        var btnNormal   = document.getElementById('btn-fuente-normal');
-        var btnGrande   = document.getElementById('btn-fuente-grande');
+        var btnToggle    = document.getElementById('btn-accesibilidad');
+        var panel        = document.getElementById('panel-accesibilidad');
+        var btnMenos     = document.getElementById('btn-fuente-menos');
+        var btnReset     = document.getElementById('btn-fuente-reset');
+        var btnMas       = document.getElementById('btn-fuente-mas');
         var btnContraste = document.getElementById('btn-contraste');
+        var btnDaltonismo = document.getElementById('btn-daltonismo');
 
         if (!btnToggle || !panel) return;
+
+        var tamanoActual = parseInt(localStorage.getItem(STORAGE_TAMANO), 10) || TAMANO_BASE;
 
         /* Abrir / cerrar panel */
         btnToggle.addEventListener('click', function () {
@@ -77,32 +114,37 @@
             }
         });
 
-        /* Fuente pequeña */
-        if (btnPequena) {
-            btnPequena.addEventListener('click', function () {
-                CLASES_FUENTE.forEach(function (c) { document.documentElement.classList.remove(c); });
-                document.documentElement.classList.add('tamanio-pequeno');
-                localStorage.setItem(STORAGE_FUENTE, 'tamanio-pequeno');
-                actualizarBotonesFuente('tamanio-pequeno');
+        /* Disminuir tamaño */
+        if (btnMenos) {
+            btnMenos.addEventListener('click', function () {
+                if (tamanoActual > TAMANO_MIN) {
+                    tamanoActual--;
+                    aplicarTamanoFuente(tamanoActual);
+                    localStorage.setItem(STORAGE_TAMANO, tamanoActual);
+                    actualizarUIFuente(tamanoActual);
+                }
             });
         }
 
-        /* Fuente normal */
-        if (btnNormal) {
-            btnNormal.addEventListener('click', function () {
-                CLASES_FUENTE.forEach(function (c) { document.documentElement.classList.remove(c); });
-                localStorage.removeItem(STORAGE_FUENTE);
-                actualizarBotonesFuente('normal');
+        /* Restaurar tamaño normal */
+        if (btnReset) {
+            btnReset.addEventListener('click', function () {
+                tamanoActual = TAMANO_BASE;
+                aplicarTamanoFuente(tamanoActual);
+                localStorage.removeItem(STORAGE_TAMANO);
+                actualizarUIFuente(tamanoActual);
             });
         }
 
-        /* Fuente grande */
-        if (btnGrande) {
-            btnGrande.addEventListener('click', function () {
-                CLASES_FUENTE.forEach(function (c) { document.documentElement.classList.remove(c); });
-                document.documentElement.classList.add('tamanio-grande');
-                localStorage.setItem(STORAGE_FUENTE, 'tamanio-grande');
-                actualizarBotonesFuente('tamanio-grande');
+        /* Aumentar tamaño */
+        if (btnMas) {
+            btnMas.addEventListener('click', function () {
+                if (tamanoActual < TAMANO_MAX) {
+                    tamanoActual++;
+                    aplicarTamanoFuente(tamanoActual);
+                    localStorage.setItem(STORAGE_TAMANO, tamanoActual);
+                    actualizarUIFuente(tamanoActual);
+                }
             });
         }
 
@@ -113,31 +155,27 @@
                 this.setAttribute('aria-pressed', activo ? 'true' : 'false');
                 localStorage.setItem(STORAGE_CONTRASTE, activo ? 'true' : 'false');
             });
+            btnContraste.setAttribute(
+                'aria-pressed',
+                localStorage.getItem(STORAGE_CONTRASTE) === 'true' ? 'true' : 'false'
+            );
         }
 
         /* Daltonismo — escala de grises */
-        var btnDaltonismo = document.getElementById('btn-daltonismo');
         if (btnDaltonismo) {
             btnDaltonismo.addEventListener('click', function () {
                 var activo = document.documentElement.classList.toggle('escala-grises');
                 this.setAttribute('aria-pressed', activo ? 'true' : 'false');
                 localStorage.setItem(STORAGE_GRISES, activo ? 'true' : 'false');
             });
+            btnDaltonismo.setAttribute(
+                'aria-pressed',
+                localStorage.getItem(STORAGE_GRISES) === 'true' ? 'true' : 'false'
+            );
         }
 
-        /* Sincronizar estado visual de botones con localStorage */
-        var fuenteActual    = localStorage.getItem(STORAGE_FUENTE) || 'normal';
-        var contrasteActivo = localStorage.getItem(STORAGE_CONTRASTE) === 'true';
-        var grisesActivo    = localStorage.getItem(STORAGE_GRISES) === 'true';
-
-        actualizarBotonesFuente(fuenteActual);
-
-        if (btnContraste) {
-            btnContraste.setAttribute('aria-pressed', contrasteActivo ? 'true' : 'false');
-        }
-        if (btnDaltonismo) {
-            btnDaltonismo.setAttribute('aria-pressed', grisesActivo ? 'true' : 'false');
-        }
+        /* Estado inicial de los botones de fuente */
+        actualizarUIFuente(tamanoActual);
     }
 
     /* Aplicar preferencias de inmediato (antes del render) */
