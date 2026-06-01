@@ -1,8 +1,9 @@
 (function () {
     'use strict';
 
-    var STORAGE_FUENTE   = 'solgases_fuente';
+    var STORAGE_FUENTE    = 'solgases_fuente';
     var STORAGE_CONTRASTE = 'solgases_contraste';
+    var STORAGE_GRISES    = 'solgases_grises';
     var CLASES_FUENTE    = ['tamanio-grande', 'tamanio-pequeno'];
 
     /* -------------------------------------------------------
@@ -23,6 +24,10 @@
 
         if (contraste === 'true') {
             document.documentElement.classList.add('alto-contraste');
+        }
+
+        if (localStorage.getItem(STORAGE_GRISES) === 'true') {
+            document.documentElement.classList.add('escala-grises');
         }
     }
 
@@ -110,14 +115,28 @@
             });
         }
 
+        /* Daltonismo — escala de grises */
+        var btnDaltonismo = document.getElementById('btn-daltonismo');
+        if (btnDaltonismo) {
+            btnDaltonismo.addEventListener('click', function () {
+                var activo = document.documentElement.classList.toggle('escala-grises');
+                this.setAttribute('aria-pressed', activo ? 'true' : 'false');
+                localStorage.setItem(STORAGE_GRISES, activo ? 'true' : 'false');
+            });
+        }
+
         /* Sincronizar estado visual de botones con localStorage */
         var fuenteActual    = localStorage.getItem(STORAGE_FUENTE) || 'normal';
         var contrasteActivo = localStorage.getItem(STORAGE_CONTRASTE) === 'true';
+        var grisesActivo    = localStorage.getItem(STORAGE_GRISES) === 'true';
 
         actualizarBotonesFuente(fuenteActual);
 
         if (btnContraste) {
             btnContraste.setAttribute('aria-pressed', contrasteActivo ? 'true' : 'false');
+        }
+        if (btnDaltonismo) {
+            btnDaltonismo.setAttribute('aria-pressed', grisesActivo ? 'true' : 'false');
         }
     }
 

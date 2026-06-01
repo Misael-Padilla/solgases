@@ -1386,3 +1386,34 @@ html.alto-contraste #panel-accesibilidad     { background-color: #1a1a1a; border
 html.alto-contraste .widget-titulo           { color: #ffffff; }
 html.alto-contraste .widget-controles button { background-color: #333333; color: #ffffff; border-color: #555555; }
 html.alto-contraste #btn-contraste           { background-color: var(--color-acento); color: #ffffff; border-color: var(--color-acento); }
+
+/* --- Daltonismo: escala de grises (WCAG 1.4.1) --- */
+html.escala-grises { filter: grayscale(100%); }
+
+#btn-daltonismo {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid var(--color-borde);
+    border-radius: 6px;
+    background-color: var(--color-contenido-bg);
+    color: var(--color-texto-primario);
+    cursor: pointer;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: background-color 0.15s, border-color 0.15s;
+}
+
+#btn-daltonismo:hover,
+#btn-daltonismo[aria-pressed="true"] {
+    background-color: var(--color-texto-primario);
+    border-color: var(--color-texto-primario);
+    color: #ffffff;
+}
+
+#btn-daltonismo:focus-visible {
+    outline: 2px solid var(--color-acento);
+    outline-offset: 2px;
+}
