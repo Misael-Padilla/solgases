@@ -10,6 +10,7 @@
   <img src="https://img.shields.io/badge/MySQL-8.0-4479A1?logo=mysql&logoColor=white" alt="MySQL">
   <img src="https://img.shields.io/badge/Tests-51%20passed-brightgreen?logo=checkmarx&logoColor=white" alt="Tests">
   <img src="https://img.shields.io/badge/Estado-Activo-brightgreen" alt="Estado">
+  <img src="https://img.shields.io/badge/Demo-En%20vivo-blue?logo=railway&logoColor=white" alt="Demo">
   <img src="https://img.shields.io/badge/License-MIT-green" alt="License">
 </p>
 
@@ -21,6 +22,14 @@
 
 <a name="español"></a>
 ## 🇨🇴 Español
+
+### Demo en vivo
+
+**[https://solgases-production.up.railway.app](https://solgases-production.up.railway.app)**
+
+> Credenciales de prueba: solicítalas al autor — ing.jorge.padilla.cardenas@gmail.com
+
+---
 
 ### ¿Qué es SOLGASES?
 
@@ -272,6 +281,14 @@ Desarrollador Backend — Django · Python · MySQL
 
 <a name="english"></a>
 ## 🇺🇸 English
+
+### Live Demo
+
+**[https://solgases-production.up.railway.app](https://solgases-production.up.railway.app)**
+
+> Demo credentials: contact the author — ing.jorge.padilla.cardenas@gmail.com
+
+---
 
 ### What is SOLGASES?
 
