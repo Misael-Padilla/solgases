@@ -18,7 +18,7 @@ from apps.usuarios.views import (
     _nombre_usuario, _formato_fecha, _insertar_encabezado,
 )
 
-_POR_PAGINA = 15
+_POR_PAGINA = 10
 
 
 @login_requerido

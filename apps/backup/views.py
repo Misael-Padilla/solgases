@@ -30,7 +30,7 @@ from django_apscheduler.models import DjangoJob
 
 logger = logging.getLogger(__name__)
 
-_POR_PAGINA = 15
+_POR_PAGINA = 10
 _BOGOTA_TZ  = zoneinfo.ZoneInfo('America/Bogota')
 
 
