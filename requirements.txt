@@ -1,4 +1,6 @@
 ﻿APScheduler==3.11.2
+gunicorn==23.0.0
+whitenoise==6.9.0
 xhtml2pdf==0.2.17
 asgiref==3.11.1
 Django==6.0.3
