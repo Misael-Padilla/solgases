@@ -136,7 +136,7 @@ Ran 51 tests in 9.1s — OK
 
 ```bash
 # 1. Clonar el repositorio
-git clone https://github.com/<tu-usuario>/solgases.git
+git clone https://github.com/Misael-Padilla/solgases.git
 cd solgases
 
 # 2. Crear y activar entorno virtual
@@ -264,7 +264,7 @@ Cumple criterios WCAG 2.1: SC 1.4.1, 1.4.11, 2.4.1, 4.1.2.
 **Jorge Misael Padilla Cárdenas**
 Desarrollador Backend — Django · Python · MySQL
 
-- GitHub: [@<tu-usuario>](https://github.com/<tu-usuario>)
+- GitHub: [@Misael-Padilla](https://github.com/Misael-Padilla)
 - LinkedIn: [linkedin.com/in/<tu-perfil>](https://linkedin.com/in/<tu-perfil>)
 - Email: ing.jorge.padilla.cardenas@gmail.com
 
@@ -387,7 +387,7 @@ Ran 51 tests in 9.1s — OK
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/<your-username>/solgases.git
+git clone https://github.com/Misael-Padilla/solgases.git
 cd solgases
 
 # 2. Create and activate virtual environment
@@ -476,6 +476,6 @@ Complies with WCAG 2.1 criteria: SC 1.4.1, 1.4.11, 2.4.1, 4.1.2.
 **Jorge Misael Padilla Cárdenas**
 Backend Developer — Django · Python · MySQL
 
-- GitHub: [@<your-username>](https://github.com/<your-username>)
+- GitHub: [@Misael-Padilla](https://github.com/Misael-Padilla)
 - LinkedIn: [linkedin.com/in/<your-profile>](https://linkedin.com/in/<your-profile>)
 - Email: ing.jorge.padilla.cardenas@gmail.com
