@@ -1207,58 +1207,6 @@
   }
 },
 {
-  "model": "backup.backup",
-  "pk": 1,
-  "fields": {
-    "nombre_archivo": "backup_20260408_161812.json",
-    "tipo": "MANUAL",
-    "peso_archivo": "13.3 KB",
-    "ruta_archivo": "F:\\Archivos\\Proyectos\\solgases\\backups\\backup_20260408_161812.json",
-    "generado_por": 1,
-    "observaciones": null,
-    "fecha_creacion": "2026-04-08T21:18:13.833Z"
-  }
-},
-{
-  "model": "backup.backup",
-  "pk": 2,
-  "fields": {
-    "nombre_archivo": "backup_20260530_210504.json",
-    "tipo": "MANUAL",
-    "peso_archivo": "103.8 KB",
-    "ruta_archivo": "backups\\backup_20260530_210504.json",
-    "generado_por": 1,
-    "observaciones": null,
-    "fecha_creacion": "2026-05-31T02:05:04.153Z"
-  }
-},
-{
-  "model": "backup.backup",
-  "pk": 3,
-  "fields": {
-    "nombre_archivo": "backup_20260530_211541.json",
-    "tipo": "MANUAL",
-    "peso_archivo": "108.5 KB",
-    "ruta_archivo": "backups\\backup_20260530_211541.json",
-    "generado_por": 1,
-    "observaciones": null,
-    "fecha_creacion": "2026-05-31T02:15:41.939Z"
-  }
-},
-{
-  "model": "backup.backup",
-  "pk": 4,
-  "fields": {
-    "nombre_archivo": "backup_20260530_214905.json",
-    "tipo": "MANUAL",
-    "peso_archivo": "109.9 KB",
-    "ruta_archivo": "backups\\backup_20260530_214905.json",
-    "generado_por": 1,
-    "observaciones": null,
-    "fecha_creacion": "2026-05-31T02:49:05.459Z"
-  }
-},
-{
   "model": "backup.configbackup",
   "pk": 1,
   "fields": {
