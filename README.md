@@ -27,7 +27,11 @@
 
 **[https://solgases-production.up.railway.app](https://solgases-production.up.railway.app)**
 
-> Credenciales de prueba: solicítalas al autor — ing.jorge.padilla.cardenas@gmail.com
+| Campo | Valor |
+|---|---|
+| **Correo** | `ing.jorge.padilla.cardenas@gmail.com` |
+| **Contraseña** | `Admin#123` |
+| **Rol** | ADMIN — acceso completo |
 
 ---
 
@@ -286,7 +290,11 @@ Desarrollador Backend — Django · Python · MySQL
 
 **[https://solgases-production.up.railway.app](https://solgases-production.up.railway.app)**
 
-> Demo credentials: contact the author — ing.jorge.padilla.cardenas@gmail.com
+| Field | Value |
+|---|---|
+| **Email** | `ing.jorge.padilla.cardenas@gmail.com` |
+| **Password** | `Admin#123` |
+| **Role** | ADMIN — full access |
 
 ---
 
