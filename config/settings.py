@@ -237,6 +237,9 @@ APSCHEDULER_RUN_NOW_TIMEOUT = 25  # segundos máximo para ejecución inmediata
 # Seguridad para producción — activar cuando DEBUG=False
 # ==============================================================
 if not DEBUG:
+    # Railway termina SSL en el proxy — este header le dice a Django que la
+    # petición original era HTTPS, evitando bucles de redirección infinita
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
