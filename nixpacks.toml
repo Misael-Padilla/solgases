@@ -1,2 +1,2 @@
 [phases.setup]
-nixPkgs = ["cairo", "pkg-config"]
+aptPkgs = ["libcairo2-dev", "pkg-config", "default-libmysqlclient-dev", "python3-dev"]
