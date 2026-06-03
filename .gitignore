@@ -28,3 +28,21 @@ contexto_fase_*.md
 # Backups de base de datos — contienen datos sensibles, nunca commitear
 # OWASP A02:2021 — Sensitive Data Exposure
 backups/
+
+# Configuración del IDE Claude Code — settings personales del desarrollador
+.claude/
+
+# Archivo de perfil personal de GitHub — no forma parte del proyecto
+github_profile_readme.md
+
+# Archivos de sistema operativo
+.DS_Store
+Thumbs.db
+
+# Archivos de log
+*.log
+
+# Archivos de backup de editores
+*.bak
+*.swp
+*~
