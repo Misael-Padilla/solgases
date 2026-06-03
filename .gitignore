@@ -32,8 +32,9 @@ backups/
 # Configuración del IDE Claude Code — settings personales del desarrollador
 .claude/
 
-# Archivo de perfil personal de GitHub — no forma parte del proyecto
+# Archivos personales — no forman parte del proyecto
 github_profile_readme.md
+cv.html
 
 # Archivos de sistema operativo
 .DS_Store
